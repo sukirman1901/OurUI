@@ -14,7 +14,8 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning f
 
 ### Notes
 
-- HTML/CSS emit still provisional (does **not** consume Resolved Design yet — RFC-003)
+- HTML/CSS emit still provisional (does **not** consume Resolved Design yet — RFC-003 Host Contract)
+- Generation 3 focus: Host Contract → web emit refactor → `0.3.0` (not Material / Plasma / Nav)
 - `ui.Theme` overrides continue to merge into SG tokens and now flow into Resolved Design
 
 ## [0.2.0] — 2026-07-18

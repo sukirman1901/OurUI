@@ -6,7 +6,7 @@ Architecture proposals that may change vocabulary, Compilation Flow, or major su
 |-----|-------|--------|
 | [RFC-001](RFC-001-presentation-system.md) | Presentation System | Accepted + Implemented (0.2.0) |
 | [RFC-002](RFC-002-design-system.md) | Design System (input) | Accepted + Implemented (0.2.1) |
-| [RFC-003](RFC-003-host-emit.md) | Host Emit | Stub |
+| [RFC-003](RFC-003-host-emit.md) | Host Contract | Draft (Generation 3) |
 
 Lifecycle: **Draft** → **Spike** → **Accepted** → **Implemented** (or Rejected).
 

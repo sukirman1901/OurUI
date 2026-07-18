@@ -1,6 +1,30 @@
 # Roadmap
 
-Product milestones (releases). Architecture RFCs live under `docs/rfcs/` and have their own Draft → Accepted → Implemented lifecycle.
+Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capability generations (below) are the north-star framing; lettered phases A–S1 are historical P0 delivery.
+
+## Capability generations
+
+| Generation | Proof | Status |
+|---|---|---|
+| **1 — Language infrastructure** | Intent → SG → IIR → LTR → RTR → running app (provisional host) | Done |
+| **2 — Semantic presentation** | Presentation Graph + Design System → Resolved Design | Done (`0.2.1`, dump schema 12) |
+| **3 — Host** | Host consumes `RTR + Resolved Design` via a clean **Host Contract** | **Next** ([RFC-003](rfcs/RFC-003-host-emit.md) Draft) |
+
+```text
+Publish 0.2.1  →  RFC-003 Host Contract  →  refactor web emit  →  0.3.0
+```
+
+**Not** on the critical path: Material packs, Plasma parity, `ui.Nav`, CSS AST-as-gate.
+
+Bottleneck today:
+
+```text
+Resolved Design  →  Host Contract  →  HTML / CSS / JS
+```
+
+(Emit still provisional: `RTR + Theme + _BASE_CSS`.)
+
+## Historical phases (P0)
 
 | Phase | Deliverable | Status |
 |---|---|---|
@@ -20,8 +44,8 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/` and hav
 | **Q** | User documentation (`docs/user/`) | Done |
 | **R** | Package release `0.1.0` / `0.1.1` | Done |
 | **S1** | `ui.Link` + `ui.Shell` / `layout=` (dump schema 10, `0.1.2`) | Done |
-| **Presentation R&D** | [RFC-001](rfcs/RFC-001-presentation-system.md) Accepted; Graph in dump (schema 11, `0.2.0`) | Done |
-| **Design System R&D** | [RFC-002](rfcs/RFC-002-design-system.md) Accepted; `resolved_design` in dump (schema 12, `0.2.1`) | Done |
-| **Host Emit R&D** | [RFC-003](rfcs/RFC-003-host-emit.md) Stub → Draft | Next |
+| **Presentation R&D** | [RFC-001](rfcs/RFC-001-presentation-system.md); Graph in dump (schema 11, `0.2.0`) | Done |
+| **Design System R&D** | [RFC-002](rfcs/RFC-002-design-system.md); `resolved_design` (schema 12, `0.2.1`) | Done |
+| **Host R&D (Gen 3)** | [RFC-003](rfcs/RFC-003-host-emit.md) Host Contract → web emit refactor → `0.3.0` | Next |
 
-ADRs 005–007 record intent+emit+escape product notes; sequencing of Presentation / Design System / Host is owned by the RFC ladder (001 → 002 → 003), not by further S3a–S6 chrome slices.
+ADRs 005–007 record intent+emit+escape product notes. Sequencing of Presentation / Design System / Host is owned by the RFC ladder (001 → 002 → 003).
