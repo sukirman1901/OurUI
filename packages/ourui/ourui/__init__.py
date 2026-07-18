@@ -1,6 +1,6 @@
 """OurUI authoring surface and compiler package."""
 
-from ourui.ui import Component, State, component, server, ui
+from ourui.ui import Component, Derived, State, component, server, ui
 
-__all__ = ["ui", "server", "State", "Component", "component"]
-__version__ = "0.4.1"
+__all__ = ["ui", "server", "State", "Derived", "Component", "component"]
+__version__ = "1.0.0"

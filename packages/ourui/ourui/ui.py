@@ -36,6 +36,22 @@ class State(Generic[T]):
         return self._value
 
 
+class Derived(Generic[T]):
+    """Draft computed value (Phase V). Recompute via get(); not client-writable."""
+
+    __slots__ = ("_fn",)
+
+    def __init__(self, fn: Callable[[], T]) -> None:
+        self._fn = fn
+
+    def get(self) -> T:
+        return self._fn()
+
+    @property
+    def value(self) -> T:
+        return self.get()
+
+
 class Component:
     """Base class for class-style components (expanded at Analyze)."""
 

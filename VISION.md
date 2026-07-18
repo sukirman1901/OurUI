@@ -23,7 +23,7 @@ A language platform where:
 
 > Developer writes intent. Compiler writes implementation. Host receives primitives.
 
-## Where we are (`0.4.0`)
+## Where we are (`1.0.0`)
 
 | Capability generation | Proof | Status |
 |---|---|---|
@@ -31,11 +31,11 @@ A language platform where:
 | **2 — Semantic presentation** | Presentation Graph + Design System → Resolved Design | Done |
 | **3 — Host Contract** | Emit requires `RTR + Resolved Design` | Done |
 
-**Phase S (language surface)** is complete through **S6**: navigation chrome, form controls, type/space/elevation tokens, theme toggle, Footer, layout intents, motion presets, `ui.Canvas` WebGL escape, and host polish (Image/Icon/Meta/Code/drawer).
+**Phase S** complete through **S6**. **Phase T–W** complete. Dump schema **25** is **Frozen** for `1.0.x`.
 
-Host strategy (ADR-005): **intent + emit + escape** — not a React/Tailwind clone in Python. Escapes (`ui.Canvas`) are explicit; tokens and layout stay semantic.
+Host strategy (ADR-005): **intent + emit + escape** — not a React/Tailwind clone in Python.
 
-Package: [ourui on PyPI](https://pypi.org/project/ourui/) · Demo: `ourui serve demo/app.py` → http://127.0.0.1:8765/
+Package: [ourui on PyPI](https://pypi.org/project/ourui/) · Demo: `ourui serve demo/app.py`
 
 ## Values
 

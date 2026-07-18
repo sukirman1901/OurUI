@@ -1,11 +1,12 @@
 # OurUI user documentation
 
-Learn how to build web apps in Python with OurUI. These pages cover the **Stable** language surface through Phase **S6** (`ourui` **0.4.1**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
+Learn how to build web apps in Python with OurUI. These pages cover the **1.0** language surface (`ourui` **1.0.0**, dump schema **25**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
 
 ## Getting started
 
 - [Getting started](getting-started.md) — install, run your first app, open the Plasma demo
-
+- [Deploy](guides/deploy.md) — serve, Docker, static emit notes
+- [Design packs](concepts/design-packs.md) — `ourui-default` pack
 ## Tutorial
 
 Work through the examples in order. Each step links to a runnable file under `examples/tutorial/`.

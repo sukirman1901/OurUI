@@ -36,9 +36,13 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     Object.keys(state).forEach((name) => {{
       document.querySelectorAll('[data-ourui-bind="' + name + '"]').forEach((el) => {{
         const tag = (el.tagName || "").toLowerCase();
+        const role = el.getAttribute("data-role") || "";
         const next = state[name];
         if (tag === "iframe") {{
           el.srcdoc = next == null ? "" : String(next);
+        }} else if (role === "dialog" || role === "toast") {{
+          const on = Boolean(next) && next !== "false" && next !== "0" && next !== "";
+          el.setAttribute("data-open", on ? "true" : "false");
         }} else if (tag === "input" && el.type === "checkbox") {{
           el.checked = Boolean(next) && next !== "false" && next !== "0" && next !== "";
         }} else if (tag === "input" || tag === "textarea" || tag === "select") {{
@@ -109,6 +113,12 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
       el.__ouruiPlasma = window.Plasma.init(el, cfg);
     }});
   }}
+  document.addEventListener("submit", (ev) => {{
+    const form = ev.target && ev.target.closest ? ev.target.closest("[data-ourui-on-submit]") : null;
+    if (!form) return;
+    ev.preventDefault();
+    invoke(form.getAttribute("data-ourui-on-submit"), collectFields(form));
+  }});
   document.addEventListener("click", (ev) => {{
     const t = ev.target;
     if (!t || !t.closest) return;
@@ -155,6 +165,13 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
         drawer.hidden = true;
         drawer.setAttribute("data-open", "false");
       }}
+      return;
+    }}
+    const dialogClose = t.closest("[data-ourui-dialog-close]");
+    if (dialogClose) {{
+      ev.preventDefault();
+      const dialog = dialogClose.closest('[data-role="dialog"]');
+      if (dialog) dialog.setAttribute("data-open", "false");
       return;
     }}
     const el = t.closest("[data-ourui-on-click]");

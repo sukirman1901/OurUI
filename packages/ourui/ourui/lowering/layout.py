@@ -31,6 +31,14 @@ _LAYOUT_KIND: dict[str, str] = {
     "Code": "Box",
     "CopyButton": "Box",
     "Menu": "Box",
+    "Form": "Column",
+    "Dialog": "Box",
+    "Toast": "Box",
+    "List": "Column",
+    "Table": "Box",
+    "Empty": "Box",
+    "Spinner": "Box",
+    "Alert": "Box",
 }
 
 _AXIS: dict[str, str] = {

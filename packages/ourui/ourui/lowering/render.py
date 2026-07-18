@@ -89,6 +89,14 @@ def lower_to_rtr(ltr: Any) -> RTR:
             "ThemeToggle",
             "Code",
             "CopyButton",
+            "Form",
+            "Dialog",
+            "Toast",
+            "List",
+            "Table",
+            "Empty",
+            "Spinner",
+            "Alert",
         }
         if not skip_text_promote:
             for prop_key in ("title", "subtitle", "text"):
@@ -119,6 +127,8 @@ def lower_to_rtr(ltr: Any) -> RTR:
             props["bind"] = binds["text"]
         elif "srcdoc" in binds:
             props["bind"] = binds["srcdoc"]
+        elif "open" in binds:
+            props["bind"] = binds["open"]
 
         # Text nodes first (label), then structural children
         all_children = text_children + children
@@ -172,5 +182,13 @@ def _role_for(from_intent: str) -> str:
         "Code": "code",
         "CopyButton": "copy-button",
         "Menu": "menu",
+        "Form": "form",
+        "Dialog": "dialog",
+        "Toast": "toast",
+        "List": "list",
+        "Table": "table",
+        "Empty": "empty",
+        "Spinner": "spinner",
+        "Alert": "alert",
     }
     return mapping.get(from_intent, from_intent.lower())

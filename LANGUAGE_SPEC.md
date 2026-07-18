@@ -1,10 +1,10 @@
 # Language Spec
 
-Normative surface for the current compiler (`ourui` **0.4.0**, dump schema **21**). Later phases extend this document via RFC when needed.
+Normative surface for the current compiler (`ourui` **1.0.0**, dump schema **25** — **Frozen** for `1.0.x`). Breaking language/dump changes require `2.0` + ADR/RFC.
 
 ## Status
 
-See [SPEC_STATUS.md](SPEC_STATUS.md). Language surface: **Stable** (P0 + Phase S1–S6).
+See [SPEC_STATUS.md](SPEC_STATUS.md). Language surface: **Frozen** at 1.0 (P0 + Phase S + Phase T–V). `Derived` remains **Draft**.
 
 ## Authoring model
 

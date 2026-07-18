@@ -4,6 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from ourui.diagnostics import collect_diagnostics
 from ourui.lsp.server import run_stdio_server
 from ourui.pipeline import dump_json, emit_html
 from ourui.runtime import serve
@@ -27,6 +28,12 @@ def main(argv: list[str] | None = None) -> int:
     emit_p.add_argument("source", type=Path, help="Path to a Python OurUI module")
     emit_p.add_argument("-o", "--output", type=Path, default=None, help="Write HTML to file instead of stdout")
     emit_p.add_argument("--title", default=None, help="HTML document title")
+
+    check_p = sub.add_parser(
+        "check",
+        help="Run compile diagnostics (path + span); exit 1 on errors",
+    )
+    check_p.add_argument("source", type=Path, help="Path to a Python OurUI module")
 
     serve_p = sub.add_parser(
         "serve",
@@ -81,6 +88,19 @@ def main(argv: list[str] | None = None) -> int:
             args.output.write_text(text, encoding="utf-8")
         else:
             sys.stdout.write(text)
+        return 0
+
+    if args.command == "check":
+        if not args.source.exists():
+            print(f"error: file not found: {args.source}", file=sys.stderr)
+            return 1
+        diags = collect_diagnostics(args.source)
+        errors = [d for d in diags if d.severity == "error"]
+        for d in diags:
+            print(d.format_line(), file=sys.stderr if d.severity == "error" else sys.stdout)
+        if errors:
+            return 1
+        print("ok")
         return 0
 
     if args.command == "serve":

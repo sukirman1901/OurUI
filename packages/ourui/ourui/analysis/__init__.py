@@ -11,6 +11,7 @@ from ourui.analysis.components import (
     expand_component_call,
 )
 from ourui.node import (
+    ALERT_SEVERITIES,
     ALIGN_INTENTS,
     CANVAS_MODES,
     FORM_CONTROL_KINDS,
@@ -37,9 +38,11 @@ class SemanticGraph:
     edges: list[dict[str, str]] = field(default_factory=list)
     handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
     states: dict[str, dict[str, Any]] = field(default_factory=dict)
+    derived: dict[str, dict[str, Any]] = field(default_factory=dict)
     components: dict[str, dict[str, Any]] = field(default_factory=dict)
     routes: dict[str, str] = field(default_factory=dict)
     tokens: dict[str, dict[str, str]] = field(default_factory=dict)
+    diagnostics: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -49,7 +52,9 @@ class SemanticGraph:
             "edges": sorted(self.edges, key=lambda e: (e["from"], e["to"], e["kind"])),
             "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
             "states": {k: self.states[k] for k in sorted(self.states)},
+            "derived": {k: self.derived[k] for k in sorted(self.derived)},
             "components": {k: self.components[k] for k in sorted(self.components)},
+            "diagnostics": list(self.diagnostics),
             "tokens": {
                 "light": {k: self.tokens.get("light", {})[k] for k in sorted(self.tokens.get("light", {}))},
                 "dark": {k: self.tokens.get("dark", {})[k] for k in sorted(self.tokens.get("dark", {}))},
@@ -81,6 +86,24 @@ def _is_state_call(call: ast.Call) -> bool:
     if isinstance(call.func, ast.Attribute) and call.func.attr == "State":
         return True
     return False
+
+
+def _is_derived_call(call: ast.Call) -> bool:
+    if isinstance(call.func, ast.Name) and call.func.id == "Derived":
+        return True
+    if isinstance(call.func, ast.Attribute) and call.func.attr == "Derived":
+        return True
+    return False
+
+
+def _derived_deps(call: ast.Call) -> list[str]:
+    """Collect Name ids referenced inside Derived(...) body (best-effort)."""
+    names: set[str] = set()
+    for node in ast.walk(call):
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
+            if node.id not in {"Derived", "State", "ui", "server"}:
+                names.add(node.id)
+    return sorted(names)
 
 
 def _is_theme_call(call: ast.Call) -> bool:
@@ -149,6 +172,47 @@ class _GraphBuilder:
             "initial": initial,
             "span": span_for(self.path, call).to_dict(),
         }
+
+    def register_derived(self, name: str, call: ast.Call) -> None:
+        deps = _derived_deps(call)
+        # Drop self-name if present
+        deps = [d for d in deps if d != name]
+        self.graph.derived[name] = {
+            "name": name,
+            "deps": deps,
+            "status": "draft",
+            "span": span_for(self.path, call).to_dict(),
+        }
+        for dep in deps:
+            if dep in self.graph.states:
+                self.dep.edges.append({"from": name, "to": dep, "kind": "derived_from"})
+                self.graph.edges.append({"from": name, "to": dep, "kind": "derived_from"})
+
+    def add_diagnostic(
+        self,
+        code: str,
+        message: str,
+        *,
+        at: ast.AST | None = None,
+    ) -> None:
+        span = span_for(self.path, at).to_dict() if at is not None else {
+            "path": self.path,
+            "start_line": 1,
+            "start_col": 0,
+            "end_line": 1,
+            "end_col": 0,
+        }
+        self.graph.diagnostics.append(
+            {
+                "code": code,
+                "message": message,
+                "path": span.get("path", self.path),
+                "start_line": span.get("start_line", 1),
+                "end_line": span.get("end_line", 1),
+                "start_col": span.get("start_col", 0),
+                "end_col": span.get("end_col", 0),
+            }
+        )
 
     def register_theme(self, call: ast.Call) -> None:
         attrs: dict[str, Any] = {}
@@ -283,7 +347,7 @@ class _GraphBuilder:
                     attrs["brand"] = cid
                     child_ids.append(cid)
                 continue
-            if kind in {"Nav", "Footer", "Menu"} and kw.arg in {"items", "actions", "links", "meta"}:
+            if kind in {"Nav", "Footer", "Menu", "Dialog"} and kw.arg in {"items", "actions", "links", "meta"}:
                 slot_ids: list[str] = []
                 val_node = kw.value
                 if isinstance(val_node, (ast.List, ast.Tuple)):
@@ -360,15 +424,26 @@ class _GraphBuilder:
                 if isinstance(route_val, str):
                     self._page_route_by_node[nid] = route_val
                 continue
-            if kw.arg == "on_click":
+            if kw.arg in {"on_click", "on_submit"}:
                 if isinstance(kw.value, ast.Name):
-                    attrs["on_click"] = {"__handler__": kw.value.id}
+                    attrs[kw.arg] = {"__handler__": kw.value.id}
                 elif isinstance(kw.value, ast.Constant) and isinstance(kw.value.value, str):
-                    attrs["on_click"] = {"__handler__": kw.value.value}
+                    attrs[kw.arg] = {"__handler__": kw.value.value}
                 else:
-                    attrs["on_click"] = literal_value(kw.value)
+                    attrs[kw.arg] = literal_value(kw.value)
                 continue
-            if kw.arg in {"text", "title", "subtitle", "bind", "value", "copy", "srcdoc"}:
+            if kw.arg in {
+                "text",
+                "title",
+                "subtitle",
+                "bind",
+                "value",
+                "copy",
+                "srcdoc",
+                "open",
+                "helper",
+                "message",
+            }:
                 state_ref = self._maybe_state_ref(kw.value)
                 if state_ref:
                     if kw.arg == "bind":
@@ -376,6 +451,8 @@ class _GraphBuilder:
                             attrs["value"] = state_ref
                         elif kind == "Frame":
                             attrs["srcdoc"] = state_ref
+                        elif kind in {"Dialog", "Toast"}:
+                            attrs["open"] = state_ref
                         else:
                             attrs["text"] = state_ref
                     elif kw.arg == "value":
@@ -384,6 +461,8 @@ class _GraphBuilder:
                         attrs["copy"] = state_ref
                     elif kw.arg == "srcdoc":
                         attrs["srcdoc"] = state_ref
+                    elif kw.arg == "open":
+                        attrs["open"] = state_ref
                     else:
                         attrs[kw.arg] = state_ref
                     continue
@@ -391,7 +470,14 @@ class _GraphBuilder:
                 if kw.arg == "copy" and isinstance(resolved, str):
                     attrs["copy"] = resolved
                     continue
-                if isinstance(resolved, str) and kw.arg in {"text", "title", "subtitle", "srcdoc"}:
+                if isinstance(resolved, str) and kw.arg in {
+                    "text",
+                    "title",
+                    "subtitle",
+                    "srcdoc",
+                    "helper",
+                    "message",
+                }:
                     attrs[kw.arg] = resolved
                     continue
                 if isinstance(resolved, dict) and "__state__" in resolved:
@@ -400,6 +486,8 @@ class _GraphBuilder:
                             attrs["value"] = resolved
                         elif kind == "Frame":
                             attrs["srcdoc"] = resolved
+                        elif kind in {"Dialog", "Toast"}:
+                            attrs["open"] = resolved
                         else:
                             attrs["text"] = resolved
                     else:
@@ -409,6 +497,11 @@ class _GraphBuilder:
                 type_val = literal_value(kw.value)
                 if isinstance(type_val, str):
                     attrs["type"] = type_val if type_val in INPUT_TYPES else "text"
+                continue
+            if kw.arg == "severity" and kind == "Alert":
+                sev = literal_value(kw.value)
+                if isinstance(sev, str):
+                    attrs["severity"] = sev if sev in ALERT_SEVERITIES else "info"
                 continue
             if isinstance(kw.value, ast.Call):
                 cid = self.build_call(kw.value, parent_id=nid, expansion_trail=trail)
@@ -434,6 +527,12 @@ class _GraphBuilder:
             attrs.setdefault("text", "Copy")
         if kind == "Frame":
             attrs.setdefault("title", "Result")
+        if kind == "Alert":
+            attrs.setdefault("severity", "info")
+        if kind == "Empty":
+            attrs.setdefault("title", "Nothing here")
+        if kind == "Toast":
+            attrs.setdefault("text", "Saved")
 
         provenance = ["parse:ui_call", "analyze:semantic_graph", *[f"expand:{n}" for n in trail]]
         node = Node(
@@ -454,6 +553,11 @@ class _GraphBuilder:
             if kind == "Page" and nid in self._page_route_by_node:
                 route_path = self._page_route_by_node[nid]
                 if route_path in self.graph.routes:
+                    self.add_diagnostic(
+                        "E001",
+                        f"Duplicate route: {route_path!r}",
+                        at=call,
+                    )
                     raise ValueError(f"Duplicate route: {route_path!r}")
                 self.graph.routes[route_path] = nid
 
@@ -462,9 +566,9 @@ class _GraphBuilder:
                 tid = self.theme_node(value, call)
                 self.dep.edges.append({"from": nid, "to": tid, "kind": "uses_theme"})
                 self.graph.edges.append({"from": nid, "to": tid, "kind": "uses_theme"})
-            if key == "on_click" and isinstance(value, dict) and "__handler__" in value:
+            if key in {"on_click", "on_submit"} and isinstance(value, dict) and "__handler__" in value:
                 handler = value["__handler__"]
-                self.dep.edges.append({"from": nid, "to": handler, "kind": "on_click"})
+                self.dep.edges.append({"from": nid, "to": handler, "kind": key})
                 self.graph.edges.append({"from": nid, "to": handler, "kind": "calls_handler"})
             if isinstance(value, dict) and "__state__" in value:
                 state_name = value["__state__"]
@@ -531,6 +635,10 @@ class _GraphBuilder:
                     for target in stmt.targets:
                         if isinstance(target, ast.Name):
                             self.register_state(target.id, stmt.value)
+                elif isinstance(stmt.value, ast.Call) and _is_derived_call(stmt.value):
+                    for target in stmt.targets:
+                        if isinstance(target, ast.Name):
+                            self.register_derived(target.id, stmt.value)
                 elif isinstance(stmt.value, ast.Call) and _is_theme_call(stmt.value):
                     self.register_theme(stmt.value)
                 elif isinstance(stmt.value, ast.Call):

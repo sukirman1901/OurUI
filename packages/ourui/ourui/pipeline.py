@@ -52,16 +52,19 @@ def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, A
 def compile_dump(path: str | Path) -> dict[str, Any]:
     path = Path(path)
     artifacts = compile_to_rtr(path)
+    sg = artifacts["semantic_graph"].to_dict()
     return {
-        "version": 21,
+        "version": 25,
         "source": artifacts["source"],
-        "semantic_graph": artifacts["semantic_graph"].to_dict(),
+        "semantic_graph": sg,
         "dependency_graph": artifacts["dependency_graph"].to_dict(),
         "iir": artifacts["iir"].to_dict(),
         "presentation_graph": artifacts["presentation_graph"].to_dict(),
         "resolved_design": artifacts["resolved_design"].to_dict(),
         "ltr": artifacts["ltr"].to_dict(),
         "rtr": artifacts["rtr"].to_dict(),
+        "derived": sg.get("derived", {}),
+        "diagnostics": sg.get("diagnostics", []),
         "emit": {
             "html": True,
             "css": True,
@@ -73,6 +76,13 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "resolved_design": True,
             "host_contract": True,
             "host_contract_primary": True,
+            "diagnostics": True,
+            "derived": True,
+            "form": True,
+            "dialog": True,
+            "toast": True,
+            "list": True,
+            "table": True,
         },
     }
 

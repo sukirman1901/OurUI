@@ -1,10 +1,10 @@
-# ourui 0.4.1
+# ourui 1.0.0
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-Stable through Phase **S6** (dump schema **21**): Nav, forms, tokens, layout, motion, Canvas, polish.
+Dump schema **25** (Frozen for 1.0.x). Stable through Phase **S6** plus Phase **T–W**: Form/Dialog/Toast, List/Table/status, diagnostics/`ourui check`, Trusted Publishing recipe.
 
 ## Install
 
@@ -25,22 +25,8 @@ pip install -e packages/ourui
 ```bash
 ourui dump path/to/app.py
 ourui emit path/to/app.py
+ourui check path/to/app.py
 ourui serve path/to/app.py
-ourui serve path/to/app.py --prod
-ourui lsp
 ```
 
-Demo (from repo root): `ourui serve demo/app.py` → http://127.0.0.1:8765/
-
-## Documentation
-
-- [User guide](https://github.com/sukirman1901/OurUI/tree/main/docs/user)
-- [Vision](https://github.com/sukirman1901/OurUI/blob/main/VISION.md)
-- [Changelog](https://github.com/sukirman1901/OurUI/blob/main/CHANGELOG.md)
-- [License (MIT)](https://github.com/sukirman1901/OurUI/blob/main/LICENSE)
-- [Repository](https://github.com/sukirman1901/OurUI)
-
-## Requirements
-
-- Python 3.11+
-- No runtime dependencies (stdlib only)
+See the repository root README and `docs/user/` for language docs.

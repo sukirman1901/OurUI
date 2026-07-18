@@ -33,11 +33,20 @@ UI_COMPONENTS: dict[str, str] = {
     "Code": "Code block; text= + language=.",
     "CopyButton": "Clipboard button; copy= payload.",
     "Menu": "Dropdown menu; items= slot.",
+    "Form": "Form shell; on_submit= collects fields.",
+    "Dialog": "Modal; open= State; title=/actions=.",
+    "Toast": "Ephemeral toast; text= + open=.",
+    "List": "Semantic list; items= or children.",
+    "Table": "Semantic table; columns= + rows=.",
+    "Empty": "Empty state; title=/subtitle=.",
+    "Spinner": "Loading indicator.",
+    "Alert": "Alert; severity=info|success|warning|danger.",
 }
 
 
 TOP_LEVEL_KEYWORDS: dict[str, str] = {
     "State": "Reactive server-side state variable.",
+    "Derived": "Draft computed value from a zero-arg callable.",
     "server": "Decorator marking a server RPC handler.",
     "Component": "Base class for expandable UI components.",
 }

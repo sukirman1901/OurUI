@@ -34,6 +34,14 @@ _PRESENTATION_KINDS = frozenset(
         "Code",
         "CopyButton",
         "Menu",
+        "Form",
+        "Dialog",
+        "Toast",
+        "List",
+        "Table",
+        "Empty",
+        "Spinner",
+        "Alert",
     }
 )
 

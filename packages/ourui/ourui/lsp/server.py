@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import sys
+import tempfile
+from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, urlparse
 
+from ourui.diagnostics import collect_diagnostics
 from ourui.lsp.completions import get_completions, get_hover
 from ourui.lsp import protocol
 
@@ -21,6 +25,13 @@ class DocumentStore:
 
     def get(self, uri: str) -> str:
         return self._documents.get(uri, "")
+
+
+def _uri_to_path(uri: str) -> Path | None:
+    if not uri.startswith("file:"):
+        return None
+    parsed = urlparse(uri)
+    return Path(unquote(parsed.path))
 
 
 class LSPServer:
@@ -52,12 +63,15 @@ class LSPServer:
                 return 0 if self._shutdown else 1
             elif method == "textDocument/didOpen":
                 doc = params.get("textDocument") or {}
-                self._documents.open(doc.get("uri", ""), doc.get("text", ""))
+                uri = doc.get("uri", "")
+                self._documents.open(uri, doc.get("text", ""))
+                self._publish_diagnostics(uri)
             elif method == "textDocument/didChange":
                 doc_uri = (params.get("textDocument") or {}).get("uri", "")
                 changes = params.get("contentChanges") or []
                 if changes:
                     self._documents.change(doc_uri, changes[-1].get("text", ""))
+                    self._publish_diagnostics(doc_uri)
             elif method == "textDocument/completion":
                 self._handle_completion(request_id, params)
             elif method == "textDocument/hover":
@@ -65,6 +79,51 @@ class LSPServer:
             elif request_id is not None:
                 protocol.write_error(self._stdout, request_id, -32601, f"Method not found: {method}")
 
+    def _publish_diagnostics(self, uri: str) -> None:
+        text = self._documents.get(uri)
+        path = _uri_to_path(uri)
+        diags_out: list[dict[str, Any]] = []
+        if text:
+            with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False, encoding="utf-8") as fh:
+                fh.write(text)
+                tmp = Path(fh.name)
+            try:
+                for d in collect_diagnostics(tmp):
+                    sev = 1 if d.severity == "error" else 2
+                    diags_out.append(
+                        {
+                            "range": {
+                                "start": {"line": max(0, d.start_line - 1), "character": d.start_col},
+                                "end": {"line": max(0, d.end_line - 1), "character": d.end_col},
+                            },
+                            "severity": sev,
+                            "code": d.code,
+                            "source": "ourui",
+                            "message": d.message,
+                        }
+                    )
+            finally:
+                tmp.unlink(missing_ok=True)
+        elif path and path.exists():
+            for d in collect_diagnostics(path):
+                sev = 1 if d.severity == "error" else 2
+                diags_out.append(
+                    {
+                        "range": {
+                            "start": {"line": max(0, d.start_line - 1), "character": d.start_col},
+                            "end": {"line": max(0, d.end_line - 1), "character": d.end_col},
+                        },
+                        "severity": sev,
+                        "code": d.code,
+                        "source": "ourui",
+                        "message": d.message,
+                    }
+                )
+        protocol.write_notification(
+            self._stdout,
+            "textDocument/publishDiagnostics",
+            {"uri": uri, "diagnostics": diags_out},
+        )
     def _handle_initialize(self, request_id: Any, params: dict[str, Any]) -> None:
         if request_id is None:
             return
@@ -77,7 +136,7 @@ class LSPServer:
                     "completionProvider": {"triggerCharacters": ["."]},
                     "hoverProvider": True,
                 },
-                "serverInfo": {"name": "ourui-lsp", "version": "0.4.1"},
+                "serverInfo": {"name": "ourui-lsp", "version": "1.0.0"},
             },
         )
 

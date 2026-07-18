@@ -28,16 +28,25 @@
       }
     ]
   },
+  "derived": {},
+  "diagnostics": [],
   "emit": {
     "components": true,
     "css": true,
+    "derived": true,
+    "diagnostics": true,
+    "dialog": true,
+    "form": true,
     "host_contract": true,
     "host_contract_primary": true,
     "html": true,
     "js": true,
+    "list": true,
     "presentation_graph": true,
     "resolved_design": true,
     "state": true,
+    "table": true,
+    "toast": true,
     "tokens": true
   },
   "iir": {
@@ -1795,6 +1804,8 @@
         "style": "function"
       }
     },
+    "derived": {},
+    "diagnostics": [],
     "edges": [
       {
         "from": "n0001",
@@ -2263,5 +2274,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 21
+  "version": 25
 }

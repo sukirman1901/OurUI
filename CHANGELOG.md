@@ -2,7 +2,36 @@
 
 All notable changes to the OurUI package are documented here.
 
-Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
+Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
+
+## [1.0.0] — 2026-07-18
+
+### Added — Phase T (Form & overlay)
+
+- `ui.Form` + `on_submit=`
+- `ui.Dialog` (`open=`, `title=`, `actions=`)
+- `ui.Toast` (`open=`, `text=`)
+- Field `helper=` + standardized `invalid=` helper text
+
+### Added — Phase U (Data patterns)
+
+- `ui.List`, `ui.Table`, `ui.Empty`, `ui.Spinner`, `ui.Alert`
+
+### Added — Phase V (Compiler UX)
+
+- Structured diagnostics + `ourui check`
+- LSP `publishDiagnostics`
+- `Derived` (Draft) computed values
+
+### Added — Phase W
+
+- GitHub Actions Trusted Publishing workflow
+- Deploy guide + design packs concept docs
+
+### Notes
+
+- Dump schema **25** — **Frozen** for `1.0.x` (breaking changes → `2.0`)
+- Host Contract remains primary (RTR + Resolved Design)
 
 ## [0.4.1] — 2026-07-18
 

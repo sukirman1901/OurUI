@@ -13,3 +13,5 @@ ADRs record local or historical choices. RFCs change LOCKED architecture or voca
 | [ADR-005](ADR-005-intent-emit-escape.md) | Presentation: intent + emit + escape — **S1–S6 Done (`0.4.0`)** |
 | [ADR-006](ADR-006-chrome-nav-placement.md) | Chrome: `ui.Nav` + `placement=` → CSS position |
 | [ADR-007](ADR-007-site-structure-stack.md) | Full site stack — **Implemented (`0.4.0`)** |
+| [ADR-008](ADR-008-form-dialog-toast.md) | Form / Dialog / Toast (Phase T) |
+| [ADR-009](ADR-009-diagnostics-derived.md) | Diagnostics + Derived Draft (Phase V) |

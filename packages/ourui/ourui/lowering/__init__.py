@@ -71,9 +71,12 @@ def lower_to_iir(graph: SemanticGraph) -> IIR:
         on_click = attrs.pop("on_click", None)
         if isinstance(on_click, dict) and "__handler__" in on_click:
             events["click"] = str(on_click["__handler__"])
+        on_submit = attrs.pop("on_submit", None)
+        if isinstance(on_submit, dict) and "__handler__" in on_submit:
+            events["submit"] = str(on_submit["__handler__"])
 
         binds: dict[str, str] = {}
-        for key in ("text", "title", "subtitle", "value", "srcdoc"):
+        for key in ("text", "title", "subtitle", "value", "srcdoc", "open"):
             if key not in attrs:
                 continue
             display, bind = _resolve_attr(attrs[key], graph.states)

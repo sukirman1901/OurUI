@@ -48,6 +48,11 @@ page = ui.Page(
 | `ui.Code` | Presentation | Code block |
 | `ui.CopyButton` | Presentation | Clipboard (`copy=`) |
 | `ui.Menu` | Presentation | Dropdown menu (`items=`) |
+| `ui.Form` | Presentation | Form shell (`on_submit=`) |
+| `ui.Dialog` | Presentation | Modal (`open=` / `title=` / `actions=`) |
+| `ui.Toast` | Presentation | Toast (`open=` / `text=`) |
+| `ui.List` / `ui.Table` | Presentation | List / semantic table |
+| `ui.Empty` / `ui.Spinner` / `ui.Alert` | Presentation | Status primitives |
 | `ui.Theme` | Tokens | Design token overrides (module-level) |
 
 ## `ui.Page`

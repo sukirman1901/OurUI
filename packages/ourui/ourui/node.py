@@ -82,6 +82,14 @@ PRESENTATION_KINDS = frozenset(
         "Code",
         "CopyButton",
         "Menu",
+        "Form",
+        "Dialog",
+        "Toast",
+        "List",
+        "Table",
+        "Empty",
+        "Spinner",
+        "Alert",
     }
 )
 KNOWN_KINDS = INTENT_KINDS | PRESENTATION_KINDS
@@ -98,6 +106,9 @@ FORM_CONTROL_KINDS = frozenset({"Input", "Select", "Toggle", "Slider"})
 INPUT_TYPES = frozenset(
     {"text", "email", "password", "number", "search", "url", "tel", "textarea"}
 )
+
+# Alert severity (Phase U)
+ALERT_SEVERITIES = frozenset({"info", "success", "warning", "danger"})
 
 # Nav chrome (S3a / S6)
 NAV_PLACEMENTS = frozenset(
@@ -172,4 +183,10 @@ LAYOUT_PASSTHROUGH = (
     "action",
     "copy",
     "chrome",
+    "helper",
+    "open",
+    "columns",
+    "rows",
+    "severity",
+    "message",
 )

@@ -38,6 +38,14 @@ _ROLE_TAG: dict[str, str] = {
     "copy-button": "button",
     "menu": "div",
     "meta": "div",
+    "form": "form",
+    "dialog": "div",
+    "toast": "div",
+    "list": "ul",
+    "table": "table",
+    "empty": "div",
+    "spinner": "div",
+    "alert": "div",
 }
 
 _BASE_CSS = """\
@@ -276,6 +284,135 @@ textarea.ourui-input:focus {
   border-top: 1px solid var(--ourui-border);
   background: var(--ourui-card);
 }
+.ourui-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ourui-space-md);
+  width: 100%;
+  max-width: 28rem;
+}
+.ourui-field-helper {
+  font-size: var(--ourui-text-sm);
+  color: var(--ourui-muted-fg);
+}
+.ourui-field-helper[data-invalid="true"] {
+  color: var(--ourui-danger);
+}
+.ourui-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ourui-space-lg);
+  background: color-mix(in srgb, #000 45%, transparent);
+}
+.ourui-dialog[data-open="true"] { display: flex; }
+.ourui-dialog-panel {
+  width: min(28rem, 100%);
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+  border: 1px solid var(--ourui-border);
+  border-radius: var(--ourui-radius);
+  box-shadow: var(--ourui-elev-2);
+  padding: var(--ourui-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ourui-space-md);
+}
+.ourui-dialog-title {
+  font-size: var(--ourui-text-lg);
+  font-weight: 600;
+  margin: 0;
+}
+.ourui-dialog-actions {
+  display: flex;
+  gap: var(--ourui-space-sm);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.ourui-toast {
+  position: fixed;
+  right: var(--ourui-space-lg);
+  bottom: var(--ourui-space-lg);
+  z-index: 60;
+  display: none;
+  padding: var(--ourui-space-md) var(--ourui-space-lg);
+  background: var(--ourui-fg);
+  color: var(--ourui-bg);
+  border-radius: var(--ourui-radius);
+  box-shadow: var(--ourui-elev-2);
+  max-width: 22rem;
+}
+.ourui-toast[data-open="true"] { display: block; }
+.ourui-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ourui-space-sm);
+  width: 100%;
+}
+.ourui-list-item {
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  border: 1px solid var(--ourui-border);
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-card);
+}
+.ourui-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ourui-text-sm);
+}
+.ourui-table th,
+.ourui-table td {
+  border: 1px solid var(--ourui-border);
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  text-align: left;
+}
+.ourui-table th {
+  background: var(--ourui-muted);
+  color: var(--ourui-muted-fg);
+  font-weight: 600;
+}
+.ourui-empty,
+.ourui-spinner,
+.ourui-alert {
+  padding: var(--ourui-space-lg);
+  border-radius: var(--ourui-radius);
+  border: 1px solid var(--ourui-border);
+}
+.ourui-empty {
+  text-align: center;
+  color: var(--ourui-muted-fg);
+  background: var(--ourui-muted);
+}
+.ourui-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ourui-space-sm);
+  color: var(--ourui-muted-fg);
+}
+.ourui-spinner::before {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--ourui-border);
+  border-top-color: var(--ourui-primary);
+  border-radius: 50%;
+  animation: ourui-spin 0.7s linear infinite;
+}
+@keyframes ourui-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .ourui-spinner::before { animation: none; }
+}
+.ourui-alert { background: var(--ourui-card); }
+.ourui-alert-info { border-color: var(--ourui-border); }
+.ourui-alert-success { border-color: var(--ourui-accent); }
+.ourui-alert-warning { border-color: color-mix(in srgb, #ca8a04 70%, var(--ourui-border)); }
+.ourui-alert-danger { border-color: var(--ourui-danger); }
 select.ourui-select {
   display: block;
   width: 100%;
@@ -745,6 +882,24 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         classes.append("ourui-code")
     if role == "menu":
         classes.append("ourui-menu")
+    if role == "form":
+        classes.append("ourui-form")
+    if role == "dialog":
+        classes.append("ourui-dialog")
+    if role == "toast":
+        classes.append("ourui-toast")
+    if role == "list":
+        classes.append("ourui-list")
+    if role == "table":
+        classes.append("ourui-table")
+    if role == "empty":
+        classes.append("ourui-empty")
+    if role == "spinner":
+        classes.append("ourui-spinner")
+    if role == "alert":
+        classes.append("ourui-alert")
+        sev = attrs.get("severity") or "info"
+        classes.append(f"ourui-alert-{sev}")
     if role == "section" and attrs.get("chrome") == "tabs":
         classes.append("ourui-playground-tabs")
     if role == "section" and attrs.get("chrome") == "file-tabs":
@@ -794,6 +949,12 @@ def _event_attrs(node: dict[str, Any]) -> str:
     parts: list[str] = []
     if "click" in events:
         parts.append(f' data-ourui-on-click="{html.escape(str(events["click"]))}"')
+    if "submit" in events:
+        parts.append(f' data-ourui-on-submit="{html.escape(str(events["submit"]))}"')
+    # Also accept raw on_submit on attributes (before IIR events map)
+    on_submit = node.get("attributes", {}).get("on_submit")
+    if isinstance(on_submit, dict) and "__handler__" in on_submit and "submit" not in events:
+        parts.append(f' data-ourui-on-submit="{html.escape(str(on_submit["__handler__"]))}"')
     return "".join(parts)
 
 
@@ -889,20 +1050,28 @@ def _slider_attrs(attrs: dict[str, Any]) -> str:
     return "".join(parts) + _state_attrs(attrs)
 
 
-def _wrap_field(pad: str, label: Any, control_lines: list[str], *, row: bool = False) -> list[str]:
+def _wrap_field(pad: str, label: Any, control_lines: list[str], *, row: bool = False, helper: Any = None, invalid: Any = None) -> list[str]:
     if not isinstance(label, str) or not label:
-        return [f"{pad}{line}" if not line.startswith(pad) else line for line in control_lines]
+        lines = [f"{pad}{line}" if not line.startswith(pad) else line for line in control_lines]
+        if isinstance(helper, str) and helper:
+            inv = ' data-invalid="true"' if invalid in (True, "true", 1, "1") else ""
+            lines.append(f'{pad}<span class="ourui-field-helper"{inv}>{html.escape(helper)}</span>')
+        return lines
     lab = html.escape(label)
     cls = "ourui-toggle-row" if row else "ourui-field"
     if row:
         inner = [f"{pad}  {control_lines[0].lstrip()}", f'{pad}  <span class="ourui-field-label">{lab}</span>']
         return [f'{pad}<label class="{cls}">', *inner, f"{pad}</label>"]
-    return [
+    out = [
         f'{pad}<label class="{cls}">',
         f'{pad}  <span class="ourui-field-label">{lab}</span>',
         *[f"{pad}  {line.lstrip()}" if line.strip().startswith("<") else line for line in control_lines],
-        f"{pad}</label>",
     ]
+    if isinstance(helper, str) and helper:
+        inv = ' data-invalid="true"' if invalid in (True, "true", 1, "1") else ""
+        out.append(f'{pad}  <span class="ourui-field-helper"{inv}>{html.escape(helper)}</span>')
+    out.append(f"{pad}</label>")
+    return out
 
 
 # Minimal Reicon-style path set (inline SVG host — names match common icon ids)
@@ -1003,14 +1172,24 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     if role == "input":
         field = _input_attrs(node_attrs)
         attrs = f"{class_attr}{data_role}{data_id}{field}{events}"
+        helper = node_attrs.get("helper")
+        invalid = node_attrs.get("invalid")
         if node_attrs.get("type") == "textarea":
             body = _textarea_body(node_attrs)
             return _wrap_field(
                 pad,
                 node_attrs.get("label"),
                 [f"<textarea{attrs}>{body}</textarea>"],
+                helper=helper,
+                invalid=invalid,
             )
-        return _wrap_field(pad, node_attrs.get("label"), [f"<input{attrs} />"])
+        return _wrap_field(
+            pad,
+            node_attrs.get("label"),
+            [f"<input{attrs} />"],
+            helper=helper,
+            invalid=invalid,
+        )
 
     if role == "select":
         field = _select_attrs(node_attrs)
@@ -1087,6 +1266,127 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     if role == "frame":
         attrs = f"{class_attr}{data_role}{data_id}{_frame_attrs(node_attrs)}"
         return [f"{pad}<iframe{attrs}></iframe>"]
+
+    if role == "form":
+        attrs = f"{class_attr}{data_role}{data_id}{events}"
+        lines = [f"{pad}<form{attrs}>"]
+        for child_id in node.get("children", []):
+            if child_id in nodes:
+                lines.extend(_render_node(child_id, nodes, indent + 1))
+        lines.append(f"{pad}</form>")
+        return lines
+
+    if role == "dialog":
+        open_val = node_attrs.get("open")
+        is_open = False
+        if isinstance(open_val, bool):
+            is_open = open_val
+        elif open_val is not None and not isinstance(open_val, dict):
+            is_open = str(open_val).lower() in {"1", "true", "yes", "on"}
+        bind = node_attrs.get("bind")
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if isinstance(bind, str) and bind else ""
+        open_attr = ' data-open="true"' if is_open else ' data-open="false"'
+        title = html.escape(str(node_attrs.get("title") or "Dialog"))
+        attrs = f"{class_attr}{data_role}{data_id}{bind_attr}{open_attr}{events}"
+        lines = [
+            f"{pad}<div{attrs}>",
+            f'{pad}  <div class="ourui-dialog-panel" role="dialog" aria-modal="true">',
+            f'{pad}    <h2 class="ourui-dialog-title">{title}</h2>',
+        ]
+        for child_id in node.get("children", []):
+            if child_id in nodes:
+                lines.extend(_render_node(child_id, nodes, indent + 2))
+        actions = node_attrs.get("actions") if isinstance(node_attrs.get("actions"), list) else []
+        if actions:
+            lines.append(f'{pad}    <div class="ourui-dialog-actions">')
+            for aid in actions:
+                if isinstance(aid, str) and aid in nodes:
+                    lines.extend(_render_node(aid, nodes, indent + 3))
+            lines.append(f"{pad}    </div>")
+        lines.append(f'{pad}    <button type="button" class="ourui-control" data-ourui-dialog-close="1">Close</button>')
+        lines.append(f"{pad}  </div>")
+        lines.append(f"{pad}</div>")
+        return lines
+
+    if role == "toast":
+        open_val = node_attrs.get("open")
+        is_open = False
+        if isinstance(open_val, bool):
+            is_open = open_val
+        elif open_val is not None and not isinstance(open_val, dict):
+            is_open = str(open_val).lower() in {"1", "true", "yes", "on"}
+        bind = node_attrs.get("bind")
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if isinstance(bind, str) and bind else ""
+        open_attr = ' data-open="true"' if is_open else ' data-open="false"'
+        text = html.escape(str(node_attrs.get("text") or node_attrs.get("message") or ""))
+        attrs = f"{class_attr}{data_role}{data_id}{bind_attr}{open_attr}"
+        return [f"{pad}<div{attrs}>{text}</div>"]
+
+    if role == "list":
+        attrs = f"{class_attr}{data_role}{data_id}"
+        items = node_attrs.get("items")
+        lines = [f"{pad}<ul{attrs}>"]
+        if isinstance(items, list):
+            for item in items:
+                if isinstance(item, str) and item in nodes:
+                    lines.append(f'{pad}  <li class="ourui-list-item">')
+                    lines.extend(_render_node(item, nodes, indent + 2))
+                    lines.append(f"{pad}  </li>")
+                else:
+                    lines.append(f'{pad}  <li class="ourui-list-item">{html.escape(str(item))}</li>')
+        for child_id in node.get("children", []):
+            if child_id in nodes:
+                lines.append(f'{pad}  <li class="ourui-list-item">')
+                lines.extend(_render_node(child_id, nodes, indent + 2))
+                lines.append(f"{pad}  </li>")
+        lines.append(f"{pad}</ul>")
+        return lines
+
+    if role == "table":
+        attrs = f"{class_attr}{data_role}{data_id}"
+        columns = node_attrs.get("columns") if isinstance(node_attrs.get("columns"), list) else []
+        rows = node_attrs.get("rows") if isinstance(node_attrs.get("rows"), list) else []
+        lines = [f"{pad}<table{attrs}>"]
+        if columns:
+            lines.append(f"{pad}  <thead><tr>")
+            for col in columns:
+                lines.append(f"{pad}    <th>{html.escape(str(col))}</th>")
+            lines.append(f"{pad}  </tr></thead>")
+        lines.append(f"{pad}  <tbody>")
+        for row in rows:
+            lines.append(f"{pad}    <tr>")
+            if isinstance(row, dict):
+                for col in columns:
+                    lines.append(f"{pad}      <td>{html.escape(str(row.get(col, '')))}</td>")
+            elif isinstance(row, list):
+                for cell in row:
+                    lines.append(f"{pad}      <td>{html.escape(str(cell))}</td>")
+            else:
+                lines.append(f"{pad}      <td>{html.escape(str(row))}</td>")
+            lines.append(f"{pad}    </tr>")
+        lines.append(f"{pad}  </tbody>")
+        lines.append(f"{pad}</table>")
+        return lines
+
+    if role == "empty":
+        title = html.escape(str(node_attrs.get("title") or "Nothing here"))
+        subtitle = node_attrs.get("subtitle") or node_attrs.get("text") or ""
+        attrs = f"{class_attr}{data_role}{data_id}"
+        lines = [f"{pad}<div{attrs}>", f"{pad}  <strong>{title}</strong>"]
+        if subtitle:
+            lines.append(f"{pad}  <div>{html.escape(str(subtitle))}</div>")
+        lines.append(f"{pad}</div>")
+        return lines
+
+    if role == "spinner":
+        text = html.escape(str(node_attrs.get("text") or "Loading…"))
+        attrs = f"{class_attr}{data_role}{data_id}"
+        return [f"{pad}<div{attrs} aria-busy=\"true\">{text}</div>"]
+
+    if role == "alert":
+        text = html.escape(str(node_attrs.get("text") or node_attrs.get("message") or node_attrs.get("title") or ""))
+        attrs = f"{class_attr}{data_role}{data_id} role=\"status\""
+        return [f"{pad}<div{attrs}>{text}</div>"]
 
     if role == "image":
         src = node_attrs.get("src") or ""
@@ -1239,12 +1539,14 @@ def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None)
     for node in out["nodes"].values():
         attrs = node.get("attributes", {}) or {}
         bind = attrs.get("bind")
-        if bind in state_values and attrs.get("role") in {"input", "select", "toggle", "slider", "code", "frame"}:
+        if bind in state_values and attrs.get("role") in {"input", "select", "toggle", "slider", "code", "frame", "dialog", "toast"}:
             attrs["value"] = state_values[bind]
             if attrs.get("role") == "code":
                 attrs["text"] = state_values[bind]
             if attrs.get("role") == "frame":
                 attrs["srcdoc"] = state_values[bind]
+            if attrs.get("role") in {"dialog", "toast"}:
+                attrs["open"] = state_values[bind]
     return out
 
 
