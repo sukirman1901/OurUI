@@ -23,27 +23,29 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_default_pack_version_and_density() -> None:
     pack = default_pack()
-    assert pack["version"] == "1.1.0"
+    assert pack["version"] == "1.2.0"
     assert pack["version"] == PACK_VERSION
     assert pack["density"]["default"] == "comfortable"
     assert "space_sm" in pack["density"]["compact"]
 
 
-def test_dump_schema_29_attestation_and_pack_version() -> None:
+def test_dump_schema_30_attestation_and_pack_version() -> None:
     doc = compile_dump(ENTERPRISE / "crud_app.py")
-    assert doc["version"] == 29
+    assert doc["version"] == 30
     assert doc["emit"]["density"] is True
     assert doc["emit"]["csp"] is True
     assert doc["emit"]["attestation"] is True
     assert doc["emit"]["csrf"] is True
+    assert doc["emit"]["motion"] is True
     rd = doc["resolved_design"]
     assert rd["pack"] == "ourui-default"
-    assert rd["pack_version"] == "1.1.0"
+    assert rd["pack_version"] == "1.2.0"
     assert rd["density"] == "comfortable"
     att = doc["attestation"]
-    assert att["schema"] == 29
+    assert att["schema"] == 30
     assert att["pack"] == "ourui-default"
-    assert att["pack_version"] == "1.1.0"
+    assert att["pack_version"] == "1.2.0"
+    assert att["motion_catalog"]
     assert isinstance(att.get("sha256"), str) and len(att["sha256"]) == 64
 
 
@@ -139,6 +141,6 @@ page = ui.Page(ui.Input(name="x"), ui.Button("Save", color="primary"))
 def test_enterprise_kit_apps_schema_29(name: str) -> None:
     path = ENTERPRISE / name
     doc = compile_dump(path)
-    assert doc["version"] == 29
+    assert doc["version"] == 30
     html = emit_html(path, title=path.stem)
     assert "Acme" in html or "acme" in html.lower() or path.stem.replace("_", " ") in html.lower()

@@ -1,10 +1,10 @@
-# ourui 1.7.1
+# ourui 1.8.3
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-Dump schema **29** (additive). Named packs + recipes (`pack=` / `recipe=`) on `ui.Theme`.
+Dump schema **30** (additive). Named packs + recipes (`pack=` / `recipe=`), including **`marketing`**. Motion vocabulary `motion="family.pattern"` (ADR-012, M1 Stable emit).
 
 ## Install
 

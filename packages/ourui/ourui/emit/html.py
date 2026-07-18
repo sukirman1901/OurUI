@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ourui.design.motion import motion_css_class
+from ourui.design.motion_css import motion_host_css
 from ourui.emit.js import emit_js
 from ourui.runtime.security import csp_content as _csp_content_fn
 from ourui.theme import COLOR_TOKEN_NAMES, emit_tokens_css
@@ -54,6 +56,16 @@ _ROLE_TAG: dict[str, str] = {
 _BASE_CSS = """\
 /* Host-private chrome (layout / structure). Not Design System knowledge.
    Tone colors come from Resolved Design (CSS vars + per-node rules). */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--ourui-bg);
+  color: var(--ourui-fg);
+  min-height: 100%;
+}
+html {
+  overflow-x: clip;
+}
 .ourui-root {
   font-family: var(--ourui-font-sans);
   font-size: var(--ourui-text-md);
@@ -61,8 +73,12 @@ _BASE_CSS = """\
   background: var(--ourui-bg);
   color: var(--ourui-fg);
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   padding: 0;
+  margin: 0;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -74,15 +90,61 @@ _BASE_CSS = """\
   padding-block: var(--ourui-page-pad-block, var(--ourui-space-xl));
   padding-inline: var(--ourui-page-pad-inline, var(--ourui-space-lg));
   gap: var(--ourui-page-gap, var(--ourui-space-lg));
+  display: flex;
+  flex-direction: column;
+  background: var(--ourui-bg);
+}
+/* Chrome breakout on measured pages (product/ops) — avoid on marketing */
+[data-role="page"] > [data-role="nav"],
+[data-role="page"] > [data-role="footer"] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  padding-inline: var(--ourui-space-md);
+  align-self: stretch;
+}
+.ourui-root:not([data-recipe="marketing"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="nav"],
+.ourui-root:not([data-recipe="marketing"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="footer"] {
+  width: 100vw;
+  max-width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 .ourui-root:has([data-role="shell"]) [data-role="page"],
 .ourui-root:has(.ourui-shell-stack) [data-role="page"],
 .ourui-root:has(.ourui-shell-split-2) [data-role="page"],
 .ourui-root:has(.ourui-shell-split-3) [data-role="page"],
-.ourui-root:has(.ourui-shell-split-sidebar) [data-role="page"] {
+.ourui-root:has(.ourui-shell-split-sidebar) [data-role="page"],
+.ourui-root[data-recipe="marketing"] [data-role="page"] {
+  max-width: none;
+  width: 100%;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+.ourui-root[data-recipe="marketing"] [data-role="page"] {
+  padding-block: 0;
+}
+/* Marketing: full-bleed planes edge-to-edge */
+.ourui-root[data-recipe="marketing"] [data-role="nav"],
+.ourui-root[data-recipe="marketing"] [data-role="footer"],
+.ourui-root[data-recipe="marketing"] [data-role="hero"],
+.ourui-root[data-recipe="marketing"] [data-role="section"],
+.ourui-root[data-recipe="marketing"] [data-role="shell"] {
+  box-sizing: border-box;
+  width: 100%;
   max-width: none;
   margin-inline: 0;
   padding-inline: var(--ourui-space-lg);
+}
+.ourui-root[data-recipe="marketing"] [data-role="nav"] {
+  padding-inline: var(--ourui-space-md);
+}
+.ourui-root[data-recipe="marketing"] [data-role="hero"] [data-slot="subtitle"],
+.ourui-root[data-recipe="marketing"] [data-role="section"] > :is(p, span):not([data-slot="title"]) {
+  max-width: 42rem;
 }
 .ourui-col { display: flex; flex-direction: column; gap: var(--ourui-space-md); }
 .ourui-row { display: flex; flex-direction: row; gap: var(--ourui-space-md); flex-wrap: wrap; align-items: center; }
@@ -184,45 +246,94 @@ _BASE_CSS = """\
   gap: var(--ourui-space-md);
 }
 [data-role="hero"] [data-slot="title"],
-[data-role="hero"] > span[data-slot="title"] {
+[data-role="hero"] > :is(h1, span)[data-slot="title"] {
   display: block;
   font-family: var(--ourui-font-display);
   font-size: var(--ourui-text-2xl);
   line-height: var(--ourui-leading-tight);
   font-weight: 600;
   letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0;
 }
-[data-role="hero"] [data-slot="subtitle"] {
+[data-role="hero"] [data-slot="subtitle"],
+[data-role="hero"] > :is(p, span)[data-slot="subtitle"] {
   display: block;
   margin-top: 0;
   font-size: var(--ourui-text-md);
   line-height: var(--ourui-leading-relaxed);
   color: var(--ourui-muted-fg);
   max-width: 36rem;
+  text-wrap: pretty;
 }
 [data-role="section"] {
   padding-block: var(--ourui-space-xl);
+  background: var(--ourui-bg);
 }
-[data-role="section"] [data-slot="title"] {
+[data-role="section"] [data-slot="title"],
+[data-role="section"] > :is(h2, span)[data-slot="title"] {
   display: block;
   font-family: var(--ourui-font-display);
   font-size: var(--ourui-text-xl);
-  margin-bottom: var(--ourui-space-md);
+  font-weight: 600;
+  margin: 0 0 var(--ourui-space-md);
+  text-wrap: balance;
+}
+.ourui-root[data-recipe="marketing"] [data-role="hero"] [data-slot="title"],
+.ourui-root[data-recipe="marketing"] [data-role="hero"] > :is(h1, span)[data-slot="title"] {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
 }
 a.ourui-link {
-  color: var(--ourui-primary);
+  color: var(--ourui-fg);
   text-decoration: none;
   text-underline-offset: 0.15em;
+  transition: color 120ms ease, opacity 120ms ease;
 }
-a.ourui-link:hover,
+a.ourui-link:hover {
+  color: var(--ourui-accent);
+  opacity: 0.92;
+}
 a.ourui-link:focus-visible {
   text-decoration: underline;
+  outline: 2px solid var(--ourui-accent);
+  outline-offset: 2px;
 }
-a.ourui-link:hover { filter: brightness(1.1); }
+/* Body / prose links keep underline on hover; chrome does not */
+[data-role="section"] a.ourui-link:hover,
+[data-role="hero"] a.ourui-link:hover,
+p a.ourui-link:hover {
+  text-decoration: underline;
+}
+.ourui-nav a.ourui-link:hover,
+.ourui-nav a.ourui-link:focus-visible,
+.ourui-footer a.ourui-link:hover {
+  text-decoration: none;
+}
 a.ourui-tone-primary { color: var(--ourui-primary); }
 a.ourui-tone-accent { color: var(--ourui-accent); }
 a.ourui-tone-danger { color: var(--ourui-danger); }
 a.ourui-tone-muted { color: var(--ourui-muted-fg); }
+/* Primary link CTA — button appearance (nav Get started, etc.) */
+a.ourui-link.ourui-tone-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  min-height: 2.25rem;
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-primary);
+  color: var(--ourui-primary-fg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: background 120ms ease, opacity 120ms ease, color 120ms ease;
+}
+a.ourui-link.ourui-tone-primary:hover {
+  background: color-mix(in srgb, var(--ourui-primary) 88%, var(--ourui-fg));
+  color: var(--ourui-primary-fg);
+  opacity: 1;
+  text-decoration: none;
+}
 button.ourui-control,
 button.ourui-theme-toggle,
 button.ourui-copy-button,
@@ -238,19 +349,35 @@ button.ourui-nav-menu-btn {
   font-weight: 500;
   letter-spacing: -0.01em;
   box-shadow: var(--ourui-elev-0);
-  transition: filter 120ms ease, background 120ms ease, border-color 120ms ease;
+  transition: background 120ms ease, border-color 120ms ease, opacity 120ms ease;
 }
 button.ourui-control:hover:not(:disabled),
 button.ourui-theme-toggle:hover:not(:disabled),
 button.ourui-copy-button:hover:not(:disabled),
 button.ourui-nav-menu-btn:hover:not(:disabled) {
-  filter: brightness(1.08);
+  opacity: 0.92;
+}
+button.ourui-tone-primary:hover:not(:disabled),
+button.ourui-control:not([class*="ourui-tone-"]):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ourui-primary) 88%, var(--ourui-fg));
+  opacity: 1;
+}
+button.ourui-tone-accent:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ourui-accent) 88%, var(--ourui-fg));
+  opacity: 1;
+}
+button.ourui-tone-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ourui-danger) 88%, var(--ourui-fg));
+  opacity: 1;
+}
+button.ourui-tone-muted:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ourui-muted) 85%, var(--ourui-fg));
+  opacity: 1;
 }
 button.ourui-control:focus-visible,
 button.ourui-theme-toggle:focus-visible,
 button.ourui-copy-button:focus-visible,
-button.ourui-nav-menu-btn:focus-visible,
-a.ourui-link:focus-visible {
+button.ourui-nav-menu-btn:focus-visible {
   outline: 2px solid var(--ourui-accent);
   outline-offset: 2px;
 }
@@ -538,7 +665,6 @@ input.ourui-slider {
   box-sizing: border-box;
   padding: var(--ourui-space-sm) var(--ourui-space-md);
   z-index: 40;
-  box-shadow: var(--ourui-elev-1);
 }
 .ourui-nav-brand {
   display: flex;
@@ -619,11 +745,16 @@ input.ourui-slider {
 @media (max-width: 767px) {
   .ourui-nav[data-menu="drawer"] .ourui-nav-items { display: none; }
   .ourui-nav[data-menu="drawer"] .ourui-nav-menu-btn { display: inline-flex; }
-  button.ourui-tone-primary,
-  a.ourui-link.ourui-tone-primary {
+  /* Full-width primary in forms / content — not nav chrome */
+  form button.ourui-tone-primary,
+  [data-role="section"] button.ourui-tone-primary,
+  [data-role="hero"] button.ourui-tone-primary,
+  form a.ourui-link.ourui-tone-primary,
+  [data-role="section"] a.ourui-link.ourui-tone-primary,
+  [data-role="hero"] a.ourui-link.ourui-tone-primary {
     width: 100%;
     text-align: center;
-    display: inline-block;
+    display: inline-flex;
     box-sizing: border-box;
   }
 }
@@ -745,9 +876,6 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
   line-height: var(--ourui-leading-tight);
   margin: 0;
 }
-.ourui-nav {
-  box-shadow: none !important;
-}
 @media (max-width: 767px) {
   .ourui-shell-split-2 > *:first-child {
     border-inline-end: none;
@@ -775,22 +903,6 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
   gap: var(--ourui-space-xs);
 }
 .ourui-menu[data-open="true"] .ourui-menu-panel { display: flex; }
-.ourui-motion-enter { animation: ourui-enter 0.45s ease-out both; }
-.ourui-motion-reveal { animation: ourui-reveal 0.55s ease-out both; }
-.ourui-motion-press:active { transform: scale(0.97); transition: transform 0.12s ease; }
-@keyframes ourui-enter {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes ourui-reveal {
-  from { opacity: 0; clip-path: inset(0 0 100% 0); }
-  to { opacity: 1; clip-path: inset(0 0 0 0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ourui-motion-enter,
-  .ourui-motion-reveal { animation: none; }
-  .ourui-motion-press:active { transform: none; }
-}
 .ourui-meta-host { display: none; }
 /* Density recipes (E2) — tighten space tokens when compact */
 html.ourui-density-compact,
@@ -907,7 +1019,9 @@ def _layout_intent_classes(attrs: dict[str, Any]) -> list[str]:
             classes.append(f"{prefix}-{val}")
     motion = attrs.get("motion")
     if isinstance(motion, str) and motion and motion != "none":
-        classes.append(f"ourui-motion-{motion}")
+        cls = motion_css_class(motion)
+        if cls:
+            classes.append(cls)
     return classes
 
 
@@ -927,8 +1041,10 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
                 classes.append("ourui-grid")
     if role == "card":
         classes.append("ourui-card")
-        if attrs.get("motion") in {"enter", "reveal", "press"}:
-            classes.append(f"ourui-motion-{attrs['motion']}")
+        if attrs.get("motion") and attrs.get("motion") != "none":
+            cls = motion_css_class(str(attrs["motion"]))
+            if cls and cls not in classes:
+                classes.append(cls)
     if role == "link":
         classes.append("ourui-link")
         tone = _tone_name(attrs)
@@ -939,8 +1055,10 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         tone = _tone_name(attrs)
         if tone:
             classes.append(f"ourui-tone-{tone}")
-        if attrs.get("motion") == "press":
-            classes.append("ourui-motion-press")
+        if attrs.get("motion") and attrs.get("motion") != "none":
+            cls = motion_css_class(str(attrs["motion"]))
+            if cls and cls not in classes:
+                classes.append(cls)
     if role == "theme-toggle":
         classes.append("ourui-theme-toggle")
         classes.append("ourui-control")
@@ -1012,8 +1130,6 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         classes.append("ourui-file-tab")
     if role == "text" and attrs.get("chrome") == "result-hero":
         classes.append("ourui-result-hero")
-    if role in {"section", "hero", "shell", "page"} and attrs.get("motion") in {"enter", "reveal"}:
-        classes.append(f"ourui-motion-{attrs['motion']}")
     if (
         node["kind"] == "Leaf"
         and "ourui-control" not in classes
@@ -1247,18 +1363,33 @@ def _render_slot_block(
     return out
 
 
+def _render_text_node(
+    node: dict[str, Any],
+    pad: str,
+    *,
+    title_tag: str = "h2",
+) -> list[str]:
+    content = html.escape(str(node.get("attributes", {}).get("content", "")))
+    slot = node.get("attributes", {}).get("slot", "")
+    bind = node.get("attributes", {}).get("bind")
+    slot_attr = f' data-slot="{html.escape(slot)}"' if slot else ""
+    bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if bind else ""
+    if slot == "title":
+        tag = title_tag
+    elif slot == "subtitle":
+        tag = "p"
+    else:
+        tag = "span"
+    return [f"{pad}<{tag}{slot_attr}{bind_attr}>{content}</{tag}>"]
+
+
 def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> list[str]:
     node = nodes[nid]
     pad = "  " * indent
     kind = node["kind"]
 
     if kind == "Text":
-        content = html.escape(str(node.get("attributes", {}).get("content", "")))
-        slot = node.get("attributes", {}).get("slot", "")
-        bind = node.get("attributes", {}).get("bind")
-        slot_attr = f' data-slot="{html.escape(slot)}"' if slot else ""
-        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if bind else ""
-        return [f"{pad}<span{slot_attr}{bind_attr}>{content}</span>"]
+        return _render_text_node(node, pad)
 
     tag = _tag_for(node)
     classes = _classes_for(node)
@@ -1266,6 +1397,9 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     role = node.get("attributes", {}).get("role", "")
     data_role = f' data-role="{html.escape(role)}"' if role else ""
     data_id = f' data-ourui-id="{html.escape(nid)}"'
+    _mot = node.get("attributes", {}).get("motion")
+    if isinstance(_mot, str) and _mot and _mot != "none":
+        data_id += f' data-ourui-motion="{html.escape(_mot)}"'
     events = _event_attrs(node)
     link = _link_attrs(node.get("attributes", {})) if role == "link" else ""
     node_attrs = node.get("attributes", {})
@@ -1673,11 +1807,18 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     if not children:
         return [f"{pad}<{tag}{attrs}></{tag}>"]
 
+    title_tag = "h1" if role == "hero" else "h2" if role == "section" else "h2"
     lines = [f"{pad}<{tag}{attrs}>"]
     for child_id in children:
         if child_id not in nodes:
             continue
-        lines.extend(_render_node(child_id, nodes, indent + 1))
+        child = nodes[child_id]
+        if child.get("kind") == "Text" and role in {"hero", "section"}:
+            lines.extend(
+                _render_text_node(child, "  " * (indent + 1), title_tag=title_tag)
+            )
+        else:
+            lines.extend(_render_node(child_id, nodes, indent + 1))
     lines.append(f"{pad}</{tag}>")
     return lines
 
@@ -1764,7 +1905,7 @@ def emit_css(*, resolved_design: Any) -> str:
         raise TypeError("resolved_design is required (Host Contract: RTR + Resolved Design)")
     token_block = emit_tokens_css(_tokens_from_resolved(rd))
     page_block = _page_chrome_css(rd)
-    return token_block + page_block + _BASE_CSS + _emit_resolved_node_css(rd)
+    return token_block + page_block + _BASE_CSS + motion_host_css() + _emit_resolved_node_css(rd)
 
 
 def emit_html_document(
@@ -1786,13 +1927,17 @@ def emit_html_document(
     rd = _as_resolved_design(resolved_design) or {}
     density = rd.get("density") or "comfortable"
     density_class = "ourui-density-compact" if density == "compact" else ""
+    recipe = rd.get("recipe")
     root_classes = "ourui-root"
     if density_class:
         root_classes = f"{root_classes} {density_class}"
+    root_attrs = f'class="{root_classes}"'
+    if isinstance(recipe, str) and recipe:
+        root_attrs += f' data-recipe="{html.escape(recipe, quote=True)}"'
     html_attrs = 'lang="en"'
     if density_class:
         html_attrs = f'lang="en" class="{density_class}"'
-    body_lines: list[str] = [f'  <div class="{root_classes}">']
+    body_lines: list[str] = [f"  <div {root_attrs}>"]
     for root in roots:
         body_lines.extend(_render_node(root, nodes, 2))
     body_lines.append("  </div>")

@@ -21,7 +21,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_has_required_sections() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 29
+    assert doc["version"] == 30
     for key in (
         "semantic_graph",
         "dependency_graph",

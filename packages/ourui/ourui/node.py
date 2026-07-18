@@ -124,8 +124,8 @@ SPACE_INTENTS = frozenset({"none", "xs", "sm", "md", "lg", "xl", "2xl"})
 ALIGN_INTENTS = frozenset({"start", "center", "end", "stretch"})
 JUSTIFY_INTENTS = frozenset({"start", "center", "end", "between"})
 
-# Motion presets (S4m)
-MOTION_INTENTS = frozenset({"none", "enter", "press", "reveal"})
+# Motion vocabulary (ADR-012) — family.pattern + legacy S4m aliases
+from ourui.design.motion import MOTION_INTENTS
 
 # Canvas escape (S5)
 CANVAS_MODES = frozenset({"gradient", "dither", "raymarch"})

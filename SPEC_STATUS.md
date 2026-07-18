@@ -53,7 +53,7 @@ See [roadmap.md](docs/roadmap.md).
 | `ourui serve` / State / `@server` / HMR / routing / LSP | Stable |
 | `ourui check` / structured diagnostics | Stable (Phase V) |
 | Runtime (prod + multi-worker file store) | Stable |
-| Package (`ourui` **1.7.1**) | Dump schema **29** (additive; 25 Frozen baseline at 1.0) |
+| Package (`ourui` **1.8.3**) | Dump schema **30** (additive; 25 Frozen baseline at 1.0) |
 | Named packs + recipes | Stable (**1.7.0**) |
 | `ui.Show` / `ui.When` | Stable (Enterprise E1) |
 | Dynamic `List`/`Table` (`items=`/`rows=` State) | Stable (Enterprise E1) |
@@ -69,7 +69,7 @@ See [roadmap.md](docs/roadmap.md).
 | Type/space/elevation tokens + `ui.ThemeToggle` | Stable (S3) |
 | `ui.Footer` + Hero/Section `pad=` | Stable (S3b) |
 | `gap=` / `align=` / `justify=` / `split-sidebar` | Stable (S4) |
-| `motion=` presets | Stable (S4m) |
+| `motion=` vocabulary (`family.pattern`) | **146 Stable emit** (M1–M3, catalog **1.2.0**, package **1.8.3**) |
 | `ui.Canvas` / `ui.Frame` | Stable (S5 / 0.4.1) |
 | Drawer / Menu / Image / Icon / Meta / Code / CopyButton / control states | Stable (S6) |
 | `ui.Form` / `ui.Dialog` / `ui.Toast` | Stable (Phase T) |

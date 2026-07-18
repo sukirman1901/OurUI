@@ -20,7 +20,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_pack_catalog_anti_slop() -> None:
     assert list_packs() == ["ourui-console", "ourui-default", "ourui-editorial"]
-    assert list_recipes() == ["console", "editorial", "ops", "product"]
+    assert list_recipes() == ["console", "editorial", "marketing", "ops", "product"]
     # No purple / cream brochure tells in shipped packs
     for pid, pack in PACKS.items():
         light = pack["modes"]["light"]
@@ -45,7 +45,7 @@ page = ui.Page(ui.Hero(title="Ops"), ui.Button("Go", color="primary"))
     )
     doc = compile_dump(src)
     rd = doc["resolved_design"]
-    assert doc["version"] == 29
+    assert doc["version"] == 30
     assert doc["emit"]["recipes"] is True
     assert rd["pack"] == "ourui-default"
     assert rd["recipe"] == "ops"
@@ -117,3 +117,33 @@ def test_materialize_recipe_page_merge() -> None:
     assert pack["density"]["default"] == "compact"
     assert pack["recipe"] == "ops"
     assert "product" in RECIPES
+
+
+def test_recipe_marketing_full_bleed(tmp_path: Path) -> None:
+    src = tmp_path / "mkt.py"
+    src.write_text(
+        """
+from ourui import ui
+theme = ui.Theme(recipe="marketing")
+page = ui.Page(
+    ui.Nav(brand=ui.Link("OurUI", href="/"), items=[ui.Link("Docs", href="#")]),
+    ui.Hero(title="Ship intent", subtitle="Compiler writes the rest"),
+    ui.Section(title="Next", children=[ui.Text("Body")]),
+)
+""",
+        encoding="utf-8",
+    )
+    doc = compile_dump(src)
+    rd = doc["resolved_design"]
+    assert rd["recipe"] == "marketing"
+    assert rd["page"]["max_width"] == "none"
+    assert rd["pack_version"] == "1.2.0"
+    html = emit_html(src, title="mkt")
+    assert 'data-recipe="marketing"' in html
+    assert "--ourui-page-max-width: none" in html
+    assert 'data-role="nav"' in html
+    assert "<h1 data-slot=\"title\">Ship intent</h1>" in html
+    assert "<h2 data-slot=\"title\">Next</h2>" in html
+    assert "text-decoration: underline" in html  # focus / prose still have underline rules
+    assert ".ourui-nav a.ourui-link:hover" in html
+    assert "a.ourui-link.ourui-tone-primary" in html

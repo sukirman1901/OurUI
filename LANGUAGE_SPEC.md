@@ -91,7 +91,9 @@ Spacing / alignment (semantic enums — not raw CSS): `gap=` / `pad=` = `none|xs
 
 ### Motion (`motion=`)
 
-`none` \| `enter` \| `press` \| `reveal` — host CSS + `prefers-reduced-motion`.
+`family.pattern` vocabulary ([ADR-012](docs/decisions/ADR-012-motion-vocabulary.md)) — e.g. `reveal.fade-up`, `text.word-reveal`, `press.scale`.  
+Legacy aliases: `enter` → `reveal.fade-up`, `reveal` → `reveal.mask-wipe`, `press` → `press.scale`.  
+Host CSS/JS + `prefers-reduced-motion`. Full catalog registered; M1 ships Stable emit.
 
 ### Nav
 

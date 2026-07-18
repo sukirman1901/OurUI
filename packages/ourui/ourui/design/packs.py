@@ -14,7 +14,7 @@ from typing import Any
 
 from ourui.theme import DEFAULT_DARK, DEFAULT_LIGHT, TOKEN_KEYS
 
-PACK_VERSION = "1.1.0"
+PACK_VERSION = "1.2.0"
 
 # Shared type/space/elev — IBM Plex only (no Fraunces / display-serif brochure).
 _TYPE_SPACE_ELEV: dict[str, str] = {
@@ -249,6 +249,17 @@ RECIPES: dict[str, dict[str, Any]] = {
         "pack": "ourui-console",
         "density": "compact",
         "label": "Wide dense console / tables",
+    },
+    "marketing": {
+        "pack": "ourui-default",
+        "density": "comfortable",
+        "page": {
+            "max_width": "none",
+            "pad_block": "0",
+            "pad_inline": "0",
+            "gap": "space_xl",
+        },
+        "label": "Marketing / landing — full-bleed chrome",
     },
 }
 

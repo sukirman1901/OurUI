@@ -10,6 +10,7 @@ from ourui.analysis.components import (
     component_call_name,
     expand_component_call,
 )
+from ourui.design.motion import is_known_motion, resolve_motion
 from ourui.node import (
     ALERT_SEVERITIES,
     ALIGN_INTENTS,
@@ -18,7 +19,6 @@ from ourui.node import (
     IMAGE_FITS,
     INPUT_TYPES,
     JUSTIFY_INTENTS,
-    MOTION_INTENTS,
     NAV_MENUS,
     NAV_PLACEMENTS,
     NAV_TONES,
@@ -444,7 +444,9 @@ class _GraphBuilder:
             if kw.arg == "motion":
                 motion = literal_value(kw.value)
                 if isinstance(motion, str):
-                    attrs["motion"] = motion if motion in MOTION_INTENTS else "none"
+                    attrs["motion"] = (
+                        resolve_motion(motion) if is_known_motion(motion) else "none"
+                    )
                 continue
             if kind == "Canvas" and kw.arg == "mode":
                 mode = literal_value(kw.value)

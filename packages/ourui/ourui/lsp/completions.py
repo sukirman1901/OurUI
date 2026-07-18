@@ -9,14 +9,14 @@ from ourui.theme import COLOR_TOKEN_NAMES, TOKEN_KEYS
 
 UI_COMPONENTS: dict[str, str] = {
     "Page": "Intent domain root container.",
-    "Hero": "Intent domain hero section; pad=/motion=.",
-    "Section": "Intent domain content section; gap=/pad=/align=/motion=.",
-    "Button": "Presentation domain clickable control; motion=press.",
+    "Hero": "Intent domain hero section; pad=/motion=family.pattern.",
+    "Section": "Intent domain content section; gap=/pad=/align=/motion=family.pattern.",
+    "Button": "Presentation domain clickable control; motion=press.scale.",
     "Input": "Form control; name= into @server payload; type=text|…|textarea.",
     "Select": "Dropdown form control; options= list of values or {value,label}.",
     "Toggle": "Checkbox form control; collected as boolean.",
     "Slider": "Range form control; min=/max=/step=.",
-    "Text": "Presentation domain text node.",
+    "Text": "Presentation domain text; motion=text.word-reveal|text.fade-up|….",
     "Card": "Presentation domain card container.",
     "Grid": "Layout grid container.",
     "Link": "Presentation domain navigation anchor (href).",

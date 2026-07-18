@@ -14,6 +14,7 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capabi
 Gen 1–3 + Phase S + T–W complete at ourui 1.0.x (schema 25 Frozen baseline).
 Enterprise arc E1–E5 complete at ourui 1.5.0 (additive dump schema 27).
 Security hardening complete at ourui 1.6.0 (additive dump schema 28).
+Motion vocabulary M0/M1 at ourui 1.8.0 (additive dump schema 30).
 ```
 
 ## Historical (done)

@@ -4,6 +4,51 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.8.3] — 2026-07-18
+
+### Added — Motion M3 (full catalog emit)
+
+- Remaining **117** patterns promoted to Stable emit (scroll/flow/grid/stack/hero/morph/perspective/micro…)
+- Catalog version **1.2.0** — **146/146** Stable; host CSS centralized in `ourui.design.motion_css`
+- Host JS: count-up, tilt/magnetic, parallax pointer, rolling text, more marquees + inview hooks
+
+## [1.8.2] — 2026-07-18
+
+### Added — Motion M2 (marketing emit)
+
+- 17 Stable patterns: `reveal.split|curtain|ink|stagger-children|blur-in|scale-fade`, `text.char-reveal|typewriter|marquee|underline-reveal|gradient-shift`, `flow.logo-marquee`, `hover.glow|color-shift`, `spotlight.dim-siblings`, `micro.skeleton-shimmer`, `hero.stagger-copy`
+- Motion catalog version **1.1.0** (`phases.m1` / `phases.m2` in dump)
+
+## [1.8.1] — 2026-07-18
+
+### Added
+
+- Recipe **`marketing`**: full-bleed page measure (`max_width: none`), chrome-first landing surface
+- Pack catalog version **1.2.0**
+- Motion vocabulary (ADR-012) — see **1.8.0** (ships in this line)
+
+### Changed — Host emit (frontend-expert audit)
+
+- Nav/Footer break out of page measure (viewport-wide chrome)
+- Nav/footer links: no underline on hover; prose links keep underline
+- Drop `filter: brightness` hover — color / opacity transitions
+- Primary `ui.Link` (`color="primary"`) renders as filled CTA control
+- Full-width primary CTA &lt;768 excludes nav chrome (forms/sections only)
+- Hero title → `<h1>`, section title → `<h2>`; marketing hero uses fluid type scale
+- Root `data-recipe="…"` for recipe-scoped CSS
+
+## [1.8.0] — 2026-07-18
+
+### Added — Motion vocabulary (ADR-012)
+
+- Authoring: `motion="family.pattern"` (e.g. `text.word-reveal`, `reveal.fade-up`)
+- Full catalog registered (~12 families, 100+ patterns); **M1** ships 12 Stable emit patterns
+- M0 host tokens: `--ourui-motion-ease`, `--ourui-motion-duration-*`
+- Legacy aliases: `enter`→`reveal.fade-up`, `reveal`→`reveal.mask-wipe`, `press`→`press.scale`
+- Host JS: word-reveal split + scroll fade-in-view (`IntersectionObserver`); `prefers-reduced-motion`
+
+Dump schema **30** (additive): `emit.motion`, dump `motion` catalog summary, `attestation.motion_catalog`.
+
 ## [1.7.1] — 2026-07-18
 
 ### Changed

@@ -39,7 +39,7 @@ def test_token_keys_include_type_space_elevation() -> None:
 
 def test_dump_s3_s6_kinds() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 29
+    assert doc["version"] == 30
     kinds = {n["kind"] for n in doc["semantic_graph"]["nodes"].values()}
     for kind in (
         "ThemeToggle",
@@ -80,7 +80,9 @@ def test_emit_layout_intents() -> None:
 
 def test_emit_motion() -> None:
     html_out = emit_html(FIXTURE, title="S3-S6")
-    assert "ourui-motion-enter" in html_out
+    assert "ourui-motion-reveal-fade-up" in html_out
+    assert "ourui-motion-reveal-mask-wipe" in html_out
+    assert "--ourui-motion-ease:" in html_out
     assert "prefers-reduced-motion" in html_out
 
 

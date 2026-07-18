@@ -19,7 +19,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_includes_nav() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 29
+    assert doc["version"] == 30
     kinds = {n["kind"] for n in doc["semantic_graph"]["nodes"].values()}
     assert "Nav" in kinds
     nav = next(n for n in doc["semantic_graph"]["nodes"].values() if n["kind"] == "Nav")

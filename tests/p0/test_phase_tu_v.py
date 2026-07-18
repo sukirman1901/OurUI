@@ -35,7 +35,7 @@ def test_phase_tu_emit() -> None:
 
 def test_phase_tu_dump_schema() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 29
+    assert doc["version"] == 30
     kinds = {n["kind"] for n in doc["semantic_graph"]["nodes"].values()}
     assert {"Form", "Dialog", "Toast", "List", "Table", "Empty", "Spinner", "Alert"} <= kinds
     assert "label" in doc["derived"] or "label" in doc["semantic_graph"].get("derived", {})

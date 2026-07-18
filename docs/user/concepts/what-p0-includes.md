@@ -15,7 +15,7 @@ User docs under `docs/user/` document the **Stable** surface for `ourui` **1.6.0
 | **Chrome** | `ui.Nav` (placement/tone/drawer), `ui.Footer`, `ui.Meta` |
 | **Forms** | `Input`, `Select`, `Toggle`, `Slider`, `Form` → `@server` payload |
 | **Screens** | `Show` / `When`, Dialog, Toast, List/Table (static + dynamic) |
-| **Motion** | `motion=enter\|press\|reveal` |
+| **Motion** | `motion=family.pattern` (M1 Stable emit); legacy `enter`/`reveal`/`press` aliases |
 | **Escape** | `ui.Canvas` WebGL; `ui.Frame` (enterprise `SEC001` when using srcdoc) |
 | **Polish** | `Image`, `Icon`, `Code`, `CopyButton`, `Menu`, control states |
 | **Production serve** | `--prod`, `--workers N`, `--session-dir`; CSRF, rate limit, CSP nonce |

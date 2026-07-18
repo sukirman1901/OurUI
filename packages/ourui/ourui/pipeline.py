@@ -5,12 +5,12 @@ from pathlib import Path
 from typing import Any
 
 from ourui.analysis import build_semantic_graph
-from ourui.design import PACK_ID, PACK_VERSION, resolve_design
+from ourui.design import PACK_ID, PACK_VERSION, catalog_summary, resolve_design
 from ourui.emit import emit_bundle, emit_html_document
 from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_presentation_graph, lower_to_rtr
 from ourui.serialize import dumps_deterministic
 
-DUMP_SCHEMA_VERSION = 29
+DUMP_SCHEMA_VERSION = 30
 
 
 def _display_path(path: Path) -> str:
@@ -77,6 +77,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "schema": DUMP_SCHEMA_VERSION,
             "pack": str(rd_dict.get("pack", PACK_ID)),
             "pack_version": str(rd_dict.get("pack_version", PACK_VERSION)),
+            "motion_catalog": catalog_summary()["version"],
         },
         "emit": {
             "html": True,
@@ -106,7 +107,9 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "security_headers": True,
             "packs": True,
             "recipes": True,
+            "motion": True,
         },
+        "motion": catalog_summary(),
     }
     digest_body = dumps_deterministic(dump)
     dump["attestation"]["sha256"] = hashlib.sha256(digest_body.encode("utf-8")).hexdigest()

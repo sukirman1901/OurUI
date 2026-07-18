@@ -24,14 +24,19 @@ theme = ui.Theme(pack="ourui-editorial")
 | `ops` | `ourui-default` | compact | 72rem |
 | `editorial` | `ourui-editorial` | comfortable | 36rem |
 | `console` | `ourui-console` | compact | 80rem |
+| `marketing` | `ourui-default` | comfortable | none (full-bleed chrome) |
 
 ```python
 theme = ui.Theme(recipe="ops")
 # still allow overrides:
 theme = ui.Theme(recipe="console", primary="#0f172a")
+# landing / marketing sites:
+theme = ui.Theme(recipe="marketing")
 ```
 
 `recipe=` sets pack + density (unless you also pass `density=`). Color kwargs still override tokens.
+
+**Marketing:** page measure is `none` with zero page padding so `ui.Nav` / `ui.Footer` / sections are edge-to-edge. Body copy keeps a reading measure; use `product` for app forms — not marketing.
 
 ## Authoring
 
@@ -47,4 +52,4 @@ Emit consumes **Resolved Design**: `--ourui-*` vars, `--ourui-page-max-width`, d
 
 ## Status
 
-Pack API **Stable** at OurUI **1.7** (catalog v1.1.0). Additional packs/recipes may grow without breaking the Host Contract. See [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).
+Pack API **Stable** at OurUI **1.8** (catalog v1.2.0). Additional packs/recipes may grow without breaking the Host Contract. See [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).

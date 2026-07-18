@@ -1,5 +1,13 @@
 # Design resolution package (RFC-002).
 
+from ourui.design.motion import (
+    MOTION_CATALOG_VERSION,
+    MOTION_INTENTS,
+    catalog_summary,
+    list_patterns,
+    motion_css_class,
+    resolve_motion,
+)
 from ourui.design.packs import list_packs, list_recipes, materialize_pack
 from ourui.design.resolve import (
     PACK_ID,
@@ -12,10 +20,16 @@ from ourui.design.resolve import (
 __all__ = [
     "PACK_ID",
     "PACK_VERSION",
+    "MOTION_CATALOG_VERSION",
+    "MOTION_INTENTS",
     "ResolvedDesign",
+    "catalog_summary",
     "default_pack",
-    "resolve_design",
     "list_packs",
+    "list_patterns",
     "list_recipes",
     "materialize_pack",
+    "motion_css_class",
+    "resolve_design",
+    "resolve_motion",
 ]

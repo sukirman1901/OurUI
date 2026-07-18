@@ -29,10 +29,10 @@ FRAME = Path(__file__).parent / "fixtures" / "textarea_frame_app.py"
 
 def test_schema_29_attestation_sha256() -> None:
     dump = compile_dump(FIXTURE)
-    assert dump["version"] == 29
-    assert DUMP_SCHEMA_VERSION == 29
+    assert dump["version"] == 30
+    assert DUMP_SCHEMA_VERSION == 30
     att = dump["attestation"]
-    assert att["schema"] == 29
+    assert att["schema"] == 30
     assert isinstance(att["sha256"], str) and len(att["sha256"]) == 64
     body = dict(dump)
     body["attestation"] = {k: v for k, v in att.items() if k != "sha256"}

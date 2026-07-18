@@ -1,6 +1,6 @@
 # OurUI user documentation
 
-Learn how to build web apps in Python with OurUI. These pages cover the language surface through Enterprise (`ourui` **1.7.0**, dump schema **29**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
+Learn how to build web apps in Python with OurUI. These pages cover the language surface through Enterprise (`ourui` **1.8.3**, dump schema **30**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
 
 ## Getting started
 
@@ -8,7 +8,8 @@ Learn how to build web apps in Python with OurUI. These pages cover the language
 - [Deploy](guides/deploy.md) — serve, Docker/Compose/K8s, CI emit
 - [Trust and compliance](guides/trust-and-compliance.md) — CSP, attestation, a11y check profile
 - [Threat model](guides/threat-model.md) — host threats and mitigations (prod serve)
-- [Design packs](concepts/design-packs.md) — `ourui-default` pack + density
+- [Design packs](concepts/design-packs.md) — recipes / packs
+- [Motion](concepts/motion.md) — `motion="family.pattern"` vocabulary (ADR-012)
 ## Tutorial
 
 Work through the examples in order. Each step links to a runnable file under `examples/tutorial/`.

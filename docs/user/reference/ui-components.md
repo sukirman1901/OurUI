@@ -25,13 +25,13 @@ page = ui.Page(
 | Component | Domain | Role |
 |-----------|--------|------|
 | `ui.Page` | Intent | Root container for a routable page |
-| `ui.Hero` | Intent | Prominent header (`pad=`, `motion=`) |
+| `ui.Hero` | Intent | Prominent header (`pad=`, `motion=family.pattern`) |
 | `ui.Section` | Intent | Grouped content (`layout=`, `gap=`, `pad=`, `align=`, `motion=`) |
 | `ui.Shell` | Intent | Layout region (`layout=stack\|row\|split-2\|split-3\|split-sidebar\|grid`) |
 | `ui.Nav` | Intent | Chrome bar (`placement=`, `tone=`, `menu=drawer`) |
 | `ui.Footer` | Intent | Page footer (`brand=` / `links=` / `meta=`) |
 | `ui.Meta` | Intent | Document head (`title`, `description`, `og=`) |
-| `ui.Button` | Presentation | Clickable control (`motion=press`, disabled/loading) |
+| `ui.Button` | Presentation | Clickable control (`motion=press.scale`, disabled/loading) |
 | `ui.Text` | Presentation | Inline text (or bound `State`) |
 | `ui.Card` | Presentation | Card container |
 | `ui.Grid` | Presentation | Responsive grid layout |
@@ -329,7 +329,7 @@ On `Shell` / `Section` / `Hero`:
 | `align` | `start` \| `center` \| `end` \| `stretch` |
 | `justify` | `start` \| `center` \| `end` \| `between` |
 | `layout` | `stack` \| `row` \| `grid` \| `split-2` \| `split-3` \| `split-sidebar` |
-| `motion` | `none` \| `enter` \| `press` \| `reveal` |
+| `motion` | `none` \| `family.pattern` (see [Motion](../concepts/motion.md)); aliases `enter`/`reveal`/`press` |
 
 ## Phase S3–S6 surfaces
 

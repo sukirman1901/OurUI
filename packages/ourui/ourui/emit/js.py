@@ -234,7 +234,159 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     ev.preventDefault();
     invoke(el.getAttribute("data-ourui-on-click"), collectFields());
   }});
+  function initMotion() {{
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function splitText(el, mode) {{
+      const flag = mode === "char" ? "data-ourui-chars" : "data-ourui-words";
+      if (el.getAttribute(flag) === "1") return;
+      const text = el.textContent || "";
+      if (!text.trim()) return;
+      el.setAttribute(flag, "1");
+      if (reduce) return;
+      el.textContent = "";
+      let i = 0;
+      if (mode === "char") {{
+        Array.from(text).forEach((ch) => {{
+          if (ch === " ") {{ el.appendChild(document.createTextNode(" ")); return; }}
+          const span = document.createElement("span");
+          span.className = "ourui-motion-char";
+          span.textContent = ch;
+          span.style.animationDelay = (i * 0.028) + "s";
+          el.appendChild(span);
+          i += 1;
+        }});
+        return;
+      }}
+      text.trim().split(/(\\s+)/).forEach((w) => {{
+        if (/^\\s+$/.test(w)) {{ el.appendChild(document.createTextNode(w)); return; }}
+        const span = document.createElement("span");
+        span.className = "ourui-motion-word";
+        span.textContent = w;
+        span.style.animationDelay = (i * 0.045) + "s";
+        el.appendChild(span);
+        i += 1;
+      }});
+    }}
+    function wrapMarquee(sel, vertical) {{
+      document.querySelectorAll(sel).forEach((el) => {{
+        if (el.getAttribute("data-ourui-marquee") === "1") return;
+        el.setAttribute("data-ourui-marquee", "1");
+        if (reduce) return;
+        const kids = Array.from(el.children);
+        if (kids.length) {{
+          const track = document.createElement("div");
+          track.className = "ourui-motion-marquee-track";
+          kids.forEach((k) => track.appendChild(k));
+          kids.forEach((k) => track.appendChild(k.cloneNode(true)));
+          el.appendChild(track);
+          return;
+        }}
+        const text = (el.textContent || "").trim();
+        if (!text) return;
+        el.textContent = "";
+        const track = document.createElement("span");
+        track.className = "ourui-motion-marquee-track";
+        track.textContent = text + " \\u00a0\\u00a0 " + text;
+        el.appendChild(track);
+      }});
+    }}
+    function stagger(sel) {{
+      document.querySelectorAll(sel).forEach((el) => {{
+        Array.from(el.children).forEach((child, idx) => child.style.setProperty("--ourui-stagger", String(idx)));
+      }});
+    }}
+    function countUp(el) {{
+      const raw = (el.getAttribute("data-ourui-count") || el.textContent || "").replace(/[^0-9.-]/g, "");
+      const target = Number(raw);
+      if (!Number.isFinite(target)) {{ el.setAttribute("data-ourui-inview", "true"); return; }}
+      if (reduce) {{ el.textContent = String(target); el.setAttribute("data-ourui-inview", "true"); return; }}
+      const start = performance.now();
+      const dur = 900;
+      const tick = (now) => {{
+        const t = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = String(Math.round(target * eased));
+        if (t < 1) requestAnimationFrame(tick);
+        else el.setAttribute("data-ourui-inview", "true");
+      }};
+      requestAnimationFrame(tick);
+    }}
+    document.querySelectorAll('[data-ourui-motion="text.word-reveal"]').forEach((el) => splitText(el, "word"));
+    document.querySelectorAll('[data-ourui-motion="text.char-reveal"]').forEach((el) => splitText(el, "char"));
+    document.querySelectorAll('[data-ourui-motion="text.typewriter"]').forEach((el) => {{
+      const len = (el.textContent || "").trim().length || 24;
+      el.style.setProperty("--ourui-typewriter-steps", String(Math.max(8, len)));
+      el.style.setProperty("--ourui-typewriter-ms", String(Math.min(2800, 40 * len)) + "ms");
+    }});
+    document.querySelectorAll('[data-ourui-motion="text.rolling"]').forEach((el) => {{
+      if (el.getAttribute("data-ourui-roll") === "1") return;
+      el.setAttribute("data-ourui-roll", "1");
+      const parts = (el.textContent || "").split("|").map((s) => s.trim()).filter(Boolean);
+      if (parts.length < 2) return;
+      el.textContent = "";
+      const inner = document.createElement("span");
+      inner.className = "ourui-motion-roll-inner";
+      parts.concat(parts[0]).forEach((p) => {{
+        const line = document.createElement("span");
+        line.style.display = "block";
+        line.textContent = p;
+        inner.appendChild(line);
+      }});
+      el.appendChild(inner);
+    }});
+    wrapMarquee('[data-ourui-motion="text.marquee"]');
+    wrapMarquee('[data-ourui-motion="flow.logo-marquee"]');
+    wrapMarquee('[data-ourui-motion="flow.infinite-slider"]');
+    wrapMarquee('[data-ourui-motion="flow.vertical-marquee"]', true);
+    stagger('[data-ourui-motion="reveal.stagger-children"], [data-ourui-motion="hero.stagger-copy"], [data-ourui-motion="grid.bento-reveal"], [data-ourui-motion="grid.cascade"], [data-ourui-motion="stack.poster-burst"]');
+    document.querySelectorAll('[data-ourui-motion="hover.tilt"], [data-ourui-motion="perspective.tilt-card"], [data-ourui-motion="hover.magnetic"]').forEach((el) => {{
+      if (reduce) return;
+      el.addEventListener("pointermove", (ev) => {{
+        const r = el.getBoundingClientRect();
+        const x = (ev.clientX - r.left) / r.width - 0.5;
+        const y = (ev.clientY - r.top) / r.height - 0.5;
+        const motion = el.getAttribute("data-ourui-motion") || "";
+        if (motion.indexOf("magnetic") >= 0) {{
+          el.style.transform = "translate(" + (x * 10) + "px," + (y * 10) + "px)";
+        }} else {{
+          el.style.transform = "rotateY(" + (x * 8) + "deg) rotateX(" + (-y * 8) + "deg)";
+        }}
+      }});
+      el.addEventListener("pointerleave", () => {{ el.style.transform = ""; }});
+    }});
+    document.querySelectorAll('[data-ourui-motion="hero.mouse-parallax"], [data-ourui-motion="hero.parallax"]').forEach((el) => {{
+      if (reduce) return;
+      window.addEventListener("pointermove", (ev) => {{
+        const x = (ev.clientX / window.innerWidth - 0.5) * 12;
+        const y = (ev.clientY / window.innerHeight - 0.5) * 8;
+        el.style.transform = "translate(" + x + "px," + y + "px)";
+      }}, {{ passive: true }});
+    }});
+    const inviewSel = '[data-ourui-motion="scroll.fade-in-view"], [data-ourui-motion="scroll.zoom"], [data-ourui-motion="scroll.parallax-layer"], [data-ourui-motion="scroll.reveal-line"], [data-ourui-motion="scroll.counter"], [data-ourui-motion="text.count-up"]';
+    const scrollEls = document.querySelectorAll(inviewSel);
+    if (scrollEls.length) {{
+      const activate = (el) => {{
+        const motion = el.getAttribute("data-ourui-motion") || "";
+        if (motion === "scroll.counter" || motion === "text.count-up") countUp(el);
+        else el.setAttribute("data-ourui-inview", "true");
+      }};
+      if (reduce || !("IntersectionObserver" in window)) {{
+        scrollEls.forEach(activate);
+      }} else {{
+        const io = new IntersectionObserver((entries) => {{
+          entries.forEach((entry) => {{
+            if (entry.isIntersecting) {{
+              activate(entry.target);
+              io.unobserve(entry.target);
+            }}
+          }});
+        }}, {{ threshold: 0.12, rootMargin: "0px 0px -8% 0px" }});
+        scrollEls.forEach((el) => io.observe(el));
+      }}
+    }}
+  }}
   initCanvases();
-  window.OurUI = {{ invoke, handlers, applyState, collectFields, toggleTheme, initCanvases, csrfToken }};{hmr_block}
+  initMotion();
+  window.OurUI = {{ invoke, handlers, applyState, collectFields, toggleTheme, initCanvases, initMotion, csrfToken }};{hmr_block}
 }})();
 """
