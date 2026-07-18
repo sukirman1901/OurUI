@@ -25,8 +25,9 @@ def test_emit_html_contains_host_mapping() -> None:
     assert "<button" in html_out
     assert "Get Started" in html_out
     assert 'data-ourui-on-click="get_started"' in html_out
+    assert 'data-ourui-bind="count"' in html_out
     assert "ourui:call" in html_out
-    assert "window.OurUI" in html_out
+    assert "applyState" in html_out
     assert "<Hero" not in html_out
 
 
@@ -43,9 +44,10 @@ def test_emit_deterministic() -> None:
 
 def test_dump_version_notes_emit() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 5
+    assert doc["version"] == 6
     assert doc["emit"]["html"] is True
     assert doc["emit"]["js"] is True
+    assert doc["emit"]["state"] is True
 
 
 def test_golden_html() -> None:

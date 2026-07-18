@@ -7,7 +7,7 @@ RPC_PATH = "/__ourui/call/"
 
 
 def emit_js(rtr: dict[str, Any]) -> str:
-    """Minimal OurUI runtime shim. Server handlers POST to /__ourui/call/<name>."""
+    """Runtime shim: RPC for @server + DOM bind updates for State."""
     handlers = rtr.get("handlers", {})
     table = {
         name: {"kind": meta.get("kind", "client")}
@@ -19,6 +19,14 @@ def emit_js(rtr: dict[str, Any]) -> str:
 (() => {{
   const handlers = {table_json};
   const rpcBase = {rpc};
+  function applyState(state) {{
+    if (!state) return;
+    Object.keys(state).forEach((name) => {{
+      document.querySelectorAll('[data-ourui-bind="' + name + '"]').forEach((el) => {{
+        el.textContent = String(state[name]);
+      }});
+    }});
+  }}
   async function invoke(name, payload) {{
     const meta = handlers[name] || {{ kind: "client" }};
     const detail = {{ handler: name, kind: meta.kind }};
@@ -31,6 +39,7 @@ def emit_js(rtr: dict[str, Any]) -> str:
       }});
       const data = await res.json();
       window.dispatchEvent(new CustomEvent("ourui:result", {{ detail: data }}));
+      if (data && data.state) applyState(data.state);
       if (!res.ok || !data.ok) {{
         console.error("[ourui] server call failed:", name, data);
         return data;
@@ -47,6 +56,6 @@ def emit_js(rtr: dict[str, Any]) -> str:
     ev.preventDefault();
     invoke(el.getAttribute("data-ourui-on-click"));
   }});
-  window.OurUI = {{ invoke, handlers }};
+  window.OurUI = {{ invoke, handlers, applyState }};
 }})();
 """

@@ -31,13 +31,27 @@ button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
         <div class="ourui-card" data-role="card" data-ourui-id="n0007">
           <span data-slot="text">Realtime</span>
         </div>
+        <span data-role="text" data-ourui-id="n0008">
+          <span data-slot="text" data-ourui-bind="count">0</span>
+        </span>
+        <button class="ourui-control" data-role="button" data-ourui-id="n0009" data-ourui-on-click="increment">
+          <span data-slot="text">+1</span>
+        </button>
       </section>
     </main>
   </div>
   <script>
 (() => {
-  const handlers = {"get_started":{"kind":"server"}};
+  const handlers = {"get_started":{"kind":"server"},"increment":{"kind":"server"}};
   const rpcBase = "/__ourui/call/";
+  function applyState(state) {
+    if (!state) return;
+    Object.keys(state).forEach((name) => {
+      document.querySelectorAll('[data-ourui-bind="' + name + '"]').forEach((el) => {
+        el.textContent = String(state[name]);
+      });
+    });
+  }
   async function invoke(name, payload) {
     const meta = handlers[name] || { kind: "client" };
     const detail = { handler: name, kind: meta.kind };
@@ -50,6 +64,7 @@ button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
       });
       const data = await res.json();
       window.dispatchEvent(new CustomEvent("ourui:result", { detail: data }));
+      if (data && data.state) applyState(data.state);
       if (!res.ok || !data.ok) {
         console.error("[ourui] server call failed:", name, data);
         return data;
@@ -66,7 +81,7 @@ button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
     ev.preventDefault();
     invoke(el.getAttribute("data-ourui-on-click"));
   });
-  window.OurUI = { invoke, handlers };
+  window.OurUI = { invoke, handlers, applyState };
 })();
   </script>
 </body>

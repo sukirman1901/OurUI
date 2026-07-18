@@ -1,9 +1,17 @@
-from ourui import server, ui
+from ourui import State, server, ui
+
+count = State(0)
 
 
 @server
 def get_started() -> dict[str, str]:
     return {"message": "Welcome from OurUI server"}
+
+
+@server
+def increment() -> int:
+    count.set(count.get() + 1)
+    return count.get()
 
 
 page = ui.Page(
@@ -17,6 +25,8 @@ page = ui.Page(
         children=[
             ui.Card("Analysis"),
             ui.Card("Realtime"),
+            ui.Text(count),
+            ui.Button("+1", on_click=increment),
         ],
     ),
 )

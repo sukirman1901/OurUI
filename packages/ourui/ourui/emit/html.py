@@ -75,8 +75,10 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     if kind == "Text":
         content = html.escape(str(node.get("attributes", {}).get("content", "")))
         slot = node.get("attributes", {}).get("slot", "")
+        bind = node.get("attributes", {}).get("bind")
         slot_attr = f' data-slot="{html.escape(slot)}"' if slot else ""
-        return [f"{pad}<span{slot_attr}>{content}</span>"]
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if bind else ""
+        return [f"{pad}<span{slot_attr}{bind_attr}>{content}</span>"]
 
     tag = _tag_for(node)
     classes = _classes_for(node)
@@ -101,8 +103,30 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     return lines
 
 
-def emit_html_document(rtr: dict[str, Any], *, title: str = "OurUI") -> str:
+def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None) -> dict[str, Any]:
+    """Return a shallow-copied RTR with Text contents updated from live state."""
+    if not state_values:
+        return rtr
+    import copy
+
+    out = copy.deepcopy(rtr)
+    for node in out["nodes"].values():
+        if node.get("kind") != "Text":
+            continue
+        bind = node.get("attributes", {}).get("bind")
+        if bind in state_values:
+            node["attributes"]["content"] = "" if state_values[bind] is None else str(state_values[bind])
+    return out
+
+
+def emit_html_document(
+    rtr: dict[str, Any],
+    *,
+    title: str = "OurUI",
+    state_values: dict[str, Any] | None = None,
+) -> str:
     """Emit a full HTML document from an RTR dict (HostNode tree only)."""
+    rtr = apply_state_values(rtr, state_values)
     nodes = rtr["nodes"]
     roots = rtr["roots"]
     body_lines: list[str] = ['  <div class="ourui-root">']

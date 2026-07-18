@@ -15,6 +15,7 @@ class SemanticGraph:
     roots: list[str] = field(default_factory=list)
     edges: list[dict[str, str]] = field(default_factory=list)
     handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
+    states: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -22,6 +23,7 @@ class SemanticGraph:
             "roots": list(self.roots),
             "edges": sorted(self.edges, key=lambda e: (e["from"], e["to"], e["kind"])),
             "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
+            "states": {k: self.states[k] for k in sorted(self.states)},
         }
 
 
@@ -39,6 +41,14 @@ def _is_server_decorator(dec: ast.AST) -> bool:
     if isinstance(dec, ast.Name) and dec.id == "server":
         return True
     if isinstance(dec, ast.Attribute) and dec.attr == "server":
+        return True
+    return False
+
+
+def _is_state_call(call: ast.Call) -> bool:
+    if isinstance(call.func, ast.Name) and call.func.id == "State":
+        return True
+    if isinstance(call.func, ast.Attribute) and call.func.attr == "State":
         return True
     return False
 
@@ -77,6 +87,21 @@ class _GraphBuilder:
             "span": span_for(self.path, at).to_dict(),
         }
 
+    def register_state(self, name: str, call: ast.Call) -> None:
+        initial: Any = None
+        if call.args:
+            initial = literal_value(call.args[0])
+        self.graph.states[name] = {
+            "name": name,
+            "initial": initial,
+            "span": span_for(self.path, call).to_dict(),
+        }
+
+    def _maybe_state_ref(self, node: ast.AST) -> dict[str, str] | None:
+        if isinstance(node, ast.Name) and node.id in self.graph.states:
+            return {"__state__": node.id}
+        return None
+
     def build_call(self, call: ast.Call, parent_id: str | None = None) -> str | None:
         kind = call_kind(call)
         if kind is None:
@@ -98,6 +123,10 @@ class _GraphBuilder:
                         if cid:
                             child_ids.append(cid)
             else:
+                state_ref = self._maybe_state_ref(arg)
+                if state_ref and kind in {"Button", "Text", "Card"} and "text" not in attrs:
+                    attrs["text"] = state_ref
+                    continue
                 val = literal_value(arg)
                 if isinstance(val, str):
                     if kind in {"Button", "Text", "Card"} and "text" not in attrs:
@@ -133,6 +162,14 @@ class _GraphBuilder:
                 else:
                     attrs["on_click"] = literal_value(kw.value)
                 continue
+            if kw.arg in {"text", "title", "subtitle", "bind"}:
+                state_ref = self._maybe_state_ref(kw.value)
+                if state_ref:
+                    if kw.arg == "bind":
+                        attrs["text"] = state_ref
+                    else:
+                        attrs[kw.arg] = state_ref
+                    continue
             if isinstance(kw.value, ast.Call) and call_kind(kw.value):
                 cid = self.build_call(kw.value, parent_id=nid)
                 if cid:
@@ -165,6 +202,10 @@ class _GraphBuilder:
                 handler = value["__handler__"]
                 self.dep.edges.append({"from": nid, "to": handler, "kind": "on_click"})
                 self.graph.edges.append({"from": nid, "to": handler, "kind": "calls_handler"})
+            if isinstance(value, dict) and "__state__" in value:
+                state_name = value["__state__"]
+                self.dep.edges.append({"from": nid, "to": state_name, "kind": "reads_state"})
+                self.graph.edges.append({"from": nid, "to": state_name, "kind": "reads_state"})
 
         return nid
 
@@ -174,7 +215,11 @@ class _GraphBuilder:
                 kind = "server" if any(_is_server_decorator(d) for d in stmt.decorator_list) else "client"
                 self.register_handler(stmt.name, kind=kind, at=stmt)
             elif isinstance(stmt, ast.Assign):
-                if isinstance(stmt.value, ast.Call) and call_kind(stmt.value):
+                if isinstance(stmt.value, ast.Call) and _is_state_call(stmt.value):
+                    for target in stmt.targets:
+                        if isinstance(target, ast.Name):
+                            self.register_state(target.id, stmt.value)
+                elif isinstance(stmt.value, ast.Call) and call_kind(stmt.value):
                     self.build_call(stmt.value)
             elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
                 if call_kind(stmt.value):

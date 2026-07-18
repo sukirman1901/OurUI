@@ -1,6 +1,6 @@
 # Runtime
 
-**Status:** Draft (Phase G — `ourui serve` + RPC).
+**Status:** Draft (Phase G–H).
 
 ## Dev server
 
@@ -11,15 +11,17 @@ ourui serve examples/example.py
 
 | Route | Behavior |
 |---|---|
-| `GET /` | Recompile source → emit HTML (RTR → HTML/CSS/JS) |
-| `POST /__ourui/call/<handler>` | Load authoring module; call named `@server` / handler; JSON `{ok, result}` |
+| `GET /` | Recompile → HTML with live `State` snapshot |
+| `POST /__ourui/call/<handler>` | Run handler; JSON `{ok, result, state}` |
+
+Module cache keeps `State` values across requests in one `serve` process.
 
 ## JS shim
 
-Server-kind handlers `fetch` `POST /__ourui/call/<name>`. Client-kind handlers stay local. Events: `ourui:call`, `ourui:result`.
-
-Implementation: `packages/ourui/ourui/runtime/`, `packages/ourui/ourui/emit/js.py`.
+- Server handlers `fetch` RPC endpoint
+- `applyState(state)` updates `[data-ourui-bind="…"]`
+- Events: `ourui:call`, `ourui:result`
 
 ## Invariants
 
-Browser still never receives Python AST (I1). Emitter still consumes HostNode only (I2). Handler execution happens on the **dev server**, not in the browser.
+Browser never receives Python AST (I1). Emitter consumes HostNode only (I2). Handler + State mutation run on the **dev server**.

@@ -8,7 +8,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from ourui.pipeline import emit_html
-from ourui.runtime.invoke import invoke_handler
+from ourui.runtime.invoke import invoke_handler, load_source_module, snapshot_states
 
 
 class OurUIRequestHandler(BaseHTTPRequestHandler):
@@ -30,7 +30,9 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
         if path in {"/", "/index.html"}:
-            html = emit_html(self.source, title=self.title)
+            module = load_source_module(self.source)
+            state = snapshot_states(module)
+            html = emit_html(self.source, title=self.title, state_values=state)
             self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
             return
         self._send(404, b'{"error":"not found"}\n', "application/json")
@@ -55,13 +57,21 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
             self._send(400, b'{"error":"invalid json"}\n', "application/json")
             return
         try:
-            result = invoke_handler(self.source, name, payload)
-            body = json.dumps({"ok": True, "handler": name, "result": result}, default=str)
+            outcome = invoke_handler(self.source, name, payload)
+            body = json.dumps(
+                {
+                    "ok": True,
+                    "handler": name,
+                    "result": outcome["result"],
+                    "state": outcome["state"],
+                },
+                default=str,
+            )
             self._send(200, (body + "\n").encode("utf-8"), "application/json")
         except KeyError as exc:
             body = json.dumps({"ok": False, "error": str(exc)})
             self._send(404, (body + "\n").encode("utf-8"), "application/json")
-        except Exception as exc:  # noqa: BLE001 — surface handler errors to client
+        except Exception as exc:  # noqa: BLE001
             body = json.dumps(
                 {
                     "ok": False,
@@ -74,6 +84,8 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
 
 def serve(source: Path, *, host: str = "127.0.0.1", port: int = 8765, title: str | None = None) -> None:
     source = source.resolve()
+    # Warm module cache so State persists across requests
+    load_source_module(source)
     handler = type(
         "BoundOurUIHandler",
         (OurUIRequestHandler,),

@@ -22,9 +22,9 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 
 - Full Python execution semantics for arbitrary side effects
 - User-defined `Component` classes (planned)
-- Reactive `State` (planned)
+- Reactive `State` beyond server-side get/set + DOM bind (client-only State planned)
 - Routing (planned)
-- Real server RPC body execution (shim only in Phase F)
+- Real production multi-worker state store (dev serve uses in-process module cache)
 
 ## Built-in kinds (P0+)
 
@@ -38,21 +38,25 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 | `Card` | Presentation | Card concept |
 | `Grid` | Presentation | Grid concept (pre-layout) |
 
-### Behavior (Phase F)
+### Behavior (Phase F–H)
 
 ```python
-from ourui import ui, server
+from ourui import ui, server, State
+
+count = State(0)
 
 @server
-def get_started():
-    ...
+def increment():
+    count.set(count.get() + 1)
+    return count.get()
 
-ui.Button("Go", on_click=get_started)
+ui.Text(count)                 # bind
+ui.Button("+1", on_click=increment)
 ```
 
-- `on_click` accepts a function name (AST `Name`) or string.
-- `@server` marks a handler as server-kind in the handler table.
-- Events lower through IIR → LTR → RTR and become `data-ourui-on-click` + JS shim.
+- `State(initial)` — server-side reactive value (persists in `ourui serve` module cache).
+- `ui.Text(count)` / `bind=` — lowers to RTR Text with `data-ourui-bind`.
+- After `@server` RPC, JS `applyState` updates bound nodes from `response.state`.
 
 Theme references may appear as string tokens in attributes (e.g. `variant="primary"`).
 

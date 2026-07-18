@@ -23,12 +23,14 @@ class RTR:
     nodes: dict[str, dict[str, Any]] = field(default_factory=dict)
     roots: list[str] = field(default_factory=list)
     handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
+    states: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "nodes": {nid: node for nid, node in sorted(self.nodes.items())},
             "roots": list(self.roots),
             "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
+            "states": {k: self.states[k] for k in sorted(self.states)},
         }
 
 
@@ -69,14 +71,21 @@ def lower_to_rtr(ltr: Any) -> RTR:
 
         # Promote textual props to Text HostNodes (still no HTML)
         text_children: list[str] = []
+        binds = attrs.get("binds") or {}
         for prop_key in ("title", "subtitle", "text"):
-            if prop_key in attrs and isinstance(attrs[prop_key], str):
+            if prop_key in attrs and not isinstance(attrs[prop_key], dict):
                 tid = _next_text_id(text_counter)
+                text_attrs: dict[str, Any] = {
+                    "content": "" if attrs[prop_key] is None else str(attrs[prop_key]),
+                    "slot": prop_key,
+                }
+                if prop_key in binds:
+                    text_attrs["bind"] = binds[prop_key]
                 text_node = Node(
                     id=tid,
                     kind="Text",
                     span=_span_from_dict(lnode["span"]),
-                    attributes={"content": attrs[prop_key], "slot": prop_key},
+                    attributes=text_attrs,
                     metadata={"stage": "rtr", "host": True},
                     children=[],
                     provenance=[*lnode.get("provenance", []), "lowering:render", "expand:text"],
@@ -107,6 +116,7 @@ def lower_to_rtr(ltr: Any) -> RTR:
         rtr.nodes[nid] = node.to_dict()
 
     rtr.handlers = dict(getattr(ltr, "handlers", {}))
+    rtr.states = dict(getattr(ltr, "states", {}))
     return rtr
 
 

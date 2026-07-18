@@ -1,20 +1,39 @@
 """Authoring helpers for examples and future runtime eval.
 
-The P0+ compiler does not execute these callables for dump/emit; it parses AST.
-They exist so example modules import cleanly if executed.
+The compiler parses AST for dump/emit; State/server objects are used at runtime by `ourui serve`.
 """
 
 from __future__ import annotations
 
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, Generic, TypeVar
 
 F = TypeVar("F", bound=Callable[..., Any])
+T = TypeVar("T")
 
 
 def server(fn: F) -> F:
     """Mark a function as a server handler (Behavior Domain)."""
     setattr(fn, "__ourui_server__", True)
     return fn
+
+
+class State(Generic[T]):
+    """Reactive server-side state (Phase H). Mutate via get/set in @server handlers."""
+
+    __slots__ = ("_value",)
+
+    def __init__(self, value: T) -> None:
+        self._value = value
+
+    def get(self) -> T:
+        return self._value
+
+    def set(self, value: T) -> None:
+        self._value = value
+
+    @property
+    def value(self) -> T:
+        return self._value
 
 
 class _UINamespace:
@@ -25,6 +44,8 @@ class _UINamespace:
             for arg in args:
                 if isinstance(arg, dict) and arg.get("_ourui"):
                     children.append(arg)
+                elif isinstance(arg, State):
+                    props["text"] = arg
                 elif "children" not in props and isinstance(arg, list):
                     props["children"] = arg
                 elif "children" not in props and not isinstance(arg, (str, int, float, bool)):

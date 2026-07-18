@@ -31,6 +31,7 @@ Status ladder:
 | JS emit / runtime shim | Draft (Phase F/G — fetch RPC) |
 | `@server` / `on_click` | Draft |
 | `ourui serve` + RPC | Draft |
+| `State` / binds | Draft (Phase H) |
 | Runtime (production) | Experimental |
 | LSP / HMR | Experimental |
 

@@ -31,12 +31,14 @@ class LTR:
     nodes: dict[str, dict[str, Any]] = field(default_factory=dict)
     roots: list[str] = field(default_factory=list)
     handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
+    states: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "nodes": {nid: node for nid, node in sorted(self.nodes.items())},
             "roots": list(self.roots),
             "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
+            "states": {k: self.states[k] for k in sorted(self.states)},
         }
 
 
@@ -65,6 +67,8 @@ def lower_to_ltr(iir: Any) -> LTR:
                 props[key] = inode["attributes"][key]
         if "events" in inode:
             props["events"] = dict(inode["events"])
+        if "binds" in inode:
+            props["binds"] = dict(inode["binds"])
 
         children = list(inode.get("children", []))
 
@@ -81,4 +85,5 @@ def lower_to_ltr(iir: Any) -> LTR:
         ).with_hash()
         ltr.nodes[nid] = node.to_dict()
     ltr.handlers = dict(getattr(iir, "handlers", {}))
+    ltr.states = dict(getattr(iir, "states", {}))
     return ltr

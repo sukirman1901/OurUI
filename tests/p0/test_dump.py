@@ -21,12 +21,15 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_has_required_sections() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 5
+    assert doc["version"] == 6
     for key in ("semantic_graph", "dependency_graph", "iir", "ltr", "rtr", "emit"):
         assert key in doc
     assert doc["emit"]["js"] is True
+    assert doc["emit"]["state"] is True
     assert "get_started" in doc["iir"]["handlers"]
     assert doc["iir"]["handlers"]["get_started"]["kind"] == "server"
+    assert "count" in doc["iir"]["states"]
+    assert doc["iir"]["states"]["count"]["initial"] == 0
     assert doc["rtr"]["roots"]
     assert any(e["kind"] == "uses_theme" for e in doc["dependency_graph"]["edges"])
 
@@ -70,6 +73,17 @@ def test_rtr_carries_click_events() -> None:
     doc = compile_dump(FIXTURE)
     button = next(n for n in doc["rtr"]["nodes"].values() if n["attributes"].get("role") == "button")
     assert button["attributes"]["events"]["click"] == "get_started"
+
+
+def test_rtr_binds_state_text() -> None:
+    doc = compile_dump(FIXTURE)
+    bound = [
+        n
+        for n in doc["rtr"]["nodes"].values()
+        if n["kind"] == "Text" and n["attributes"].get("bind") == "count"
+    ]
+    assert bound
+    assert bound[0]["attributes"]["content"] == "0"
 
 
 def test_golden_dump() -> None:
