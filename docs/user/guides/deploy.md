@@ -82,9 +82,16 @@ See [`.github/workflows/ci-emit.yml`](../../../.github/workflows/ci-emit.yml) �
 
 ## Trusted Publishing (PyPI)
 
-Release workflow: [`.github/workflows/publish-pypi.yml`](../../../.github/workflows/publish-pypi.yml) (triggered by GitHub Release).
+Release workflow: [`.github/workflows/publish-pypi.yml`](../../../.github/workflows/publish-pypi.yml) (triggered by GitHub Release or `workflow_dispatch`).
 
-On [PyPI → ourui → Publishing](https://pypi.org/manage/project/ourui/settings/publishing/), add a Trusted Publisher:
+**API token (recommended):** create a PyPI token, then:
+
+```bash
+gh secret set PYPI_API_TOKEN --body 'pypi-…'
+gh workflow run publish-pypi.yml
+```
+
+**Trusted Publisher (OIDC):** on [PyPI → ourui → Publishing](https://pypi.org/manage/project/ourui/settings/publishing/), add:
 
 | Field | Value |
 |-------|--------|
@@ -93,4 +100,9 @@ On [PyPI → ourui → Publishing](https://pypi.org/manage/project/ourui/setting
 | Workflow | `publish-pypi.yml` |
 | Environment | *(leave blank)* |
 
-Until that is configured, upload from a trusted machine with an API token (`twine upload`).
+Until one of those is configured, local upload:
+
+```bash
+python -m build packages/ourui
+TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-… twine upload packages/ourui/dist/*
+```
