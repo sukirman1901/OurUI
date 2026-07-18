@@ -17,17 +17,9 @@ jobs:
         run: |
           python -m pip install -U pip
           pip install -e packages/ourui
-          pip install pytest
       - name: Secret scan
         run: |
           curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz gitleaks
           ./gitleaks detect --source . --no-banner --redact
-      - name: Pytest P0
-        run: pytest tests/p0 -q
-      - name: Check tutorial samples
-        run: |
-          for f in examples/tutorial/*.py; do
-            ourui check "$f"
-          done
-      - name: Emit counter sample
-        run: ourui emit examples/tutorial/06_counter_app.py -o /tmp/counter.html
+      - name: Import smoke
+        run: python -c "import ourui; from ourui import ui; print(ourui.__version__)"

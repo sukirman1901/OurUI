@@ -264,7 +264,8 @@ def _style_value_items(prop: str, prefix: str) -> list[dict[str, Any]]:
     elif prop == "backface":
         values = ("visible", "hidden")
     else:
-        values = ()    items: list[dict[str, Any]] = []
+        values = ()
+    items: list[dict[str, Any]] = []
     for name in values:
         if str(name).startswith(prefix):
             items.append(

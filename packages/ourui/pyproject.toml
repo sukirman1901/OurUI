@@ -28,7 +28,6 @@ dependencies = []
 [project.urls]
 Homepage = "https://github.com/sukirman1901/OurUI"
 Documentation = "https://github.com/sukirman1901/OurUI/tree/main/docs/user"
-Changelog = "https://github.com/sukirman1901/OurUI/blob/main/CHANGELOG.md"
 Repository = "https://github.com/sukirman1901/OurUI"
 Issues = "https://github.com/sukirman1901/OurUI/issues"
 
