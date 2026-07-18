@@ -47,7 +47,7 @@ Further chrome (Nav, etc.) is **frozen** until [RFC-001](docs/rfcs/RFC-001-prese
 | LSP | Stable (`ourui lsp` — completions + hover + tokens) |
 | Runtime (single-process prod) | Stable (`ourui serve --prod`) |
 | Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
-| Package (`ourui` 0.1.1) | Stable (Phase R — MIT; [PyPI](https://pypi.org/project/ourui/); wheel/sdist via `python -m build packages/ourui`) |
+| Package (`ourui` 0.1.2) | Stable (Phase S1 — MIT; [PyPI](https://pypi.org/project/ourui/); dump schema 10) |
 | `ui.Link` / `ui.Shell` / `layout=` | Stable (Phase S1 — dump schema **10**) |
 
 Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see ADRs 001–004 under `docs/decisions/`.
