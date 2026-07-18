@@ -84,12 +84,78 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     console.info("[ourui] client call:", name);
     return {{ ok: true, handler: name, kind: "client" }};
   }}
+  function toggleTheme() {{
+    const root = document.documentElement;
+    const on = root.classList.toggle("dark");
+    try {{ localStorage.setItem("ourui-theme", on ? "dark" : "light"); }} catch (e) {{}}
+  }}
+  try {{
+    const saved = localStorage.getItem("ourui-theme");
+    if (saved === "dark") document.documentElement.classList.add("dark");
+  }} catch (e) {{}}
+  function initCanvases() {{
+    if (!window.Plasma || !window.Plasma.init) return;
+    document.querySelectorAll("[data-ourui-canvas]").forEach((el) => {{
+      if (el.__ouruiPlasma) return;
+      let cfg = {{}};
+      try {{ cfg = JSON.parse(el.getAttribute("data-ourui-canvas-config") || "{{}}"); }} catch (e) {{}}
+      el.__ouruiPlasma = window.Plasma.init(el, cfg);
+    }});
+  }}
   document.addEventListener("click", (ev) => {{
-    const el = ev.target && ev.target.closest && ev.target.closest("[data-ourui-on-click]");
+    const t = ev.target;
+    if (!t || !t.closest) return;
+    const themeBtn = t.closest("[data-ourui-theme-toggle]");
+    if (themeBtn) {{
+      ev.preventDefault();
+      toggleTheme();
+      return;
+    }}
+    const copyBtn = t.closest("[data-ourui-copy]");
+    if (copyBtn) {{
+      ev.preventDefault();
+      const text = copyBtn.getAttribute("data-ourui-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {{
+        navigator.clipboard.writeText(text).then(() => {{
+          copyBtn.setAttribute("data-copied", "true");
+          setTimeout(() => copyBtn.removeAttribute("data-copied"), 1200);
+        }}).catch(() => {{}});
+      }}
+      return;
+    }}
+    const menuToggle = t.closest("[data-ourui-menu-toggle]");
+    if (menuToggle) {{
+      ev.preventDefault();
+      const menu = menuToggle.closest("[data-ourui-menu]");
+      if (menu) menu.setAttribute("data-open", menu.getAttribute("data-open") === "true" ? "false" : "true");
+      return;
+    }}
+    const drawerOpen = t.closest("[data-ourui-drawer-open]");
+    if (drawerOpen) {{
+      ev.preventDefault();
+      const drawer = document.querySelector("[data-ourui-drawer]");
+      if (drawer) {{
+        drawer.hidden = false;
+        drawer.setAttribute("data-open", "true");
+      }}
+      return;
+    }}
+    const drawerClose = t.closest("[data-ourui-drawer-close]");
+    if (drawerClose) {{
+      ev.preventDefault();
+      const drawer = document.querySelector("[data-ourui-drawer]");
+      if (drawer) {{
+        drawer.hidden = true;
+        drawer.setAttribute("data-open", "false");
+      }}
+      return;
+    }}
+    const el = t.closest("[data-ourui-on-click]");
     if (!el) return;
     ev.preventDefault();
     invoke(el.getAttribute("data-ourui-on-click"), collectFields());
   }});
-  window.OurUI = {{ invoke, handlers, applyState, collectFields }};{hmr_block}
+  initCanvases();
+  window.OurUI = {{ invoke, handlers, applyState, collectFields, toggleTheme, initCanvases }};{hmr_block}
 }})();
 """

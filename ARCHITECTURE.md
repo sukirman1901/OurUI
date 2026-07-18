@@ -45,7 +45,7 @@ flowchart TD
 | **Optimize** | Transforms (may re-Analyze) |
 | **Emit** | Host emitters |
 
-**P0–E** implements Parse → Analyze → Intent / Layout / Render Lowering → JSON dump and HTML emit.
+**P0–E** implements Parse → Analyze → Intent / Layout / Render Lowering → JSON dump and HTML emit. Generations **1–3** and Phase **S1–S6** are complete at package **0.4.0** (Host Contract: emit requires RTR + Resolved Design). See [docs/roadmap.md](docs/roadmap.md).
 
 ## Semantic Graph and Analysis Views
 
@@ -95,13 +95,11 @@ packages/ourui/      # Python implementation (P0+)
 
 | Phase | Delivers |
 |---|---|
-| **A** | Documentation freeze (`docs-v1`) |
-| **B / P0** | `ourui dump` → SG + Dependency Graph + IIR JSON |
-| **C** | LTR |
-| **D** | RTR / HostNode |
-| **E** | HTML (then CSS/JS) |
+| **A–E** | Docs freeze → dump → LTR → RTR → HTML |
+| **F–R** | JS/`@server`/State/serve/LSP/tokens/package |
+| **S1–S6** | Link/Shell → forms → Nav → tokens → layout → motion → Canvas → polish (`0.4.0`) |
 
-Do not invert C–E before P0 is stable.
+Do not invent new Stable vocabulary without ADR/RFC. See [VISION.md](VISION.md).
 
 ## Related
 

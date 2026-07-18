@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>example</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet" />
   <style>
 :root {
   --ourui-bg: #f7f6f2;
@@ -19,8 +23,27 @@
   --ourui-danger: #b91c1c;
   --ourui-danger-fg: #fef2f2;
   --ourui-radius: 0.5rem;
+  --ourui-space-xs: 0.25rem;
   --ourui-space-sm: 0.5rem;
   --ourui-space-md: 0.75rem;
+  --ourui-space-lg: 1.25rem;
+  --ourui-space-xl: 2rem;
+  --ourui-space-2xl: 3rem;
+  --ourui-font-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --ourui-font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --ourui-text-xs: 0.75rem;
+  --ourui-text-sm: 0.875rem;
+  --ourui-text-md: 1rem;
+  --ourui-text-lg: 1.25rem;
+  --ourui-text-xl: 1.75rem;
+  --ourui-text-2xl: 2.5rem;
+  --ourui-leading-tight: 1.2;
+  --ourui-leading-normal: 1.5;
+  --ourui-leading-relaxed: 1.7;
+  --ourui-elev-0: none;
+  --ourui-elev-1: 0 1px 2px color-mix(in srgb, var(--ourui-fg) 12%, transparent);
+  --ourui-elev-2: 0 4px 14px color-mix(in srgb, var(--ourui-fg) 14%, transparent);
+  --ourui-elev-3: 0 12px 32px color-mix(in srgb, var(--ourui-fg) 18%, transparent);
 }
 .dark {
   --ourui-bg: #1c1917;
@@ -37,14 +60,34 @@
   --ourui-danger: #f87171;
   --ourui-danger-fg: #1c1917;
   --ourui-radius: 0.5rem;
+  --ourui-space-xs: 0.25rem;
   --ourui-space-sm: 0.5rem;
   --ourui-space-md: 0.75rem;
+  --ourui-space-lg: 1.25rem;
+  --ourui-space-xl: 2rem;
+  --ourui-space-2xl: 3rem;
+  --ourui-font-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --ourui-font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --ourui-text-xs: 0.75rem;
+  --ourui-text-sm: 0.875rem;
+  --ourui-text-md: 1rem;
+  --ourui-text-lg: 1.25rem;
+  --ourui-text-xl: 1.75rem;
+  --ourui-text-2xl: 2.5rem;
+  --ourui-leading-tight: 1.2;
+  --ourui-leading-normal: 1.5;
+  --ourui-leading-relaxed: 1.7;
+  --ourui-elev-0: none;
+  --ourui-elev-1: 0 1px 2px color-mix(in srgb, var(--ourui-fg) 12%, transparent);
+  --ourui-elev-2: 0 4px 14px color-mix(in srgb, var(--ourui-fg) 14%, transparent);
+  --ourui-elev-3: 0 12px 32px color-mix(in srgb, var(--ourui-fg) 18%, transparent);
 }
 /* Host-private chrome (layout / structure). Not Design System knowledge.
    Tone colors come from Resolved Design (CSS vars + per-node rules). */
 .ourui-root {
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
+  font-family: var(--ourui-font-sans);
+  font-size: var(--ourui-text-md);
+  line-height: var(--ourui-leading-normal);
   background: var(--ourui-bg);
   color: var(--ourui-fg);
   min-height: 100vh;
@@ -64,6 +107,20 @@
   gap: var(--ourui-space-md);
   width: 100%;
 }
+.ourui-shell-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--ourui-space-md);
+  flex-wrap: wrap;
+  width: 100%;
+}
+.ourui-shell-split-2 {
+  display: grid;
+  gap: var(--ourui-space-md);
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  width: 100%;
+}
 .ourui-shell-split-3 {
   display: grid;
   gap: var(--ourui-space-md);
@@ -71,17 +128,79 @@
   align-items: start;
   width: 100%;
 }
-@media (max-width: 767px) {
-  .ourui-shell-split-3 { grid-template-columns: 1fr; }
+.ourui-shell-split-sidebar {
+  display: grid;
+  gap: var(--ourui-space-md);
+  grid-template-columns: minmax(11rem, 16rem) minmax(0, 1fr);
+  align-items: start;
+  width: 100%;
 }
+@media (max-width: 767px) {
+  .ourui-shell-split-2,
+  .ourui-shell-split-3,
+  .ourui-shell-split-sidebar { grid-template-columns: 1fr; }
+}
+.ourui-gap-none { gap: 0 !important; }
+.ourui-gap-xs { gap: var(--ourui-space-xs) !important; }
+.ourui-gap-sm { gap: var(--ourui-space-sm) !important; }
+.ourui-gap-md { gap: var(--ourui-space-md) !important; }
+.ourui-gap-lg { gap: var(--ourui-space-lg) !important; }
+.ourui-gap-xl { gap: var(--ourui-space-xl) !important; }
+.ourui-gap-2xl { gap: var(--ourui-space-2xl) !important; }
+.ourui-pad-none { padding: 0 !important; }
+.ourui-pad-xs { padding: var(--ourui-space-xs) !important; }
+.ourui-pad-sm { padding: var(--ourui-space-sm) !important; }
+.ourui-pad-md { padding: var(--ourui-space-md) !important; }
+.ourui-pad-lg { padding: var(--ourui-space-lg) !important; }
+.ourui-pad-xl { padding: var(--ourui-space-xl) !important; }
+.ourui-pad-2xl { padding: var(--ourui-space-2xl) !important; }
+.ourui-align-start { align-items: flex-start !important; }
+.ourui-align-center { align-items: center !important; }
+.ourui-align-end { align-items: flex-end !important; }
+.ourui-align-stretch { align-items: stretch !important; }
+.ourui-justify-start { justify-content: flex-start !important; }
+.ourui-justify-center { justify-content: center !important; }
+.ourui-justify-end { justify-content: flex-end !important; }
+.ourui-justify-between { justify-content: space-between !important; }
 .ourui-card {
   padding: var(--ourui-space-md);
   border: 1px solid var(--ourui-border);
   border-radius: var(--ourui-radius);
   background: var(--ourui-card);
   color: var(--ourui-card-fg);
+  box-shadow: var(--ourui-elev-1);
 }
 .ourui-leaf { display: inline-block; }
+[data-role="hero"] {
+  padding-block: var(--ourui-space-2xl);
+  padding-inline: var(--ourui-space-md);
+  position: relative;
+  z-index: 1;
+}
+[data-role="hero"] [data-slot="title"],
+[data-role="hero"] > span[data-slot="title"] {
+  display: block;
+  font-family: var(--ourui-font-display);
+  font-size: var(--ourui-text-2xl);
+  line-height: var(--ourui-leading-tight);
+  font-weight: 600;
+}
+[data-role="hero"] [data-slot="subtitle"] {
+  display: block;
+  margin-top: var(--ourui-space-sm);
+  font-size: var(--ourui-text-lg);
+  color: var(--ourui-muted-fg);
+  max-width: 36rem;
+}
+[data-role="section"] {
+  padding-block: var(--ourui-space-xl);
+}
+[data-role="section"] [data-slot="title"] {
+  display: block;
+  font-family: var(--ourui-font-display);
+  font-size: var(--ourui-text-xl);
+  margin-bottom: var(--ourui-space-md);
+}
 a.ourui-link {
   color: var(--ourui-primary);
   text-decoration: underline;
@@ -92,13 +211,18 @@ a.ourui-tone-primary { color: var(--ourui-primary); }
 a.ourui-tone-accent { color: var(--ourui-accent); }
 a.ourui-tone-danger { color: var(--ourui-danger); }
 a.ourui-tone-muted { color: var(--ourui-muted-fg); }
-button.ourui-control {
+button.ourui-control,
+button.ourui-theme-toggle,
+button.ourui-copy-button,
+button.ourui-nav-menu-btn {
   padding: var(--ourui-space-sm) var(--ourui-space-md);
   cursor: pointer;
   border-radius: var(--ourui-radius);
   border: 1px solid var(--ourui-border);
   background: var(--ourui-muted);
   color: var(--ourui-muted-fg);
+  font: inherit;
+  box-shadow: var(--ourui-elev-0);
 }
 button.ourui-tone-primary {
   background: var(--ourui-primary);
@@ -119,6 +243,17 @@ button.ourui-tone-muted {
   background: var(--ourui-muted);
   color: var(--ourui-muted-fg);
 }
+button.ourui-control:disabled,
+button.ourui-control[aria-busy="true"],
+input.ourui-input:disabled,
+select.ourui-select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+input.ourui-input[aria-invalid="true"],
+select.ourui-select[aria-invalid="true"] {
+  border-color: var(--ourui-danger);
+}
 .ourui-field {
   display: flex;
   flex-direction: column;
@@ -127,7 +262,7 @@ button.ourui-tone-muted {
   width: 100%;
 }
 .ourui-field-label {
-  font-size: 0.875rem;
+  font-size: var(--ourui-text-sm);
   color: var(--ourui-muted-fg);
 }
 input.ourui-input {
@@ -183,12 +318,15 @@ input.ourui-slider {
   box-sizing: border-box;
   padding: var(--ourui-space-sm) var(--ourui-space-md);
   z-index: 40;
+  box-shadow: var(--ourui-elev-1);
 }
 .ourui-nav-brand {
   display: flex;
   align-items: center;
   gap: var(--ourui-space-sm);
   font-weight: 600;
+  font-family: var(--ourui-font-display);
+  font-size: var(--ourui-text-lg);
 }
 .ourui-nav-items {
   display: flex;
@@ -215,15 +353,8 @@ input.ourui-slider {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
-.ourui-nav-sticky-top {
-  position: sticky;
-  top: 0;
-}
-.ourui-nav-fixed-top {
-  position: fixed;
-  inset-inline: 0;
-  top: 0;
-}
+.ourui-nav-sticky-top { position: sticky; top: 0; }
+.ourui-nav-fixed-top { position: fixed; inset-inline: 0; top: 0; }
 .ourui-nav-fixed-bottom {
   position: fixed;
   inset-inline: 0;
@@ -231,23 +362,160 @@ input.ourui-slider {
   border-bottom: none;
   border-top: 1px solid var(--ourui-border);
 }
-.ourui-nav-flow {
-  position: static;
-}
-.ourui-nav-overlay {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-}
+.ourui-nav-flow { position: static; }
+.ourui-nav-overlay { position: absolute; inset-inline: 0; top: 0; }
 .ourui-nav-backdrop {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
 }
-.ourui-root:has(.ourui-nav-fixed-top) {
-  padding-top: 3.75rem;
+.ourui-root:has(.ourui-nav-fixed-top) { padding-top: 3.75rem; }
+.ourui-nav-menu-btn { display: none; }
+.ourui-nav-drawer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--ourui-bg) 88%, transparent);
+  padding: var(--ourui-space-lg);
 }
+.ourui-nav-drawer[data-open="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ourui-space-md);
+}
+.ourui-nav-drawer-panel {
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+  border-radius: var(--ourui-radius);
+  padding: var(--ourui-space-md);
+  box-shadow: var(--ourui-elev-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ourui-space-md);
+  max-width: 20rem;
+}
+@media (max-width: 767px) {
+  .ourui-nav[data-menu="drawer"] .ourui-nav-items { display: none; }
+  .ourui-nav[data-menu="drawer"] .ourui-nav-menu-btn { display: inline-flex; }
+  button.ourui-tone-primary,
+  a.ourui-link.ourui-tone-primary {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    box-sizing: border-box;
+  }
+}
+.ourui-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ourui-space-lg);
+  padding-block: var(--ourui-space-xl);
+  margin-top: var(--ourui-space-2xl);
+  border-top: 1px solid var(--ourui-border);
+  color: var(--ourui-muted-fg);
+  font-size: var(--ourui-text-sm);
+}
+.ourui-footer-brand { font-weight: 600; color: var(--ourui-fg); }
+.ourui-footer-links,
+.ourui-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ourui-space-md);
+}
+.ourui-canvas {
+  display: block;
+  width: 100%;
+  min-height: 16rem;
+  height: 100%;
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-muted);
+  box-shadow: var(--ourui-elev-2);
+}
+.ourui-canvas-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  min-height: 100%;
+  border-radius: 0;
+  pointer-events: none;
+}
+.ourui-canvas-static {
+  background:
+    radial-gradient(ellipse at 30% 20%, color-mix(in srgb, var(--ourui-primary) 45%, transparent), transparent 55%),
+    radial-gradient(ellipse at 70% 80%, color-mix(in srgb, var(--ourui-accent) 35%, transparent), transparent 50%),
+    var(--ourui-bg);
+}
+.ourui-hero-wrap { position: relative; overflow: hidden; }
+img.ourui-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--ourui-radius);
+}
+img.ourui-fit-cover { object-fit: cover; width: 100%; height: 100%; }
+img.ourui-fit-contain { object-fit: contain; width: 100%; height: 100%; }
+img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
+.ourui-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+  vertical-align: -0.15em;
+}
+.ourui-icon svg { width: 100%; height: 100%; fill: currentColor; }
+.ourui-code {
+  display: block;
+  overflow: auto;
+  padding: var(--ourui-space-md);
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-muted);
+  color: var(--ourui-fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--ourui-text-sm);
+  box-shadow: var(--ourui-elev-1);
+  white-space: pre-wrap;
+}
+.ourui-menu {
+  position: relative;
+  display: inline-block;
+}
+.ourui-menu-panel {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.25rem);
+  min-width: 10rem;
+  padding: var(--ourui-space-sm);
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+  border: 1px solid var(--ourui-border);
+  border-radius: var(--ourui-radius);
+  box-shadow: var(--ourui-elev-2);
+  z-index: 30;
+  flex-direction: column;
+  gap: var(--ourui-space-xs);
+}
+.ourui-menu[data-open="true"] .ourui-menu-panel { display: flex; }
+.ourui-motion-enter { animation: ourui-enter 0.45s ease-out both; }
+.ourui-motion-reveal { animation: ourui-reveal 0.55s ease-out both; }
+.ourui-motion-press:active { transform: scale(0.97); transition: transform 0.12s ease; }
+@keyframes ourui-enter {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ourui-reveal {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ourui-motion-enter,
+  .ourui-motion-reveal { animation: none; }
+  .ourui-motion-press:active { transform: none; }
+}
+.ourui-meta-host { display: none; }
 [data-ourui-id="n0003"] {
   background: #1a5f4a;
   color: #f5faf8;
@@ -294,6 +562,227 @@ input.ourui-slider {
       </section>
     </main>
   </div>
+  <script>
+/**
+ * OurUI Plasma host escape — minimal WebGL fragment engines.
+ * API: Plasma.init(canvasOrId, config) → { destroy() }
+ * Modes: gradient | dither | raymarch
+ */
+(function (global) {
+  "use strict";
+
+  const VS = `
+    attribute vec2 a_pos;
+    void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+  `;
+
+  const FS_GRADIENT = `
+    precision highp float;
+    uniform vec2 u_res;
+    uniform float u_time;
+    uniform float u_pace;
+    uniform float u_lens;
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_res;
+      float t = u_time * (0.15 + u_pace * 0.004);
+      vec3 a = vec3(0.42, 0.28, 0.85);
+      vec3 b = vec3(0.60, 0.82, 0.08);
+      vec3 c = vec3(0.05, 0.05, 0.07);
+      float w = sin((uv.x + uv.y) * 3.0 + t) * 0.5 + 0.5;
+      float r = length(uv - 0.5) * (1.2 + u_lens * 0.01);
+      vec3 col = mix(c, mix(a, b, w), 1.0 - smoothstep(0.2, 1.1, r));
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  const FS_DITHER = `
+    precision highp float;
+    uniform vec2 u_res;
+    uniform float u_time;
+    uniform float u_pace;
+    uniform float u_texture;
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_res;
+      float t = u_time * (0.2 + u_pace * 0.003);
+      float n = hash(floor(uv * (24.0 + u_texture * 0.4)) + t);
+      float band = step(0.5, fract(uv.y * 8.0 + t + n * 0.3));
+      vec3 dark = vec3(0.04, 0.04, 0.05);
+      vec3 mid = vec3(0.42, 0.28, 0.85);
+      vec3 lite = vec3(0.60, 0.82, 0.08);
+      vec3 col = mix(dark, mix(mid, lite, band), 0.55 + n * 0.45);
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  const FS_RAYMARCH = `
+    precision highp float;
+    uniform vec2 u_res;
+    uniform float u_time;
+    uniform float u_pace;
+    uniform float u_lens;
+    float sdSphere(vec3 p, float r) { return length(p) - r; }
+    float map(vec3 p) {
+      float t = u_time * (0.3 + u_pace * 0.004);
+      p.xz *= mat2(cos(t), -sin(t), sin(t), cos(t));
+      return sdSphere(p, 0.55 + u_lens * 0.002);
+    }
+    void main() {
+      vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+      vec3 ro = vec3(0.0, 0.0, 2.2);
+      vec3 rd = normalize(vec3(uv, -1.4));
+      float t = 0.0;
+      float hit = 0.0;
+      for (int i = 0; i < 48; i++) {
+        vec3 p = ro + rd * t;
+        float d = map(p);
+        if (d < 0.002) { hit = 1.0; break; }
+        t += d;
+        if (t > 8.0) break;
+      }
+      vec3 bg = vec3(0.05, 0.05, 0.07);
+      vec3 col = mix(bg, vec3(0.42, 0.28, 0.85), hit);
+      if (hit > 0.5) {
+        vec3 p = ro + rd * t;
+        vec3 n = normalize(vec3(
+          map(p + vec3(0.01,0,0)) - map(p - vec3(0.01,0,0)),
+          map(p + vec3(0,0.01,0)) - map(p - vec3(0,0.01,0)),
+          map(p + vec3(0,0,0.01)) - map(p - vec3(0,0,0.01))
+        ));
+        float light = clamp(dot(n, normalize(vec3(0.4, 0.7, 0.5))), 0.0, 1.0);
+        col = mix(vec3(0.20, 0.12, 0.45), vec3(0.60, 0.82, 0.08), light);
+      }
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  function compile(gl, type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.warn("[ourui plasma]", gl.getShaderInfoLog(sh));
+      gl.deleteShader(sh);
+      return null;
+    }
+    return sh;
+  }
+
+  function makeProgram(gl, fsSrc) {
+    const vs = compile(gl, gl.VERTEX_SHADER, VS);
+    const fs = compile(gl, gl.FRAGMENT_SHADER, fsSrc);
+    if (!vs || !fs) return null;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      console.warn("[ourui plasma]", gl.getProgramInfoLog(prog));
+      return null;
+    }
+    return prog;
+  }
+
+  function fsFor(mode) {
+    if (mode === "dither") return FS_DITHER;
+    if (mode === "raymarch") return FS_RAYMARCH;
+    return FS_GRADIENT;
+  }
+
+  function init(target, config) {
+    const cfg = config || {};
+    const mode = cfg.mode || "gradient";
+    const reduced = cfg.reduced_motion || "static";
+    const canvas =
+      typeof target === "string" ? document.getElementById(target) || document.querySelector(target) : target;
+    if (!canvas || !canvas.getContext) {
+      console.warn("[ourui plasma] canvas missing");
+      return { destroy: function () {} };
+    }
+
+    const prefersReduce =
+      typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduce && reduced === "static") {
+      canvas.classList.add("ourui-canvas-static");
+      canvas.dataset.mode = mode;
+      return {
+        destroy: function () {
+          canvas.classList.remove("ourui-canvas-static");
+        },
+      };
+    }
+
+    const gl = canvas.getContext("webgl", { antialias: false, alpha: false });
+    if (!gl) {
+      canvas.classList.add("ourui-canvas-static");
+      return { destroy: function () {} };
+    }
+
+    const prog = makeProgram(gl, fsFor(mode));
+    if (!prog) {
+      return { destroy: function () {} };
+    }
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const aPos = gl.getAttribLocation(prog, "a_pos");
+    const uRes = gl.getUniformLocation(prog, "u_res");
+    const uTime = gl.getUniformLocation(prog, "u_time");
+    const uPace = gl.getUniformLocation(prog, "u_pace");
+    const uLens = gl.getUniformLocation(prog, "u_lens");
+    const uTexture = gl.getUniformLocation(prog, "u_texture");
+
+    let raf = 0;
+    let alive = true;
+    const t0 = performance.now();
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+      const h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+    }
+
+    function frame() {
+      if (!alive) return;
+      resize();
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.useProgram(prog);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.enableVertexAttribArray(aPos);
+      gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, (performance.now() - t0) / 1000);
+      gl.uniform1f(uPace, Number(cfg.pace) || 40);
+      gl.uniform1f(uLens, Number(cfg.lens) || 30);
+      if (uTexture) gl.uniform1f(uTexture, Number(cfg.texture) || 55);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      raf = requestAnimationFrame(frame);
+    }
+
+    frame();
+
+    return {
+      destroy: function () {
+        alive = false;
+        if (raf) cancelAnimationFrame(raf);
+        try {
+          const ext = gl.getExtension("WEBGL_lose_context");
+          if (ext) ext.loseContext();
+        } catch (_) {}
+      },
+    };
+  }
+
+  global.Plasma = { init: init };
+})(typeof window !== "undefined" ? window : globalThis);
+  </script>
   <script>
 (() => {
   const handlers = {"get_started":{"kind":"server"},"increment":{"kind":"server"}};
@@ -351,13 +840,79 @@ input.ourui-slider {
     console.info("[ourui] client call:", name);
     return { ok: true, handler: name, kind: "client" };
   }
+  function toggleTheme() {
+    const root = document.documentElement;
+    const on = root.classList.toggle("dark");
+    try { localStorage.setItem("ourui-theme", on ? "dark" : "light"); } catch (e) {}
+  }
+  try {
+    const saved = localStorage.getItem("ourui-theme");
+    if (saved === "dark") document.documentElement.classList.add("dark");
+  } catch (e) {}
+  function initCanvases() {
+    if (!window.Plasma || !window.Plasma.init) return;
+    document.querySelectorAll("[data-ourui-canvas]").forEach((el) => {
+      if (el.__ouruiPlasma) return;
+      let cfg = {};
+      try { cfg = JSON.parse(el.getAttribute("data-ourui-canvas-config") || "{}"); } catch (e) {}
+      el.__ouruiPlasma = window.Plasma.init(el, cfg);
+    });
+  }
   document.addEventListener("click", (ev) => {
-    const el = ev.target && ev.target.closest && ev.target.closest("[data-ourui-on-click]");
+    const t = ev.target;
+    if (!t || !t.closest) return;
+    const themeBtn = t.closest("[data-ourui-theme-toggle]");
+    if (themeBtn) {
+      ev.preventDefault();
+      toggleTheme();
+      return;
+    }
+    const copyBtn = t.closest("[data-ourui-copy]");
+    if (copyBtn) {
+      ev.preventDefault();
+      const text = copyBtn.getAttribute("data-ourui-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.setAttribute("data-copied", "true");
+          setTimeout(() => copyBtn.removeAttribute("data-copied"), 1200);
+        }).catch(() => {});
+      }
+      return;
+    }
+    const menuToggle = t.closest("[data-ourui-menu-toggle]");
+    if (menuToggle) {
+      ev.preventDefault();
+      const menu = menuToggle.closest("[data-ourui-menu]");
+      if (menu) menu.setAttribute("data-open", menu.getAttribute("data-open") === "true" ? "false" : "true");
+      return;
+    }
+    const drawerOpen = t.closest("[data-ourui-drawer-open]");
+    if (drawerOpen) {
+      ev.preventDefault();
+      const drawer = document.querySelector("[data-ourui-drawer]");
+      if (drawer) {
+        drawer.hidden = false;
+        drawer.setAttribute("data-open", "true");
+      }
+      return;
+    }
+    const drawerClose = t.closest("[data-ourui-drawer-close]");
+    if (drawerClose) {
+      ev.preventDefault();
+      const drawer = document.querySelector("[data-ourui-drawer]");
+      if (drawer) {
+        drawer.hidden = true;
+        drawer.setAttribute("data-open", "false");
+      }
+      return;
+    }
+    const el = t.closest("[data-ourui-on-click]");
     if (!el) return;
     ev.preventDefault();
     invoke(el.getAttribute("data-ourui-on-click"), collectFields());
   });
-  window.OurUI = { invoke, handlers, applyState, collectFields };
+  initCanvases();
+  window.OurUI = { invoke, handlers, applyState, collectFields, toggleTheme, initCanvases };
 })();
   </script>
 </body>

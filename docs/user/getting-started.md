@@ -9,7 +9,13 @@ Run a complete OurUI app in your browser in a few minutes.
 
 ## Install
 
-Create a virtual environment and install OurUI in editable mode from this repository:
+**From PyPI:**
+
+```bash
+pip install ourui
+```
+
+**From this repository (editable):**
 
 ```bash
 python3 -m venv .venv
@@ -17,34 +23,46 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e packages/ourui
 ```
 
+Current Stable package: **0.4.0** ([PyPI](https://pypi.org/project/ourui/)).
+
 ## Run the sample app
 
-Use the bundled counter demo as your starting point:
+Tutorial counter demo:
 
 ```bash
 ourui serve examples/tutorial/06_counter_app.py
 ```
 
-Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/) in your browser. You should see a welcome hero, feature cards, and a counter. Click **Get Started** or **+1** to exercise server handlers.
+Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/). You should see a welcome hero, feature cards, and a counter.
 
-The sample defines a `page` variable with `ui.Page`, `State`, `@server` functions, and reusable components — the same patterns you will learn step by step in the tutorial.
+## Run the Plasma demo (full Phase S surface)
+
+```bash
+ourui serve demo/app.py
+```
+
+| URL | What you see |
+|-----|----------------|
+| http://127.0.0.1:8765/ | Landing — Nav, Canvas, tokens, motion, Footer |
+| http://127.0.0.1:8765/app | Studio shell (`split-3`) + WebGL preview |
+| http://127.0.0.1:8765/embed | Embed stub |
 
 ## Optional: emit static HTML
-
-To inspect the generated document without a server:
 
 ```bash
 ourui emit examples/tutorial/06_counter_app.py
 ```
 
-This prints HTML (with embedded CSS and a small JS shim) to stdout. Redirect to a file and open it in a browser if you want a static snapshot. Interactive `@server` actions require `ourui serve`.
+Prints HTML (embedded CSS + JS shim) to stdout. Interactive `@server` actions require `ourui serve`.
 
 ## What you have now
 
-- OurUI installed locally
+- OurUI installed
 - A dev server on port **8765** with hot reload
-- A working app that combines layout, state, and server RPC
+- Access to Stable APIs through Phase **S6** (forms, Nav, tokens, layout, motion, Canvas, polish)
 
 ## See also
 
-- [Tutorial 01 — Your first page](tutorial/01-your-first-page.md) — start from a minimal page and build up
+- [Tutorial 01 — Your first page](tutorial/01-your-first-page.md)
+- [UI components reference](reference/ui-components.md)
+- [What Stable includes](concepts/what-p0-includes.md)

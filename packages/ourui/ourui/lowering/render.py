@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from ourui.node import FORM_CONTROL_KINDS, Node, SourceSpan
+from ourui.node import FORM_CONTROL_KINDS, LAYOUT_PASSTHROUGH, Node, SourceSpan
 
 # LTR layout kind → HostNode kind
 _HOST_KIND: dict[str, str] = {
@@ -70,33 +70,26 @@ def lower_to_rtr(ltr: Any) -> RTR:
         for tone_key in ("color", "variant", "bg"):
             if tone_key in attrs and not isinstance(attrs[tone_key], dict):
                 props[tone_key] = attrs[tone_key]
-        for key in (
-            "href",
-            "external",
-            "shell_layout",
-            "name",
-            "placeholder",
-            "type",
-            "label",
-            "value",
-            "options",
-            "min",
-            "max",
-            "step",
-            "placement",
-            "tone",
-            "brand",
-            "items",
-            "actions",
-        ):
-            if key in attrs:
+        for key in LAYOUT_PASSTHROUGH:
+            if key in attrs and key not in {"color", "variant", "bg"}:
                 props[key] = attrs[key]
+        if "shell_layout" in attrs:
+            props["shell_layout"] = attrs["shell_layout"]
         children = list(lnode.get("children", []))
 
-        # Promote textual props to Text HostNodes — not for form controls
+        # Promote textual props to Text HostNodes — not for form controls / media
         text_children: list[str] = []
         binds = attrs.get("binds") or {}
-        if from_intent not in FORM_CONTROL_KINDS:
+        skip_text_promote = from_intent in FORM_CONTROL_KINDS | {
+            "Canvas",
+            "Image",
+            "Icon",
+            "Meta",
+            "ThemeToggle",
+            "Code",
+            "CopyButton",
+        }
+        if not skip_text_promote:
             for prop_key in ("title", "subtitle", "text"):
                 if prop_key in attrs and not isinstance(attrs[prop_key], dict):
                     tid = _next_text_id(text_counter)
@@ -121,6 +114,8 @@ def lower_to_rtr(ltr: Any) -> RTR:
                     text_children.append(tid)
         elif "value" in binds:
             props["bind"] = binds["value"]
+        elif "text" in binds:
+            props["bind"] = binds["text"]
 
         # Text nodes first (label), then structural children
         all_children = text_children + children
@@ -155,6 +150,8 @@ def _role_for(from_intent: str) -> str:
         "Section": "section",
         "Shell": "shell",
         "Nav": "nav",
+        "Footer": "footer",
+        "Meta": "meta",
         "Button": "button",
         "Card": "card",
         "Text": "text",
@@ -164,5 +161,12 @@ def _role_for(from_intent: str) -> str:
         "Select": "select",
         "Toggle": "toggle",
         "Slider": "slider",
+        "ThemeToggle": "theme-toggle",
+        "Canvas": "canvas",
+        "Image": "image",
+        "Icon": "icon",
+        "Code": "code",
+        "CopyButton": "copy-button",
+        "Menu": "menu",
     }
     return mapping.get(from_intent, from_intent.lower())

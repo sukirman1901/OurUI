@@ -12,16 +12,11 @@ Status ladder:
 ## Current status
 
 Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.  
-**Phase N** (`compiler-p0n`): single-process production serve is **Stable**.  
-**Phase O** (`compiler-p0o`): file-backed multi-worker serve is **Stable** (Unix `fcntl`).  
-**Phase P** (`compiler-p0p`): OurUI design tokens (`--ourui-*`) are **Stable**.  
-**Phase R** (`v0.1.0` / `compiler-p0r`): first package release of the `ourui` compiler/runtime on PyPI-ready packaging (local install / wheel build; not necessarily published).  
-**Phase S1** (`compiler-p0s1` / `v0.1.2`): `ui.Link` + `ui.Shell` / `layout=` — Stable (dump schema **10**).  
-**RFC-001** (`v0.2.0`): Presentation Graph in dump (schema **11**, Option A).  
-**RFC-002** (`v0.2.1`): Resolved Design in dump (schema **12**).  
-**RFC-003** (`v0.3.0`): Host Contract Implemented — emit **requires** `RTR + Resolved Design`.  
-**Phase S2** (`v0.3.2`): form controls `Input` / `Select` / `Toggle` / `Slider` (dump schema **14**).  
-**Phase S3a** (`v0.3.3`): `ui.Nav` + `placement=` + `tone=` (dump schema **15**).
+**Phase N–O**: production / multi-worker serve **Stable**.  
+**Phase P**: design tokens **Stable**.  
+**Phase R–S1**: package + Link/Shell **Stable**.  
+**RFC-001–003**: Presentation Graph, Resolved Design, Host Contract **Stable** / Implemented.  
+**Phase S2–S6** (`v0.4.0`, dump schema **21**): form controls through Canvas + polish — **Stable**.
 
 ### Capability generations
 
@@ -29,7 +24,8 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 |---|---|
 | 1 — Language infrastructure | Done |
 | 2 — Semantic presentation (PG + DS → Resolved Design) | Done (`0.2.1`) |
-| 3 — Host (`RTR + Resolved Design` via Host Contract) | **Done (`0.3.0`)** |
+| 3 — Host (`RTR + Resolved Design` via Host Contract) | Done (`0.3.0`) |
+| Phase S language surface (S1–S6) | Done (`0.4.0`, schema **21**) |
 
 | Area | Status |
 |---|---|
@@ -38,34 +34,29 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | Invariants + LOCKED + vocabulary | Stable |
 | Compilation Architecture | Stable |
 | RFC Process | Stable |
-| Language Spec (P0 subset) | Stable |
-| Semantic Graph (P0) | Stable (`ourui dump`) |
-| DependencyGraph view (P0) | Stable (`ourui dump`) |
-| IIR (P0) | Stable (`ourui dump`) |
-| Node identity schema | Stable |
-| `ourui dump` CLI | Stable |
-| LTR | Stable (Layout Lowering in `ourui dump`) |
-| RTR / HostNode | Stable (Render Lowering in `ourui dump`) |
-| HTML emitter | Stable — Host Contract primary (`RTR + Resolved Design` required) |
-| CSS emit | Stable — from Resolved Design; `_BASE_CSS` = host-private chrome only |
-| Design tokens (`ui.Theme`) | Stable (Phase P) — overrides flow into Design System resolve |
-| JS emit / runtime shim | Stable (fetch RPC) |
-| `@server` / `on_click` | Stable |
-| `ourui serve` + RPC | Stable |
-| `State` / binds | Stable |
-| Components (expand) | Stable |
-| HMR (`ourui serve`) | Stable |
-| Routing (`route=` on `ui.Page`) | Stable |
-| LSP | Stable (`ourui lsp` — completions + hover + tokens) |
-| Runtime (single-process prod) | Stable (`ourui serve --prod`) |
-| Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
-| Package (`ourui` 0.3.3) | Stable ([PyPI](https://pypi.org/project/ourui/); Host Contract + S2 + S3a Nav) |
-| Presentation Graph | Stable (RFC-001 Option A — lowering) |
-| Resolved Design | Stable (RFC-002 — dump + required emit input) |
-| Design System pack (`ourui-default`) | Draft (seeded from `theme.py`; packs API may grow) |
-| Host Contract | Stable (RFC-003 Implemented) |
-| `ui.Link` / `ui.Shell` / `layout=` | Stable (Phase S1 — dump schema **10**) |
-| `ui.Input` / `Select` / `Toggle` / `Slider` | Stable (Phase S2 — dump schema **14**) |
-| `ui.Nav` | Stable (Phase S3a — dump schema **15**) |
+| Language Spec | Stable (P0 + Phase S through S6) |
+| Semantic Graph / DependencyGraph / IIR / LTR / RTR | Stable (`ourui dump`) |
+| Presentation Graph | Stable (RFC-001) |
+| Resolved Design | Stable (RFC-002 — required emit input) |
+| Host Contract | Stable (RFC-003 — emit requires RTR + Resolved Design) |
+| HTML / CSS / JS emit | Stable |
+| Design tokens (`ui.Theme`) | Stable — color, type, space, elevation |
+| `ourui serve` / State / `@server` / HMR / routing / LSP | Stable |
+| Runtime (prod + multi-worker file store) | Stable |
+| Package (`ourui` **0.4.0**) | Stable ([PyPI](https://pypi.org/project/ourui/)) |
+| `ui.Link` / `Shell` / `layout=` | Stable (S1) |
+| `ui.Input` / `Select` / `Toggle` / `Slider` | Stable (S2) |
+| `ui.Nav` | Stable (S3a) |
+| Type/space/elevation tokens + `ui.ThemeToggle` | Stable (S3) |
+| `ui.Footer` + Hero/Section `pad=` | Stable (S3b) |
+| `gap=` / `align=` / `justify=` / `split-sidebar` | Stable (S4) |
+| `motion=` presets | Stable (S4m) |
+| `ui.Canvas` (Plasma WebGL escape) | Stable (S5) |
+| Drawer / Menu / Image / Icon / Meta / Code / CopyButton / control states | Stable (S6) |
+| Design System pack API (`ourui-default`) | Draft (seeded from `theme.py`; packs may grow) |
 
-Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see ADRs 001–004 under `docs/decisions/`.
+### Out of language scope (still)
+
+Redis share backends, auth, billing, data tables — app concerns, not Phase S.
+
+Update this table when phases land. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump — see ADRs under `docs/decisions/`.

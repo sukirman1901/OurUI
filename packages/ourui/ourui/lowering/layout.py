@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from ourui.node import SHELL_LAYOUT_INTENTS, Node, SourceSpan
+from ourui.node import LAYOUT_PASSTHROUGH, SHELL_LAYOUT_INTENTS, Node, SourceSpan
 
 # IIR kind → LTR layout object kind
 _LAYOUT_KIND: dict[str, str] = {
@@ -12,6 +12,8 @@ _LAYOUT_KIND: dict[str, str] = {
     "Section": "Column",
     "Shell": "Row",
     "Nav": "Row",
+    "Footer": "Row",
+    "Meta": "Box",
     "Grid": "Grid",
     "Card": "Box",
     "Button": "Box",
@@ -21,6 +23,13 @@ _LAYOUT_KIND: dict[str, str] = {
     "Select": "Box",
     "Toggle": "Box",
     "Slider": "Box",
+    "ThemeToggle": "Box",
+    "Canvas": "Box",
+    "Image": "Box",
+    "Icon": "Box",
+    "Code": "Box",
+    "CopyButton": "Box",
+    "Menu": "Box",
 }
 
 _AXIS: dict[str, str] = {
@@ -35,34 +44,11 @@ _AXIS: dict[str, str] = {
 _SHELL_TO_LTR: dict[str, str] = {
     "stack": "Column",
     "row": "Row",
+    "split-2": "Grid",
     "split-3": "Grid",
+    "split-sidebar": "Grid",
     "grid": "Grid",
 }
-
-_PASSTHROUGH_PROPS = (
-    "title",
-    "subtitle",
-    "text",
-    "variant",
-    "color",
-    "bg",
-    "href",
-    "external",
-    "name",
-    "placeholder",
-    "type",
-    "label",
-    "value",
-    "options",
-    "min",
-    "max",
-    "step",
-    "placement",
-    "tone",
-    "brand",
-    "items",
-    "actions",
-)
 
 
 @dataclass
@@ -113,7 +99,7 @@ def lower_to_ltr(iir: Any) -> LTR:
         }
         if isinstance(shell_layout, str):
             props["shell_layout"] = shell_layout
-        for key in _PASSTHROUGH_PROPS:
+        for key in LAYOUT_PASSTHROUGH:
             if key in raw_attrs:
                 props[key] = raw_attrs[key]
         if "events" in inode:

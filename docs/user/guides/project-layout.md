@@ -32,6 +32,8 @@ Create and activate a venv in the project root (same as [Getting started](../get
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install ourui
+# or editable from a clone:
 pip install -e path/to/ourui/packages/ourui
 ```
 

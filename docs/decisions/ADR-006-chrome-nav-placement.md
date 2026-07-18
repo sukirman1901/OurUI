@@ -1,6 +1,6 @@
 # ADR-006: Chrome intents — Nav, placement, not raw CSS `position`
 
-**Status:** Accepted + Implemented (Phase **S3a**, package `0.3.3`)  
+**Status:** Accepted + Implemented (Phase **S3a**, package `0.3.3`; drawer/`menu=` in **S6** / `0.4.0`)  
 **Date:** 2026-07-18  
 **Relates:** [ADR-005](ADR-005-intent-emit-escape.md)
 
@@ -79,14 +79,14 @@ Emit: `<nav class="ourui-nav ourui-nav-sticky-top ourui-tone-glass">…</nav>` w
 
 ## Implementation order
 
-1. **S3a** — `ui.Nav` + `placement` + `tone=solid|glass` + emit CSS (+ pad page top when fixed/sticky)
-2. **S3** — type scale / space / elevation tokens (nav consumes them)
-3. **S4** — richer layout on Shell/Section
-4. **S5–S6** — Canvas backdrop, drawer menu, theme icon
+1. **S3a** — `ui.Nav` + `placement` + `tone=solid|glass` — **Done** (`0.3.3`)
+2. **S3** — type / space / elevation tokens — **Done** (`0.4.0`)
+3. **S4** — richer layout on Shell/Section — **Done** (`0.4.0`)
+4. **S5–S6** — Canvas backdrop, drawer menu, theme toggle — **Done** (`0.4.0`)
 
 ## Consequences
 
 - CSS `position` **is** defined — inside the **emitter tables**, driven by `placement`.
 - `ui.Nav` ships with **defaults people would actually use** (sticky glass/solid bar), not an unstyled tag.
-- Dump schema bump when `placement` / `tone` appear on HostNode.
-- Demo landing should swap link lists for `ui.Nav` once S3a lands.
+- Dump schema bumped when `placement` / `tone` / `menu` appear on HostNode (schema **15** → **21**).
+- Demo landing uses `ui.Nav` + drawer + ThemeToggle.

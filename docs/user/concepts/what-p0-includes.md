@@ -1,32 +1,34 @@
-# What P0 includes
+# What Stable includes
 
-**Stable P0** is the supported surface for building real apps today. User docs under `docs/user/` document only this scope — not draft RFCs or future phases.
+User docs under `docs/user/` document the **Stable** surface for `ourui` **0.4.0** (dump schema **21**) — historically called “P0” plus Phase **S1–S6**.
 
-## Included in P0
+## Included
 
 | Area | What you can do |
 |------|-----------------|
 | **CLI** | `ourui dump`, `ourui emit`, `ourui serve`, `ourui lsp` |
 | **State** | Server-backed `State` with bind paths and live updates over `serve` |
-| **Server handlers** | `@server` functions invoked from the browser via HTTP RPC |
-| **Routing** | Multiple pages with `ui.Page(..., route=...)` |
-| **Theme** | `ui.Theme` and `color=` tokens emitted as `--ourui-*` CSS variables |
-| **Production serve** | `--prod` for sessions and safe errors |
-| **Multi-worker** | `--workers N` with file-backed sessions (`--session-dir`) |
+| **Server handlers** | `@server` functions via HTTP RPC |
+| **Routing** | Multiple pages with `ui.Page(..., route=...)` + `ui.Link` |
+| **Theme** | `ui.Theme` — color, type, space, elevation tokens; `ui.ThemeToggle` |
+| **Layout** | `ui.Shell` / `Section` — `layout=`, `gap=`, `pad=`, `align=`, `justify=` |
+| **Chrome** | `ui.Nav` (placement/tone/drawer), `ui.Footer`, `ui.Meta` |
+| **Forms** | `Input`, `Select`, `Toggle`, `Slider` → `@server` payload |
+| **Motion** | `motion=enter\|press\|reveal` |
+| **Escape** | `ui.Canvas` WebGL (gradient / dither / raymarch) |
+| **Polish** | `Image`, `Icon`, `Code`, `CopyButton`, `Menu`, control states |
+| **Production serve** | `--prod`, `--workers N`, `--session-dir` |
 | **Components** | Function components and `Component` classes |
-| **Developer UX** | HMR on file change, LSP completions/hover for `ui.*`, `State`, `@server` |
+| **Developer UX** | HMR, LSP completions/hover |
 
-See [Getting started](../getting-started.md) and the [Tutorial](../README.md#tutorial) for hands-on coverage. API details live in [Reference](../README.md#reference).
+See [Getting started](../getting-started.md) and the [Tutorial](../README.md#tutorial). API details: [Reference](../README.md#reference). Dogfood: `demo/app.py`.
 
-## Not yet in P0
+## Not in language scope (yet)
 
-These are planned or out of scope for the current stable release. Do not expect them to work without checking the roadmap or specs:
+- **Redis / distributed sessions** — P0 uses in-process or file-backed sessions
+- **Auth / billing / data tables** — application concerns
+- **Client-only State** — browser-local without server round-trips
+- **PDF / native hosts** — Host Contract is ready; emitters not shipped
+- **Published docs site** — this markdown tree *is* the Stable user guide
 
-- **Forms** — structured form components and validation helpers
-- **Redis session store** — distributed session backend (P0 uses in-process or file-backed sessions)
-- **Client-only State** — state that lives entirely in the browser without server round-trips
-- **PDF export** — server or client PDF generation from pages
-- **Rust runtime** — alternate host implementation
-- **Published docs site** — browsable site separate from in-repo markdown (this tree *is* the P0 user docs)
-
-When a feature graduates to Stable P0, it will appear in the tutorial, reference, and [roadmap](../../roadmap.md).
+When a feature graduates to Stable, it appears in the tutorial, reference, [roadmap](../../roadmap.md), and [SPEC_STATUS.md](../../../SPEC_STATUS.md).

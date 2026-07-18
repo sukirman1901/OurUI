@@ -77,7 +77,7 @@ class LSPServer:
                     "completionProvider": {"triggerCharacters": ["."]},
                     "hoverProvider": True,
                 },
-                "serverInfo": {"name": "ourui-lsp", "version": "0.1.0"},
+                "serverInfo": {"name": "ourui-lsp", "version": "0.4.0"},
             },
         )
 

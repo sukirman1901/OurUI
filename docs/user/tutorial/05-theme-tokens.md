@@ -2,7 +2,7 @@
 
 ## Goal
 
-Set brand colors once with **`ui.Theme`**, then reference token names like **`color="primary"`** on components instead of hard-coded hex values.
+Set brand colors (and type/space/elevation) once with **`ui.Theme`**, reference **`color="primary"`** on components, and optionally add **`ui.ThemeToggle`** for light/dark.
 
 ## Code
 
@@ -25,25 +25,26 @@ Run:
 ourui serve examples/tutorial/05_theme.py
 ```
 
-The primary button uses your theme colors. Inspect the page source to see `--ourui-primary` and `--ourui-primary-fg` CSS variables in the emitted stylesheet.
+Inspect page source for `--ourui-primary` and related variables. For the full token set + ThemeToggle + Canvas, run the Plasma demo: `ourui serve demo/app.py`.
 
 ## What you learned
 
-- Assign **`theme = ui.Theme(...)`** at module level (same pattern as `page = ui.Page(...)`). OurUI picks it up at compile time and injects token CSS into the document.
-- **`ui.Theme`** kwargs override the built-in light palette. Common keys: `primary`, `primary_fg`, `bg`, `fg`, `muted`, `accent`, `danger`, and spacing/radius tokens (`radius`, `space_sm`, `space_md`).
-- Pass **`color="primary"`** (or `muted`, `accent`, `danger`, `card`, `bg`, `fg`) on **`ui.Button`** and other nodes that accept a color role. The runtime maps the name to the matching CSS variable.
-- Tokens become **`--ourui-*` variables** in generated CSS (underscores become hyphens, e.g. `primary_fg` → `--ourui-primary-fg`). Light defaults apply on `:root`; built-in dark defaults live under `.dark` if you add a dark-mode class later.
-- You can pass a **`dark={...}`** dict to `ui.Theme` to override dark-mode tokens separately. Omit it to keep the default dark palette.
+- Assign **`theme = ui.Theme(...)`** at module level. Overrides merge into Resolved Design; emit writes `:root` / `.dark` CSS vars.
+- Common color keys: `primary`, `primary_fg`, `bg`, `fg`, `muted`, `accent`, `danger`, plus `radius` and space/type/elevation keys (`space_*`, `font_*`, `text_*`, `elev_*`).
+- Pass **`color="primary"`** (or `muted`, `accent`, `danger`, …) on buttons and links.
+- **`dark={...}`** overrides the dark palette. **`ui.ThemeToggle`** flips `.dark` on `<html>`.
+- Dump schema **21** includes `semantic_graph.tokens`.
 
 | Token kwarg | CSS variable | Typical use |
 |-------------|--------------|-------------|
 | `primary` | `--ourui-primary` | Primary buttons, links |
 | `primary_fg` | `--ourui-primary-fg` | Text on primary surfaces |
 | `bg` / `fg` | `--ourui-bg`, `--ourui-fg` | Page background and body text |
-| `muted` | `--ourui-muted` | Subtle fills and secondary UI |
-| `accent` | `--ourui-accent` | Highlights |
-| `danger` | `--ourui-danger` | Destructive actions |
+| `space_md` | `--ourui-space-md` | Default gaps/padding |
+| `elev_1` | `--ourui-elev-1` | Light shadow (cards/nav) |
+| `font_display` | `--ourui-font-display` | Hero / section titles |
 
 ## Next
 
 - [Tutorial 06 — Serve: dev and prod](06-serve-dev-and-prod.md)
+- [Theme reference](../reference/theme.md)

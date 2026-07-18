@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from ourui.node import LAYOUT_PASSTHROUGH
+
 # IIR kinds that carry presentation meaning (roles / chrome / controls)
 _PRESENTATION_KINDS = frozenset(
     {
@@ -13,6 +15,8 @@ _PRESENTATION_KINDS = frozenset(
         "Section",
         "Shell",
         "Nav",
+        "Footer",
+        "Meta",
         "Button",
         "Text",
         "Card",
@@ -22,32 +26,14 @@ _PRESENTATION_KINDS = frozenset(
         "Select",
         "Toggle",
         "Slider",
+        "ThemeToggle",
+        "Canvas",
+        "Image",
+        "Icon",
+        "Code",
+        "CopyButton",
+        "Menu",
     }
-)
-
-_PASSTHROUGH = (
-    "color",
-    "variant",
-    "bg",
-    "href",
-    "external",
-    "layout",
-    "text",
-    "title",
-    "name",
-    "placeholder",
-    "type",
-    "label",
-    "value",
-    "options",
-    "min",
-    "max",
-    "step",
-    "placement",
-    "tone",
-    "brand",
-    "items",
-    "actions",
 )
 
 
@@ -78,14 +64,16 @@ def lower_to_presentation_graph(iir: Any) -> PresentationGraph:
             "children": list(inode.get("children", [])),
             "provenance": [*inode.get("provenance", []), "lowering:presentation"],
         }
-        for key in _PASSTHROUGH:
+        for key in LAYOUT_PASSTHROUGH:
             if key in attrs and not isinstance(attrs[key], dict):
-                # `layout` on Shell/Section is shell_layout intent in presentation
                 if key == "layout":
                     node["shell_layout"] = attrs[key]
                 elif key in {"color", "variant", "bg"}:
                     node.setdefault("tone", attrs[key])
                 else:
                     node[key] = attrs[key]
+        # layout attr is not in LAYOUT_PASSTHROUGH but used as shell_layout
+        if "layout" in attrs and not isinstance(attrs["layout"], dict):
+            node["shell_layout"] = attrs["layout"]
         pg.nodes[nid] = node
     return pg

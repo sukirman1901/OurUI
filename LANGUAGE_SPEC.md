@@ -1,10 +1,10 @@
-# Language Spec (P0+ subset)
+# Language Spec
 
-Normative surface for the current compiler. Later phases extend this document via RFC when needed.
+Normative surface for the current compiler (`ourui` **0.4.0**, dump schema **21**). Later phases extend this document via RFC when needed.
 
 ## Status
 
-See [SPEC_STATUS.md](SPEC_STATUS.md). Language surface: **Stable** (P0 subset).
+See [SPEC_STATUS.md](SPEC_STATUS.md). Language surface: **Stable** (P0 + Phase S1–S6).
 
 ## Authoring model
 
@@ -25,143 +25,107 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 - Full Python execution semantics for arbitrary side effects in UI construction
 - Client-only `State` (browser-local)
 
-## Design tokens (Phase P)
+## Design tokens
 
-OurUI emits semantic CSS variables under the `--ourui-*` namespace (hex/px defaults — not a third-party theme dump).
+OurUI emits semantic CSS variables under the `--ourui-*` namespace. Emit consumes **Resolved Design** (Host Contract); `ui.Theme` / `DEFAULT_*` seed the Design System pack only.
 
 ```python
 theme = ui.Theme(primary="#1a5f4a", primary_fg="#f5faf8", dark={"primary": "#2dd4a8"})
 ui.Button("Go", color="primary")
+ui.ThemeToggle("Theme")  # toggles .dark on <html>
 ```
 
-- Builtin light + dark maps live in the compiler; `ui.Theme` merges overrides into Semantic Graph `tokens`
-- HTML emit writes `:root { … }` and `.dark { … }`; components use `var(--ourui-…)`
-- `color=` / `variant=` / `bg=` values that match token roles (`primary`, `accent`, `danger`, `muted`, …) add tone classes
-- Dump schema version **9** includes `semantic_graph.tokens`
+Token families (override via `ui.Theme`):
 
-## Routing (Phase K)
+| Family | Keys (examples) |
+|--------|-----------------|
+| Color | `bg`, `fg`, `primary`, `primary_fg`, `muted`, `accent`, `danger`, `card`, `border`, … |
+| Shape | `radius` |
+| Space | `space_xs` … `space_2xl` |
+| Type | `font_sans`, `font_display`, `text_xs` … `text_2xl`, `leading_*` |
+| Elevation | `elev_0` … `elev_3` |
 
-Multiple pages in one module via `route=` on `ui.Page`:
+- HTML emit writes `:root { … }` and `.dark { … }`
+- `color=` / `variant=` / `bg=` matching roles add tone classes
+- Dump includes `semantic_graph.tokens` (schema **21**)
 
-```python
-home = ui.Page(route="/", ui.Hero(title="Home"))
-about = ui.Page(route="/about", ui.Section(title="About"))
-```
+## Routing
 
-- Analyze registers `routes: {"/": node_id, …}` in the Semantic Graph
-- A single `ui.Page` without `route=` defaults to `/`
-- Multiple pages require an explicit `route=` on each
-- `ourui serve` compiles the matching page per `GET` path; unknown paths → 404
-- Prefer `ui.Link("About", href="/about")` for in-app navigation (emits `<a href>`)
+Multiple pages via `route=` on `ui.Page`. Prefer `ui.Link(..., href=...)` for navigation.
 
 ## Built-in kinds
 
 | Kind | Domain | Notes |
 |---|---|---|
-| `Page` | Intent | Root container; optional `layout=` |
-| `Hero` | Intent | Hero intent |
-| `Section` | Intent | Section intent; optional `layout=` |
-| `Shell` | Intent | Layout region; `layout=` = `stack` \| `row` \| `split-3` \| `grid` |
-| `Nav` | Intent | Chrome bar; `placement=` + `tone=` + brand/items/actions |
-| `Button` | Presentation | Button-as-concept (not HTML); may carry `on_click` |
+| `Page` | Intent | Root; optional `layout=` / `route=` |
+| `Hero` | Intent | Hero; `pad=` / `motion=` |
+| `Section` | Intent | Section; `layout=` / `gap=` / `pad=` / `align=` / `motion=` |
+| `Shell` | Intent | Layout region; `layout=` + gap/pad/align/justify |
+| `Nav` | Intent | Chrome; `placement=` / `tone=` / `menu=` + brand/items/actions |
+| `Footer` | Intent | Footer; brand/links/meta slots |
+| `Meta` | Intent | Document head title/description/og |
+| `Button` | Presentation | May carry `on_click`, `motion=press`, disabled/loading |
 | `Text` | Presentation | Text content |
-| `Card` | Presentation | Card concept |
-| `Grid` | Presentation | Grid concept (pre-layout) |
-| `Link` | Presentation | Navigation anchor; requires `href=` |
-| `Input` | Presentation | Form field; `name=` collected into `@server` payload on button click |
-| `Select` | Presentation | Dropdown; `options=` list of values |
-| `Toggle` | Presentation | Checkbox; collected as boolean |
-| `Slider` | Presentation | Range; `min=` / `max=` / `step=` |
+| `Card` | Presentation | Card; optional `motion=` |
+| `Grid` | Presentation | Grid concept |
+| `Link` | Presentation | `href=` required |
+| `Input` / `Select` / `Toggle` / `Slider` | Presentation | Form controls → `@server` payload |
+| `ThemeToggle` | Presentation | Client `.dark` toggle |
+| `Canvas` | Presentation | WebGL escape; `mode=gradient\|dither\|raymarch` |
+| `Image` | Presentation | `src=` / `alt=` / `fit=` |
+| `Icon` | Presentation | Reicon-style `name=` |
+| `Code` | Presentation | Code block |
+| `CopyButton` | Presentation | Clipboard; `copy=` |
+| `Menu` | Presentation | Dropdown; `items=` |
 
 ### Layout intents (`layout=`)
 
-Authoring values (not CSS utilities): `stack`, `row`, `split-3`, `grid`.  
-Emit maps them to host classes (e.g. `.ourui-shell-split-3`) — see ADR-005.
+`stack` \| `row` \| `grid` \| `split-2` \| `split-3` \| `split-sidebar`
 
-### Links
+Spacing / alignment (semantic enums — not raw CSS): `gap=` / `pad=` = `none|xs|sm|md|lg|xl|2xl`; `align=` = `start|center|end|stretch`; `justify=` = `start|center|end|between`.
 
-```python
-ui.Link("Studio", href="/app")
-ui.Link("Docs", href="https://example.com", color="primary")  # external → target=_blank
-```
+### Motion (`motion=`)
 
-### Inputs (Phase S2)
+`none` \| `enter` \| `press` \| `reveal` — host CSS + `prefers-reduced-motion`.
 
-```python
-email = State("")
-theme = State("light")
-on = State(True)
-level = State(40)
-
-@server
-def save(**payload):
-    email.set(str(payload.get("email", "")))
-    theme.set(str(payload.get("theme", "")))
-    on.set(bool(payload.get("enabled")))
-    level.set(int(payload.get("volume", 0)))
-
-ui.Input(name="email", type="email", bind=email)
-ui.Select(name="theme", options=["light", "dark"], bind=theme)
-ui.Toggle(name="enabled", label="On", bind=on)
-ui.Slider(name="volume", min=0, max=100, step=5, bind=level)
-ui.Button("Save", on_click=save)  # JS posts collected [data-ourui-field] values
-```
-
-### Nav (Phase S3a)
+### Nav
 
 ```python
 ui.Nav(
     brand=ui.Link("OurUI", href="/"),
     items=[ui.Link("Features", href="#features")],
-    actions=[ui.Link("App", href="/app", color="primary")],
-    placement="sticky-top",  # flow | sticky-top | fixed-top | fixed-bottom | overlay | backdrop
-    tone="glass",            # solid | glass
+    actions=[ui.ThemeToggle("Theme"), ui.Link("App", href="/app", color="primary")],
+    placement="sticky-top",
+    tone="glass",
+    menu="drawer",
 )
 ```
 
-## Components (Phase I)
+### Forms (S2)
 
 ```python
-def FeatureCard(title: str):
-    return ui.Card(title)
-
-class CounterPanel(Component):
-    def __init__(self, label: str):
-        self.label = label
-    def build(self):
-        return ui.Section(title=self.label, children=[...])
-
-FeatureCard("Analysis")
-CounterPanel("Counter")
+ui.Input(name="email", type="email", bind=email)
+ui.Select(name="theme", options=["light", "dark"], bind=theme)
+ui.Toggle(name="enabled", label="On", bind=on)
+ui.Slider(name="volume", min=0, max=100, step=5, bind=level)
+ui.Button("Save", on_click=save)  # posts [data-ourui-field] values
 ```
 
-Expanded at **Analyze** (before IIR). Provenance includes `expand:FeatureCard`. Body must return a single `ui.*` or nested component call.
-
-## Behavior (Phase F–H)
+### Canvas escape (S5)
 
 ```python
-from ourui import ui, server, State
-
-count = State(0)
-
-@server
-def increment():
-    count.set(count.get() + 1)
-    return count.get()
-
-ui.Text(count)
-ui.Button("+1", on_click=increment)
+ui.Canvas(mode="gradient", config={"pace": 40}, reduced_motion="static")
 ```
 
-- `on_click` — function name or string → RTR events → `data-ourui-on-click`
-- `@server` — handler kind in the handler table; executed by `ourui serve`
-- `State` — server-side value; binds become `data-ourui-bind`; RPC returns `state` for JS `applyState`
+Explicit host escape — not the default styling path (ADR-005).
 
-Theme references may appear as string tokens (e.g. `variant="primary"`).
+## Components / Behavior
+
+Function and class components expand at Analyze. `State` + `@server` + `on_click` as in Phase F–H.
 
 ## Example
 
-See [examples/example.py](examples/example.py).
+See [examples/example.py](examples/example.py) and [demo/app.py](demo/app.py).
 
 ## Errors
 
@@ -173,4 +137,4 @@ Spans are attached to nodes (I5).
 
 ## Evolution
 
-Extensions require updates here and, if they add vocabulary, an [RFC](RFC_PROCESS.md).
+Extensions require updates here and, if they add vocabulary, an [RFC](RFC_PROCESS.md). Dump schema bumps with Stable surface changes.

@@ -10,17 +10,18 @@ Style inspiration: Rustc Dev Guide, LLVM programmer guides.
 2. [INVARIANTS.md](INVARIANTS.md) — hard rules  
 3. [ARCHITECTURE.md](ARCHITECTURE.md) — Compilation Architecture  
 
-## 1. Compilation Flow (through Phase E)
+## 1. Compilation Flow (through Phase S / `0.4.0`)
 
 ```text
 Python source
   → Parse (Python AST)
   → Analyze (Semantic Graph + DependencyGraph view)
   → Intent Lowering (IIR)
+  → Presentation Graph + Design System → Resolved Design
   → Layout Lowering (LTR)
   → Render Lowering (RTR / HostNode)
-  → Serialize JSON (`ourui dump`)
-  → Emit HTML/CSS (`ourui emit`)
+  → Serialize JSON (`ourui dump`, schema 21)
+  → Emit HTML/CSS/JS (`ourui emit` — requires RTR + Resolved Design)
 ```
 
 Later: routing refinements. LSP ships as Phase L (`ourui lsp`).

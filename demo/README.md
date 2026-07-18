@@ -1,15 +1,20 @@
-# OurUI demo — Plasma-shaped dogfood (Phase S1)
+# OurUI demo — Plasma-shaped dogfood (Phase S1–S6)
 
-Uses **editable** OurUI from this repo (Link/Shell are newer than PyPI 0.1.1).
+Dogfoods the full language surface on **ourui ≥ 0.4.0** (editable install from this repo, or `pip install ourui`).
 
 ```bash
-cd /Users/aaa/Documents/Developer/ourui
-source .venv/bin/activate   # monorepo venv with pip install -e packages/ourui
+cd /Users/aaa/Documents/Developer/ourui   # or your clone
+source .venv/bin/activate
+pip install -e packages/ourui            # if needed
 ourui serve demo/app.py
 ```
 
-- http://127.0.0.1:8765/ — landing with **ui.Link**
-- http://127.0.0.1:8765/app — **ui.Shell(layout="split-3")**
-- http://127.0.0.1:8765/embed — stub
+Open:
 
-See [GAPS.md](GAPS.md) for remaining S2–S6 items.
+| URL | Page |
+|-----|------|
+| http://127.0.0.1:8765/ | Landing — Nav, Hero + Canvas, tokens, motion, Footer, Meta |
+| http://127.0.0.1:8765/app | Studio — Shell `split-3`, Canvas preview, forms |
+| http://127.0.0.1:8765/embed | Embed stub with Canvas |
+
+See [GAPS.md](GAPS.md) for what is closed vs still app-scope (Redis/auth).

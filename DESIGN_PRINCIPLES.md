@@ -22,7 +22,11 @@ Given the same source and compiler version, artifacts match. Passes do not depen
 
 ### Everything is inspectable
 
-Compilers can dump Semantic Graph, Analysis Views, and OurIR stages. Contributors debug with artifacts, not guesswork.
+Compilers can dump Semantic Graph, Analysis Views, Presentation Graph, Resolved Design, and OurIR stages. Contributors debug with artifacts, not guesswork.
+
+### Host Contract
+
+Web emit requires **RTR + Resolved Design** (RFC-003). Design tokens and presentation intents flow through resolve — not ad-hoc CSS strings in authoring.
 
 ### Everything is traceable
 

@@ -10,6 +10,7 @@ from typing import Any
 
 # Logical token keys (authoring + dump). CSS vars are --ourui-<key with _ → -> -> -> -).
 TOKEN_KEYS: tuple[str, ...] = (
+    # Color
     "bg",
     "fg",
     "primary",
@@ -23,9 +24,32 @@ TOKEN_KEYS: tuple[str, ...] = (
     "accent_fg",
     "danger",
     "danger_fg",
+    # Shape
     "radius",
+    # Space scale (S3)
+    "space_xs",
     "space_sm",
     "space_md",
+    "space_lg",
+    "space_xl",
+    "space_2xl",
+    # Type (S3)
+    "font_sans",
+    "font_display",
+    "text_xs",
+    "text_sm",
+    "text_md",
+    "text_lg",
+    "text_xl",
+    "text_2xl",
+    "leading_tight",
+    "leading_normal",
+    "leading_relaxed",
+    # Elevation (S3)
+    "elev_0",
+    "elev_1",
+    "elev_2",
+    "elev_3",
 )
 
 # Semantic color roles usable in color= / bg=
@@ -38,6 +62,30 @@ COLOR_TOKEN_NAMES: tuple[str, ...] = (
     "bg",
     "fg",
 )
+
+_TYPE_SPACE_ELEV: dict[str, str] = {
+    "space_xs": "0.25rem",
+    "space_sm": "0.5rem",
+    "space_md": "0.75rem",
+    "space_lg": "1.25rem",
+    "space_xl": "2rem",
+    "space_2xl": "3rem",
+    "font_sans": '"DM Sans", "Segoe UI", system-ui, sans-serif',
+    "font_display": '"Fraunces", "Iowan Old Style", Georgia, serif',
+    "text_xs": "0.75rem",
+    "text_sm": "0.875rem",
+    "text_md": "1rem",
+    "text_lg": "1.25rem",
+    "text_xl": "1.75rem",
+    "text_2xl": "2.5rem",
+    "leading_tight": "1.2",
+    "leading_normal": "1.5",
+    "leading_relaxed": "1.7",
+    "elev_0": "none",
+    "elev_1": "0 1px 2px color-mix(in srgb, var(--ourui-fg) 12%, transparent)",
+    "elev_2": "0 4px 14px color-mix(in srgb, var(--ourui-fg) 14%, transparent)",
+    "elev_3": "0 12px 32px color-mix(in srgb, var(--ourui-fg) 18%, transparent)",
+}
 
 DEFAULT_LIGHT: dict[str, str] = {
     "bg": "#f7f6f2",
@@ -54,8 +102,7 @@ DEFAULT_LIGHT: dict[str, str] = {
     "danger": "#b91c1c",
     "danger_fg": "#fef2f2",
     "radius": "0.5rem",
-    "space_sm": "0.5rem",
-    "space_md": "0.75rem",
+    **_TYPE_SPACE_ELEV,
 }
 
 DEFAULT_DARK: dict[str, str] = {
@@ -73,29 +120,11 @@ DEFAULT_DARK: dict[str, str] = {
     "danger": "#f87171",
     "danger_fg": "#1c1917",
     "radius": "0.5rem",
-    "space_sm": "0.5rem",
-    "space_md": "0.75rem",
+    **_TYPE_SPACE_ELEV,
 }
 
-# Map Theme kwarg names → token keys
-_KWARG_TO_KEY: dict[str, str] = {
-    "bg": "bg",
-    "fg": "fg",
-    "primary": "primary",
-    "primary_fg": "primary_fg",
-    "muted": "muted",
-    "muted_fg": "muted_fg",
-    "border": "border",
-    "card": "card",
-    "card_fg": "card_fg",
-    "accent": "accent",
-    "accent_fg": "accent_fg",
-    "danger": "danger",
-    "danger_fg": "danger_fg",
-    "radius": "radius",
-    "space_sm": "space_sm",
-    "space_md": "space_md",
-}
+# Map Theme kwarg names → token keys (identity for all TOKEN_KEYS)
+_KWARG_TO_KEY: dict[str, str] = {k: k for k in TOKEN_KEYS}
 
 
 def css_var_name(key: str) -> str:

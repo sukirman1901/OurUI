@@ -11,10 +11,18 @@ from ourui.analysis.components import (
     expand_component_call,
 )
 from ourui.node import (
+    ALIGN_INTENTS,
+    CANVAS_MODES,
     FORM_CONTROL_KINDS,
+    IMAGE_FITS,
     INPUT_TYPES,
+    JUSTIFY_INTENTS,
+    MOTION_INTENTS,
+    NAV_MENUS,
     NAV_PLACEMENTS,
     NAV_TONES,
+    REDUCED_MOTION,
+    SPACE_INTENTS,
     THEME_ATTR_KEYS,
     Node,
 )
@@ -199,8 +207,12 @@ class _GraphBuilder:
                 continue
             val = literal_value(arg)
             if isinstance(val, str):
-                if kind in {"Button", "Text", "Card", "Link"} and "text" not in attrs:
+                if kind in {"Button", "Text", "Card", "Link", "CopyButton", "Code", "ThemeToggle", "Menu"} and "text" not in attrs:
                     attrs["text"] = val
+                elif kind == "Icon" and "name" not in attrs:
+                    attrs["name"] = val
+                elif kind == "Image" and "src" not in attrs:
+                    attrs["src"] = val
                 elif kind in FORM_CONTROL_KINDS and "name" not in attrs:
                     attrs["name"] = val
                 elif "title" not in attrs:
@@ -226,13 +238,13 @@ class _GraphBuilder:
                     if cid:
                         child_ids.append(cid)
                 continue
-            if kind == "Nav" and kw.arg == "brand" and isinstance(kw.value, ast.Call):
+            if kind in {"Nav", "Footer"} and kw.arg == "brand" and isinstance(kw.value, ast.Call):
                 cid = self.build_call(kw.value, parent_id=nid, expansion_trail=trail)
                 if cid:
                     attrs["brand"] = cid
                     child_ids.append(cid)
                 continue
-            if kind == "Nav" and kw.arg in {"items", "actions"}:
+            if kind in {"Nav", "Footer", "Menu"} and kw.arg in {"items", "actions", "links", "meta"}:
                 slot_ids: list[str] = []
                 val_node = kw.value
                 if isinstance(val_node, (ast.List, ast.Tuple)):
@@ -258,6 +270,51 @@ class _GraphBuilder:
                 tone = literal_value(kw.value)
                 if isinstance(tone, str):
                     attrs["tone"] = tone if tone in NAV_TONES else "solid"
+                continue
+            if kind == "Nav" and kw.arg == "menu":
+                menu = literal_value(kw.value)
+                if isinstance(menu, str):
+                    attrs["menu"] = menu if menu in NAV_MENUS else "none"
+                continue
+            if kw.arg == "gap":
+                gap = literal_value(kw.value)
+                if isinstance(gap, str):
+                    attrs["gap"] = gap if gap in SPACE_INTENTS else "md"
+                continue
+            if kw.arg == "pad":
+                pad = literal_value(kw.value)
+                if isinstance(pad, str):
+                    attrs["pad"] = pad if pad in SPACE_INTENTS else "md"
+                continue
+            if kw.arg == "align":
+                align = literal_value(kw.value)
+                if isinstance(align, str):
+                    attrs["align"] = align if align in ALIGN_INTENTS else "stretch"
+                continue
+            if kw.arg == "justify":
+                justify = literal_value(kw.value)
+                if isinstance(justify, str):
+                    attrs["justify"] = justify if justify in JUSTIFY_INTENTS else "start"
+                continue
+            if kw.arg == "motion":
+                motion = literal_value(kw.value)
+                if isinstance(motion, str):
+                    attrs["motion"] = motion if motion in MOTION_INTENTS else "none"
+                continue
+            if kind == "Canvas" and kw.arg == "mode":
+                mode = literal_value(kw.value)
+                if isinstance(mode, str):
+                    attrs["mode"] = mode if mode in CANVAS_MODES else "gradient"
+                continue
+            if kind == "Canvas" and kw.arg == "reduced_motion":
+                rm = literal_value(kw.value)
+                if isinstance(rm, str):
+                    attrs["reduced_motion"] = rm if rm in REDUCED_MOTION else "static"
+                continue
+            if kind == "Image" and kw.arg == "fit":
+                fit = literal_value(kw.value)
+                if isinstance(fit, str):
+                    attrs["fit"] = fit if fit in IMAGE_FITS else "cover"
                 continue
             if kw.arg == "route" and kind == "Page":
                 route_val = literal_value(kw.value)
@@ -298,6 +355,17 @@ class _GraphBuilder:
         if kind == "Nav":
             attrs.setdefault("placement", "sticky-top")
             attrs.setdefault("tone", "solid")
+            attrs.setdefault("menu", "none")
+        if kind == "Canvas":
+            attrs.setdefault("mode", "gradient")
+            attrs.setdefault("reduced_motion", "static")
+        if kind == "Image":
+            attrs.setdefault("fit", "cover")
+            attrs.setdefault("alt", "")
+        if kind == "ThemeToggle":
+            attrs.setdefault("text", "Theme")
+        if kind == "CopyButton":
+            attrs.setdefault("text", "Copy")
 
         provenance = ["parse:ui_call", "analyze:semantic_graph", *[f"expand:{n}" for n in trail]]
         node = Node(

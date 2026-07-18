@@ -1,6 +1,6 @@
-"""Plasma-shaped SaaS dogfood — S1 Shell/Link, S2 forms, S3a Nav.
+"""Plasma-shaped SaaS dogfood — Phase S1–S6 complete.
 
-Remaining gaps: WebGL, drawer menu — see GAPS.md.
+Language surface: Nav, tokens/theme, Footer, layout, motion, Canvas, Image/Icon/Meta/Code.
 """
 
 from ourui import Component, State, server, ui
@@ -17,6 +17,19 @@ theme = ui.Theme(
     card="#18181b",
     card_fg="#f4f4f5",
     border="#3f3f46",
+    dark={
+        "bg": "#09090b",
+        "fg": "#f4f4f5",
+        "primary": "#8b7cf7",
+        "primary_fg": "#0b0a12",
+        "accent": "#9AD013",
+        "accent_fg": "#0D0D0F",
+        "muted": "#27272a",
+        "muted_fg": "#a1a1aa",
+        "card": "#18181b",
+        "card_fg": "#f4f4f5",
+        "border": "#3f3f46",
+    },
 )
 
 pace = State(40)
@@ -25,7 +38,7 @@ lens = State(30)
 mode = State("gradient")
 preset = State("ember")
 share_id = State("")
-export_snippet = State("// GAP: no code editor / clipboard UI yet")
+export_snippet = State("Plasma.init('#canvas', { mode: 'gradient', pace: 40 })")
 
 
 @server
@@ -140,8 +153,8 @@ def reset_filters() -> dict[str, int | str]:
 def fake_save() -> str:
     share_id.set("demo-local-only")
     export_snippet.set(
-        f"// would be WebGL export · mode={mode.get()} · "
-        f"pace={pace.get()} texture={texture.get()} lens={lens.get()} preset={preset.get()}"
+        f"Plasma.init('#canvas', {{ mode: '{mode.get()}', "
+        f"pace: {pace.get()}, texture: {texture.get()}, lens: {lens.get()}, preset: '{preset.get()}' }})"
     )
     return share_id.get()
 
@@ -152,7 +165,7 @@ def fake_copy() -> str:
 
 
 def FeatureCard(title: str, body: str):
-    return ui.Card(title, children=[ui.Text(body)])
+    return ui.Card(title, children=[ui.Text(body)], motion="enter")
 
 
 def FaqItem(q: str, a: str):
@@ -170,11 +183,11 @@ class FilterRow(Component):
         return ui.Section(
             title=self.label,
             layout="stack",
+            gap="sm",
             children=[
                 ui.Text(self.value),
-                ui.Button("−", color="muted", on_click=self.down),
-                ui.Button("+", color="muted", on_click=self.up),
-                ui.Text("GAP S2: real Slider control"),
+                ui.Button("−", color="muted", on_click=self.down, motion="press"),
+                ui.Button("+", color="muted", on_click=self.up, motion="press"),
             ],
         )
 
@@ -184,6 +197,8 @@ class StudioFilters(Component):
         return ui.Section(
             title="Filters",
             layout="stack",
+            gap="md",
+            pad="md",
             children=[
                 FilterRow("Pace", pace, pace_down, pace_up),
                 FilterRow("Texture", texture, texture_down, texture_up),
@@ -197,18 +212,15 @@ class StudioPreview(Component):
         return ui.Section(
             title="Preview canvas",
             layout="stack",
+            gap="md",
+            pad="md",
             children=[
-                ui.Card(
-                    "WebGL placeholder",
-                    children=[
-                        ui.Text("GAP S5: ui.Canvas / Plasma engine"),
-                        ui.Text("Mode: "),
-                        ui.Text(mode),
-                        ui.Text(" · Preset: "),
-                        ui.Text(preset),
-                    ],
-                ),
-                ui.Button("Randomize", color="accent", on_click=randomize),
+                ui.Canvas(mode="gradient", config={"pace": 40, "lens": 30, "texture": 55}),
+                ui.Text("Mode: "),
+                ui.Text(mode),
+                ui.Text(" · Preset: "),
+                ui.Text(preset),
+                ui.Button("Randomize", color="accent", on_click=randomize, motion="press"),
                 ui.Button("Reset", color="muted", on_click=reset_filters),
             ],
         )
@@ -219,20 +231,27 @@ class StudioStyle(Component):
         return ui.Section(
             title="Style",
             layout="stack",
+            gap="sm",
+            pad="md",
             children=[
                 ui.Button("Ember", color="primary", on_click=pick_ember),
                 ui.Button("Ocean", color="primary", on_click=pick_ocean),
                 ui.Button("Noir", color="primary", on_click=pick_noir),
                 ui.Button("Fake save", color="accent", on_click=fake_save),
-                ui.Button("Show export", color="muted", on_click=fake_copy),
+                ui.Code(export_snippet, language="javascript"),
+                ui.CopyButton("Copy export", copy="Plasma.init('#canvas', { mode: 'gradient' })", color="muted"),
                 ui.Text("Share id: "),
                 ui.Text(share_id),
-                ui.Text(export_snippet),
             ],
         )
 
 
 landing = ui.Page(
+    ui.Meta(
+        title="Plasma — OurUI",
+        description="Developer writes intent. Compiler writes implementation.",
+        og={"title": "Plasma", "description": "OurUI Plasma-shaped demo"},
+    ),
     ui.Nav(
         brand=ui.Link("Plasma", href="/"),
         items=[
@@ -241,25 +260,42 @@ landing = ui.Page(
             ui.Link("FAQ", href="#faq"),
         ],
         actions=[
+            ui.ThemeToggle(ui.Icon("moon")),
+            ui.Menu(
+                "More",
+                items=[
+                    ui.Link("Embed", href="/embed"),
+                    ui.Link("Studio", href="/app"),
+                ],
+            ),
             ui.Link("Open Studio", href="/app", color="primary"),
         ],
         placement="sticky-top",
         tone="glass",
+        menu="drawer",
     ),
     ui.Hero(
         title="Plasma",
-        subtitle="OurUI reconstruction — S3a Nav + S2 form controls + S1 Shell.",
-        cta=ui.Link("Open Studio", href="/app", color="primary"),
+        subtitle="Developer writes intent. Compiler writes implementation. Host receives primitives.",
+        pad="2xl",
+        motion="enter",
+        children=[
+            ui.Canvas(mode="gradient", reduced_motion="static", config={"pace": 40, "lens": 30}),
+            ui.Link("Open Studio", href="/app", color="primary"),
+        ],
     ),
     ui.Section(
         title="Why Plasma",
+        pad="xl",
+        motion="reveal",
+        gap="lg",
         children=[
             ui.Grid(
                 children=[
-                    FeatureCard("Live tune", "GAP S5: mini WebGL canvases"),
-                    FeatureCard("Copy shader", "GAP S6: code / clipboard"),
-                    FeatureCard("Share", "GAP: Redis API"),
-                    FeatureCard("Shell", "S1: ui.Shell layout=split-3 on /app"),
+                    FeatureCard("Live tune", "ui.Canvas WebGL escape — Gradient / Dither / Raymarch"),
+                    FeatureCard("Copy shader", "ui.Code + ui.CopyButton clipboard"),
+                    FeatureCard("Theme", "Type / space / elevation tokens + ThemeToggle"),
+                    FeatureCard("Shell", "gap / pad / align + split-sidebar / split-3"),
                 ],
             ),
         ],
@@ -267,6 +303,8 @@ landing = ui.Page(
     ui.Section(
         title="Playground",
         layout="stack",
+        pad="xl",
+        gap="md",
         children=[
             FilterRow("Pace", pace, pace_down, pace_up),
             FilterRow("Texture", texture, texture_down, texture_up),
@@ -277,38 +315,45 @@ landing = ui.Page(
                 label="Mode",
                 bind=mode,
             ),
-            ui.Button("Apply", color="primary", on_click=apply_playground),
+            ui.Button("Apply", color="primary", on_click=apply_playground, motion="press"),
         ],
     ),
     ui.Section(
         title="FAQ",
+        pad="xl",
         children=[
             FaqItem("Can I click to Studio now?", "Yes — ui.Link href=/app (Phase S1)."),
-            FaqItem("Where is WebGL?", "Still GAP S5 — Canvas escape not shipped."),
+            FaqItem("Where is WebGL?", "Shipped — ui.Canvas Plasma escape (S5)."),
         ],
     ),
-    ui.Section(
-        title="CTA",
-        children=[
-            ui.Card(
-                "Try Studio",
-                children=[
-                    ui.Link("Open Studio", href="/app", color="primary"),
-                    ui.Text("Footer links still thin — Image/Icon/Meta = S6."),
-                ],
-            ),
+    ui.Footer(
+        brand=ui.Text("Plasma"),
+        links=[
+            ui.Link("Studio", href="/app"),
+            ui.Link("Embed", href="/embed"),
         ],
+        meta=[ui.Text("Built with OurUI 0.4")],
     ),
     route="/",
 )
 
 studio = ui.Page(
+    ui.Meta(title="Plasma Studio", description="Tune shaders with OurUI intent"),
+    ui.Nav(
+        brand=ui.Link("Plasma Studio", href="/app"),
+        items=[ui.Link("Landing", href="/")],
+        actions=[ui.ThemeToggle("Theme")],
+        placement="sticky-top",
+        tone="solid",
+        menu="drawer",
+    ),
     ui.Section(
         title="Plasma Studio",
         layout="stack",
+        gap="md",
+        pad="md",
         children=[
-            ui.Link("← Landing", href="/"),
-            ui.Button("Gradient", color="primary", on_click=set_mode_gradient),
+            ui.Button("Gradient", color="primary", on_click=set_mode_gradient, motion="press"),
             ui.Button("Dither", color="muted", on_click=set_mode_dither),
             ui.Button("Raymarch", color="muted", on_click=set_mode_raymarch),
             ui.Text("Mode: "),
@@ -320,14 +365,25 @@ studio = ui.Page(
         StudioPreview(),
         StudioStyle(),
         layout="split-3",
+        gap="lg",
+        align="start",
     ),
     route="/app",
 )
 
 embed = ui.Page(
-    ui.Hero(title="Embed", subtitle="Stub — query ?id= and Canvas still missing."),
+    ui.Meta(title="Embed", description="Shared Plasma view"),
+    ui.Hero(
+        title="Embed",
+        subtitle="Canvas host escape for shared views.",
+        pad="xl",
+        children=[
+            ui.Canvas(mode="dither", config={"pace": 55, "texture": 70}),
+        ],
+    ),
     ui.Section(
         layout="stack",
+        gap="md",
         children=[
             ui.Link("← Studio", href="/app"),
             ui.Link("← Landing", href="/"),

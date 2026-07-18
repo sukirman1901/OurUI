@@ -1,6 +1,6 @@
 # Theme and tokens
 
-OurUI emits semantic CSS variables under the `--ourui-*` namespace. Override defaults once with `ui.Theme`, then reference token names on components.
+OurUI emits semantic CSS variables under the `--ourui-*` namespace. Override defaults once with `ui.Theme`, then reference token names on components. Emit consumes **Resolved Design** (Host Contract); theme overrides seed the Design System pack.
 
 ```python
 from ourui import ui
@@ -10,93 +10,82 @@ theme = ui.Theme(primary="#1a5f4a", primary_fg="#f5faf8")
 page = ui.Page(
     ui.Hero(title="Themed"),
     ui.Button("Primary", color="primary"),
+    ui.ThemeToggle("Theme"),
 )
 ```
 
-Normative rules: [Language Spec — Design tokens](../../../LANGUAGE_SPEC.md#design-tokens-phase-p).
+Normative rules: [Language Spec — Design tokens](../../../LANGUAGE_SPEC.md#design-tokens).
 
 ## `ui.Theme`
 
-Assign at **module level** (same pattern as `page = ui.Page(...)`). The compiler merges overrides into the Semantic Graph `tokens` and the HTML emitter writes `:root { … }` and `.dark { … }` blocks.
+Assign at **module level**. The compiler merges overrides into Semantic Graph `tokens` and Resolved Design; emit writes `:root { … }` and `.dark { … }`.
 
 ```python
 theme = ui.Theme(
     primary="#1a5f4a",
     primary_fg="#f5faf8",
+    font_display='"Fraunces", Georgia, serif',
+    space_lg="1.25rem",
     dark={"primary": "#2dd4a8", "primary_fg": "#042f2e"},
 )
 ```
 
+### Color
+
 | Kwarg | CSS variable | Typical use |
 |-------|--------------|-------------|
-| `bg` | `--ourui-bg` | Page background |
-| `fg` | `--ourui-fg` | Body text |
-| `primary` | `--ourui-primary` | Primary buttons, links |
-| `primary_fg` | `--ourui-primary-fg` | Text on primary surfaces |
-| `muted` | `--ourui-muted` | Subtle fills |
-| `muted_fg` | `--ourui-muted-fg` | Text on muted surfaces |
-| `border` | `--ourui-border` | Borders and dividers |
-| `card` | `--ourui-card` | Card background |
-| `card_fg` | `--ourui-card-fg` | Text on cards |
-| `accent` | `--ourui-accent` | Highlights |
-| `accent_fg` | `--ourui-accent-fg` | Text on accent surfaces |
-| `danger` | `--ourui-danger` | Destructive actions |
-| `danger_fg` | `--ourui-danger-fg` | Text on danger surfaces |
-| `radius` | `--ourui-radius` | Border radius |
-| `space_sm` | `--ourui-space-sm` | Small spacing |
-| `space_md` | `--ourui-space-md` | Medium spacing |
+| `bg` / `fg` | `--ourui-bg` / `--ourui-fg` | Page background / body text |
+| `primary` / `primary_fg` | `--ourui-primary` / `--ourui-primary-fg` | Primary actions |
+| `muted` / `muted_fg` | `--ourui-muted` / `--ourui-muted-fg` | Subtle fills |
+| `border` | `--ourui-border` | Borders |
+| `card` / `card_fg` | `--ourui-card` / `--ourui-card-fg` | Cards |
+| `accent` / `accent_fg` | `--ourui-accent` / … | Highlights |
+| `danger` / `danger_fg` | `--ourui-danger` / … | Destructive |
 
-Underscores in kwarg names become hyphens in CSS: `primary_fg` → `--ourui-primary-fg`.
+### Shape, space, type, elevation (Phase S3)
+
+| Family | Kwargs (examples) | CSS |
+|--------|-------------------|-----|
+| Shape | `radius` | `--ourui-radius` |
+| Space | `space_xs` … `space_2xl` | `--ourui-space-*` |
+| Type | `font_sans`, `font_display`, `text_xs` … `text_2xl`, `leading_*` | `--ourui-font-*`, `--ourui-text-*` |
+| Elevation | `elev_0` … `elev_3` | `--ourui-elev-*` (shadow presets) |
+
+Underscores become hyphens: `primary_fg` → `--ourui-primary-fg`.
 
 ## Light and dark
 
-Built-in light and dark palettes ship with the compiler. Top-level kwargs override **light** tokens. Pass a **`dark={...}`** dict to override dark-mode tokens separately:
+Top-level kwargs override **light**. Pass **`dark={...}`** for dark-mode overrides. Light applies on `:root`; dark under `.dark` on an ancestor (typically `<html>`).
+
+### `ui.ThemeToggle`
+
+Client control that toggles the `.dark` class on `<html>` (persists via `localStorage`):
 
 ```python
-theme = ui.Theme(
-    primary="#1a5f4a",
-    dark={"primary": "#2dd4a8"},
-)
+ui.ThemeToggle("Theme")
+ui.ThemeToggle(ui.Icon("moon"))
 ```
 
-Light defaults apply on `:root`. Dark defaults apply under a `.dark` class on an ancestor element.
-
 ## Using tokens on components
-
-Reference semantic color roles with `color=`, `variant=`, or `bg=` on nodes that support tone styling (for example `ui.Button`):
 
 ```python
 ui.Button("Save", color="primary")
 ui.Button("Delete", color="danger")
-ui.Button("Later", color="muted")
+ui.Link("Docs", href="/docs", color="accent")
 ```
 
-Accepted color role names:
-
-`primary`, `muted`, `accent`, `danger`, `card`, `bg`, `fg`
-
-Matching values add tone classes (for example `ourui-tone-primary`) that map to `var(--ourui-primary)` and related variables.
+Accepted color roles: `primary`, `muted`, `accent`, `danger`, `card`, `bg`, `fg`.
 
 ## Inspecting output
-
-Run the app and view page source, or emit static HTML:
 
 ```bash
 ourui serve examples/tutorial/05_theme.py
 ourui emit examples/tutorial/05_theme.py | grep ourui-primary
-```
-
-Dump also includes tokens at schema version 9:
-
-```bash
-ourui dump examples/tutorial/05_theme.py | python3 -c "
-import json, sys
-print(json.dumps(json.load(sys.stdin)['semantic_graph'].get('tokens', {}), indent=2))
-"
+ourui dump examples/tutorial/05_theme.py   # schema version 21; semantic_graph.tokens
 ```
 
 ## See also
 
 - [Tutorial 05 — Theme and tokens](../tutorial/05-theme-tokens.md)
-- [UI components — ui.Theme](ui-components.md#uitheme)
+- [UI components](ui-components.md)
 - [Debugging with dump](../guides/debugging-with-dump.md)

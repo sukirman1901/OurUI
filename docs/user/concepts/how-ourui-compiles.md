@@ -12,8 +12,8 @@ Parse → Analyze → Lower → Emit
 |-------|---------------------------|
 | **Parse** | Your `.py` module is read as Python source. OurUI finds `ui.Page`, components, `State`, and `@server` handlers. |
 | **Analyze** | The compiler checks structure, routes, theme usage, and handler bindings. |
-| **Lower** | UI intent is lowered into render-ready trees (layout and host nodes). |
-| **Emit** | The browser receives HTML, embedded CSS, and JS for RPC and live updates. |
+| **Lower** | Intent becomes render-ready trees; a Presentation Graph + Design System yield **Resolved Design**. |
+| **Emit** | The browser receives HTML, CSS, and JS. Emit **requires** Resolved Design (Host Contract). |
 
 You never write HTML, CSS, or JavaScript by hand for app logic. The CLI exposes each step:
 
@@ -25,14 +25,14 @@ ourui serve app.py   # full interactive server
 
 ## What you write vs what the browser gets
 
-**You write:** Python — `ui.Page`, `Hero`, `State`, `@server` functions, `ui.Theme`, and `route=` for multiple pages.
+**You write:** Python — `ui.Page`, `Hero`, `Nav`, `Canvas`, `State`, `@server`, `ui.Theme`, `route=`.
 
-**The browser gets:** A complete document with `--ourui-*` CSS variables, markup for your components, and a shim that calls your Python handlers over HTTP when users click buttons or submit actions.
+**The browser gets:** A complete document with `--ourui-*` CSS variables (color, type, space, elevation), markup for your components, optional WebGL canvas, and a shim that calls your Python handlers over HTTP.
 
-Static `emit` is useful for previews and debugging; interactive apps need `ourui serve` so `@server` handlers run on the server.
+Static `emit` is useful for previews; interactive apps need `ourui serve`.
 
 ## Going deeper
 
-This page stays at the user mental model — no IR names or graph internals.
+This page stays at the user mental model.
 
-Contributors and compiler hackers should read the **[Compiler Book](../../../COMPILER_BOOK.md)** for parse/analyze/lower details, artifact formats, and phase history.
+Contributors: **[Compiler Book](../../../COMPILER_BOOK.md)**, [ARCHITECTURE.md](../../../ARCHITECTURE.md), [VISION.md](../../../VISION.md).

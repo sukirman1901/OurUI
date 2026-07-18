@@ -9,9 +9,9 @@ from ourui.theme import COLOR_TOKEN_NAMES, TOKEN_KEYS
 
 UI_COMPONENTS: dict[str, str] = {
     "Page": "Intent domain root container.",
-    "Hero": "Intent domain hero section.",
-    "Section": "Intent domain content section.",
-    "Button": "Presentation domain clickable control.",
+    "Hero": "Intent domain hero section; pad=/motion=.",
+    "Section": "Intent domain content section; gap=/pad=/align=/motion=.",
+    "Button": "Presentation domain clickable control; motion=press.",
     "Input": "Form control; name= collected into @server payload on button click.",
     "Select": "Dropdown form control; options= list of values or {value,label}.",
     "Toggle": "Checkbox form control; collected as boolean.",
@@ -20,10 +20,20 @@ UI_COMPONENTS: dict[str, str] = {
     "Card": "Presentation domain card container.",
     "Grid": "Layout grid container.",
     "Link": "Presentation domain navigation anchor (href).",
-    "Shell": "Intent domain layout region (layout=stack|row|split-3|grid).",
-    "Nav": "Chrome bar; placement= + tone=solid|glass; brand/items/actions slots.",
+    "Shell": "Layout region (layout=stack|row|split-2|split-3|split-sidebar|grid); gap=/pad=/align=/justify=.",
+    "Nav": "Chrome bar; placement= + tone=solid|glass; menu=drawer; brand/items/actions.",
+    "Footer": "Page footer; brand=/links=/meta= slots.",
+    "ThemeToggle": "Client control that toggles .dark on <html>.",
     "Theme": "Design token overrides for --ourui-* CSS variables.",
+    "Canvas": "WebGL escape; mode=gradient|dither|raymarch (Plasma.init).",
+    "Image": "Image; src=/alt=/fit=cover|contain.",
+    "Icon": "Inline icon (Reicon-style name=).",
+    "Meta": "Document head title/description/og=.",
+    "Code": "Code block; text= + language=.",
+    "CopyButton": "Clipboard button; copy= payload.",
+    "Menu": "Dropdown menu; items= slot.",
 }
+
 
 TOP_LEVEL_KEYWORDS: dict[str, str] = {
     "State": "Reactive server-side state variable.",

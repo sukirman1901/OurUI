@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ourui"
-version = "0.3.3"
+version = "0.4.0"
 description = "Python-first UI compiler — write intent in Python, emit HTML/CSS/JS"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -38,6 +38,9 @@ ourui = "ourui.cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["ourui*"]
+
+[tool.setuptools.package-data]
+ourui = ["host/plasma/*.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["../../tests/p0"]

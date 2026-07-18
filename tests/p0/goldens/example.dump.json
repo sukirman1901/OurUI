@@ -739,6 +739,7 @@
           "lowering:presentation"
         ],
         "role": "hero",
+        "subtitle": "Build SaaS in Python",
         "title": "Welcome"
       },
       "n0003": {
@@ -1043,14 +1044,33 @@
         "card_fg": "#f5f5f4",
         "danger": "#f87171",
         "danger_fg": "#1c1917",
+        "elev_0": "none",
+        "elev_1": "0 1px 2px color-mix(in srgb, var(--ourui-fg) 12%, transparent)",
+        "elev_2": "0 4px 14px color-mix(in srgb, var(--ourui-fg) 14%, transparent)",
+        "elev_3": "0 12px 32px color-mix(in srgb, var(--ourui-fg) 18%, transparent)",
         "fg": "#f5f5f4",
+        "font_display": "\"Fraunces\", \"Iowan Old Style\", Georgia, serif",
+        "font_sans": "\"DM Sans\", \"Segoe UI\", system-ui, sans-serif",
+        "leading_normal": "1.5",
+        "leading_relaxed": "1.7",
+        "leading_tight": "1.2",
         "muted": "#292524",
         "muted_fg": "#a8a29e",
         "primary": "#2dd4a8",
         "primary_fg": "#042f2e",
         "radius": "0.5rem",
+        "space_2xl": "3rem",
+        "space_lg": "1.25rem",
         "space_md": "0.75rem",
-        "space_sm": "0.5rem"
+        "space_sm": "0.5rem",
+        "space_xl": "2rem",
+        "space_xs": "0.25rem",
+        "text_2xl": "2.5rem",
+        "text_lg": "1.25rem",
+        "text_md": "1rem",
+        "text_sm": "0.875rem",
+        "text_xl": "1.75rem",
+        "text_xs": "0.75rem"
       },
       "light": {
         "accent": "#0f766e",
@@ -1061,14 +1081,33 @@
         "card_fg": "#1c1917",
         "danger": "#b91c1c",
         "danger_fg": "#fef2f2",
+        "elev_0": "none",
+        "elev_1": "0 1px 2px color-mix(in srgb, var(--ourui-fg) 12%, transparent)",
+        "elev_2": "0 4px 14px color-mix(in srgb, var(--ourui-fg) 14%, transparent)",
+        "elev_3": "0 12px 32px color-mix(in srgb, var(--ourui-fg) 18%, transparent)",
         "fg": "#1c1917",
+        "font_display": "\"Fraunces\", \"Iowan Old Style\", Georgia, serif",
+        "font_sans": "\"DM Sans\", \"Segoe UI\", system-ui, sans-serif",
+        "leading_normal": "1.5",
+        "leading_relaxed": "1.7",
+        "leading_tight": "1.2",
         "muted": "#e7e5e0",
         "muted_fg": "#57534e",
         "primary": "#1a5f4a",
         "primary_fg": "#f5faf8",
         "radius": "0.5rem",
+        "space_2xl": "3rem",
+        "space_lg": "1.25rem",
         "space_md": "0.75rem",
-        "space_sm": "0.5rem"
+        "space_sm": "0.5rem",
+        "space_xl": "2rem",
+        "space_xs": "0.25rem",
+        "text_2xl": "2.5rem",
+        "text_lg": "1.25rem",
+        "text_md": "1rem",
+        "text_sm": "0.875rem",
+        "text_xl": "1.75rem",
+        "text_xs": "0.75rem"
       }
     }
   },
@@ -1139,7 +1178,9 @@
           "from_intent": "Hero",
           "from_layout": "Column",
           "layout": "vertical",
-          "role": "hero"
+          "role": "hero",
+          "subtitle": "Build SaaS in Python",
+          "title": "Welcome"
         },
         "children": [
           "text0002",
@@ -1147,7 +1188,7 @@
           "n0003"
         ],
         "generation": 3,
-        "hash": "485d6ab77e9f68e6",
+        "hash": "c72a38000d844aec",
         "id": "n0002",
         "kind": "Container",
         "metadata": {
@@ -1179,13 +1220,14 @@
           "from_intent": "Button",
           "from_layout": "Box",
           "layout": "none",
-          "role": "button"
+          "role": "button",
+          "text": "Get Started"
         },
         "children": [
           "text0001"
         ],
         "generation": 3,
-        "hash": "0940b04b6be66a3e",
+        "hash": "31250f5b77063f55",
         "id": "n0003",
         "kind": "Container",
         "metadata": {
@@ -1213,7 +1255,8 @@
           "from_intent": "Section",
           "from_layout": "Column",
           "layout": "vertical",
-          "role": "section"
+          "role": "section",
+          "title": "Features"
         },
         "children": [
           "text0006",
@@ -1221,7 +1264,7 @@
           "n0007"
         ],
         "generation": 3,
-        "hash": "fdd4d73cbf9c456e",
+        "hash": "28ee54a2f100ff17",
         "id": "n0005",
         "kind": "Container",
         "metadata": {
@@ -1249,13 +1292,14 @@
           "from_intent": "Card",
           "from_layout": "Box",
           "layout": "none",
-          "role": "card"
+          "role": "card",
+          "text": "Analysis"
         },
         "children": [
           "text0004"
         ],
         "generation": 3,
-        "hash": "d68ed4f220d30c9c",
+        "hash": "91b6f8d758d6b53b",
         "id": "n0006",
         "kind": "Container",
         "metadata": {
@@ -1284,13 +1328,14 @@
           "from_intent": "Card",
           "from_layout": "Box",
           "layout": "none",
-          "role": "card"
+          "role": "card",
+          "text": "Realtime"
         },
         "children": [
           "text0005"
         ],
         "generation": 3,
-        "hash": "b77d7d0622a9ba37",
+        "hash": "1a9ab0ae9e45e8cd",
         "id": "n0007",
         "kind": "Container",
         "metadata": {
@@ -1319,7 +1364,8 @@
           "from_intent": "Section",
           "from_layout": "Column",
           "layout": "vertical",
-          "role": "section"
+          "role": "section",
+          "title": "Counter"
         },
         "children": [
           "text0009",
@@ -1327,7 +1373,7 @@
           "n0010"
         ],
         "generation": 3,
-        "hash": "d4795bbc8a27cc83",
+        "hash": "937e72539f6d92ef",
         "id": "n0008",
         "kind": "Container",
         "metadata": {
@@ -1356,13 +1402,14 @@
           "from_intent": "Text",
           "from_layout": "Box",
           "layout": "none",
-          "role": "text"
+          "role": "text",
+          "text": 0
         },
         "children": [
           "text0007"
         ],
         "generation": 3,
-        "hash": "34756b1c81fe72ab",
+        "hash": "3f0dd4aa50590e63",
         "id": "n0009",
         "kind": "Container",
         "metadata": {
@@ -1395,13 +1442,14 @@
           "from_intent": "Button",
           "from_layout": "Box",
           "layout": "none",
-          "role": "button"
+          "role": "button",
+          "text": "+1"
         },
         "children": [
           "text0008"
         ],
         "generation": 3,
-        "hash": "f51f51b019c47100",
+        "hash": "eb327662c4baea6a",
         "id": "n0010",
         "kind": "Container",
         "metadata": {
@@ -2147,14 +2195,33 @@
         "card_fg": "#f5f5f4",
         "danger": "#f87171",
         "danger_fg": "#1c1917",
+        "elev_0": "none",
+        "elev_1": "0 1px 2px color-mix(in srgb, var(--ourui-fg) 12%, transparent)",
+        "elev_2": "0 4px 14px color-mix(in srgb, var(--ourui-fg) 14%, transparent)",
+        "elev_3": "0 12px 32px color-mix(in srgb, var(--ourui-fg) 18%, transparent)",
         "fg": "#f5f5f4",
+        "font_display": "\"Fraunces\", \"Iowan Old Style\", Georgia, serif",
+        "font_sans": "\"DM Sans\", \"Segoe UI\", system-ui, sans-serif",
+        "leading_normal": "1.5",
+        "leading_relaxed": "1.7",
+        "leading_tight": "1.2",
         "muted": "#292524",
         "muted_fg": "#a8a29e",
         "primary": "#2dd4a8",
         "primary_fg": "#042f2e",
         "radius": "0.5rem",
+        "space_2xl": "3rem",
+        "space_lg": "1.25rem",
         "space_md": "0.75rem",
-        "space_sm": "0.5rem"
+        "space_sm": "0.5rem",
+        "space_xl": "2rem",
+        "space_xs": "0.25rem",
+        "text_2xl": "2.5rem",
+        "text_lg": "1.25rem",
+        "text_md": "1rem",
+        "text_sm": "0.875rem",
+        "text_xl": "1.75rem",
+        "text_xs": "0.75rem"
       },
       "light": {
         "accent": "#0f766e",
@@ -2165,17 +2232,36 @@
         "card_fg": "#1c1917",
         "danger": "#b91c1c",
         "danger_fg": "#fef2f2",
+        "elev_0": "none",
+        "elev_1": "0 1px 2px color-mix(in srgb, var(--ourui-fg) 12%, transparent)",
+        "elev_2": "0 4px 14px color-mix(in srgb, var(--ourui-fg) 14%, transparent)",
+        "elev_3": "0 12px 32px color-mix(in srgb, var(--ourui-fg) 18%, transparent)",
         "fg": "#1c1917",
+        "font_display": "\"Fraunces\", \"Iowan Old Style\", Georgia, serif",
+        "font_sans": "\"DM Sans\", \"Segoe UI\", system-ui, sans-serif",
+        "leading_normal": "1.5",
+        "leading_relaxed": "1.7",
+        "leading_tight": "1.2",
         "muted": "#e7e5e0",
         "muted_fg": "#57534e",
         "primary": "#1a5f4a",
         "primary_fg": "#f5faf8",
         "radius": "0.5rem",
+        "space_2xl": "3rem",
+        "space_lg": "1.25rem",
         "space_md": "0.75rem",
-        "space_sm": "0.5rem"
+        "space_sm": "0.5rem",
+        "space_xl": "2rem",
+        "space_xs": "0.25rem",
+        "text_2xl": "2.5rem",
+        "text_lg": "1.25rem",
+        "text_md": "1rem",
+        "text_sm": "0.875rem",
+        "text_xl": "1.75rem",
+        "text_xs": "0.75rem"
       }
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 15
+  "version": 21
 }

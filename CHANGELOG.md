@@ -4,6 +4,24 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.4.0] — 2026-07-18
+
+### Added
+
+Phase **S3–S6** complete (dump schema **version 21**):
+
+- **S3** — type / space / elevation tokens (`font_*`, `text_*`, `space_*`, `elev_*`); `ui.ThemeToggle` flips `.dark`
+- **S3b** — `ui.Footer` (brand/links/meta); Hero/Section `pad=` rhythm
+- **S4** — `gap=` / `pad=` / `align=` / `justify=` on Shell/Section; `layout=split-2|split-sidebar`
+- **S4m** — `motion=enter|press|reveal` with `prefers-reduced-motion`
+- **S5** — `ui.Canvas` WebGL escape (`mode=gradient|dither|raymarch`) via vendored Plasma engine
+- **S6** — `menu=drawer` Nav, `ui.Menu`, `ui.Image`, `ui.Icon`, `ui.Meta`, `ui.Code`, `ui.CopyButton`, disabled/invalid/loading
+
+### Notes
+
+- Host Contract unchanged: emit still requires RTR + Resolved Design
+- Demo rebuilt against full Phase S stack
+
 ## [0.3.3] — 2026-07-18
 
 ### Added

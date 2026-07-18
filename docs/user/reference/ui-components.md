@@ -25,19 +25,28 @@ page = ui.Page(
 | Component | Domain | Role |
 |-----------|--------|------|
 | `ui.Page` | Intent | Root container for a routable page |
-| `ui.Hero` | Intent | Prominent header block |
-| `ui.Section` | Intent | Grouped content section (`layout=` optional) |
-| `ui.Shell` | Intent | Layout region (`layout=stack\|row\|split-3\|grid`) |
-| `ui.Nav` | Intent | Chrome bar (`placement=`, `tone=`, brand/items/actions) |
-| `ui.Button` | Presentation | Clickable control |
+| `ui.Hero` | Intent | Prominent header (`pad=`, `motion=`) |
+| `ui.Section` | Intent | Grouped content (`layout=`, `gap=`, `pad=`, `align=`, `motion=`) |
+| `ui.Shell` | Intent | Layout region (`layout=stack\|row\|split-2\|split-3\|split-sidebar\|grid`) |
+| `ui.Nav` | Intent | Chrome bar (`placement=`, `tone=`, `menu=drawer`) |
+| `ui.Footer` | Intent | Page footer (`brand=` / `links=` / `meta=`) |
+| `ui.Meta` | Intent | Document head (`title`, `description`, `og=`) |
+| `ui.Button` | Presentation | Clickable control (`motion=press`, disabled/loading) |
 | `ui.Text` | Presentation | Inline text (or bound `State`) |
 | `ui.Card` | Presentation | Card container |
 | `ui.Grid` | Presentation | Responsive grid layout |
 | `ui.Link` | Presentation | In-app or external navigation (`href=`) |
-| `ui.Input` | Presentation | Form field (`name=` → `@server` payload on button click) |
+| `ui.Input` | Presentation | Form field (`name=` → `@server` payload) |
 | `ui.Select` | Presentation | Dropdown (`options=`) |
 | `ui.Toggle` | Presentation | Checkbox (boolean payload) |
 | `ui.Slider` | Presentation | Range (`min=` / `max=` / `step=`) |
+| `ui.ThemeToggle` | Presentation | Toggle `.dark` on `<html>` |
+| `ui.Canvas` | Presentation | WebGL escape (`mode=gradient\|dither\|raymarch`) |
+| `ui.Image` | Presentation | `src=` / `alt=` / `fit=` |
+| `ui.Icon` | Presentation | Reicon-style `name=` |
+| `ui.Code` | Presentation | Code block |
+| `ui.CopyButton` | Presentation | Clipboard (`copy=`) |
+| `ui.Menu` | Presentation | Dropdown menu (`items=`) |
 | `ui.Theme` | Tokens | Design token overrides (module-level) |
 
 ## `ui.Page`
@@ -78,8 +87,10 @@ ui.Hero(
 |------|------|-------------|
 | `title` | `str` | Main heading (positional string also accepted) |
 | `subtitle` | `str` | Optional subheading |
-| `cta` | node | Optional call-to-action (commonly a `ui.Button`) |
-| `children` | nodes | Additional child nodes |
+| `cta` | node | Optional call-to-action (commonly a `ui.Button` or `ui.Link`) |
+| `pad` | intent | `none` \| `xs` \| `sm` \| `md` \| `lg` \| `xl` \| `2xl` |
+| `motion` | intent | `none` \| `enter` \| `reveal` |
+| `children` | nodes | Additional child nodes (e.g. `ui.Canvas`) |
 
 ## `ui.Section`
 
@@ -99,6 +110,10 @@ ui.Section(
 |------|------|-------------|
 | `title` | `str` | Section heading (positional string also accepted) |
 | `subtitle` | `str` | Optional subheading |
+| `layout` | intent | Same values as `ui.Shell` `layout=` |
+| `gap` / `pad` | intent | `none` \| `xs` \| `sm` \| `md` \| `lg` \| `xl` \| `2xl` |
+| `align` / `justify` | intent | Alignment intents (see Layout intents below) |
+| `motion` | intent | `none` \| `enter` \| `reveal` |
 | `children` | nodes | Child nodes inside the section |
 
 ## `ui.Button`
@@ -273,7 +288,7 @@ ui.Shell(
 
 ## `ui.Nav`
 
-Product chrome bar (Phase S3a). Placement is an intent enum — not raw CSS `position`.
+Product chrome bar (Phase S3a + S6 drawer). Placement is an intent enum — not raw CSS `position`.
 
 ```python
 ui.Nav(
@@ -295,12 +310,40 @@ ui.Nav(
 | `actions` | Trailing actions (links/buttons) |
 | `placement` | `flow` \| `sticky-top` (default) \| `fixed-top` \| `fixed-bottom` \| `overlay` \| `backdrop` |
 | `tone` | `solid` (default) \| `glass` |
+| `menu` | `none` (default) \| `drawer` (mobile collapse) |
+
+## Layout intents (S4)
+
+On `Shell` / `Section` / `Hero`:
+
+| Prop | Values |
+|------|--------|
+| `gap` / `pad` | `none` \| `xs` \| `sm` \| `md` \| `lg` \| `xl` \| `2xl` |
+| `align` | `start` \| `center` \| `end` \| `stretch` |
+| `justify` | `start` \| `center` \| `end` \| `between` |
+| `layout` | `stack` \| `row` \| `grid` \| `split-2` \| `split-3` \| `split-sidebar` |
+| `motion` | `none` \| `enter` \| `press` \| `reveal` |
+
+## Phase S3–S6 surfaces
+
+| Kind | Role |
+|------|------|
+| `ui.ThemeToggle` | Toggle `.dark` on `<html>` |
+| `ui.Footer` | `brand=` / `links=` / `meta=` |
+| `ui.Canvas` | WebGL escape; `mode=gradient\|dither\|raymarch` |
+| `ui.Image` | `src=` / `alt=` / `fit=` |
+| `ui.Icon` | Reicon-style `name=` |
+| `ui.Meta` | Document `title` / `description` / `og=` |
+| `ui.Code` | Code block |
+| `ui.CopyButton` | Clipboard; `copy=` |
+| `ui.Menu` | Dropdown; `items=` |
 
 ## Positional arguments
 
 The `ui` namespace accepts shorthand positional args:
 
-- First string on `Button`, `Text`, `Card`, `Link` → `text`
+- First string on `Button`, `Text`, `Card`, `Link`, `CopyButton`, `Code`, `ThemeToggle`, `Menu` → `text`
+- First string on `Icon` → `name`; on `Image` → `src`
 - First string on `Input` / `Select` / `Toggle` / `Slider` → `name`
 - First string on other kinds → `title` when `title` is not set
 - UI node positional args → appended to `children`

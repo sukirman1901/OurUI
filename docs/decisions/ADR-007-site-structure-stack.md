@@ -1,6 +1,6 @@
 # ADR-007: Site structure stack — beyond Nav
 
-**Status:** Accepted (direction)  
+**Status:** Accepted + **Implemented** (Phase S stack through S6, package `0.4.0`)  
 **Date:** 2026-07-18  
 **Relates:** [ADR-005](ADR-005-intent-emit-escape.md), [ADR-006](ADR-006-chrome-nav-placement.md)
 
@@ -87,19 +87,19 @@ Compiler emits CSS/JS motion presets — authors do not write keyframes by defau
 
 ## Revised Phase S emphasis
 
-| Slice | Focus |
-|-------|--------|
-| **S3a** | Nav + placement + tone (chrome) |
-| **S3b** | Footer + Page chrome padding + Hero/Section spacing rhythm (structure) |
-| **S3** | Type/space/elevation tokens (warna & hierarchy) |
-| **S4** | Layout intents richer (align/gap/pad/split variants) |
-| **S4m** | Motion presets (`enter` / `press` / `reveal`) |
-| **S5** | Canvas / WebGL |
-| **S2** | Form controls (parallel once chrome usable) |
-| **S6** | Image, Icon, Meta, drawer menu, RWD polish |
+| Slice | Focus | Status |
+|-------|--------|--------|
+| **S3a** | Nav + placement + tone (chrome) | Done |
+| **S3b** | Footer + Page chrome padding + Hero/Section spacing | Done |
+| **S3** | Type/space/elevation tokens | Done |
+| **S4** | Layout intents richer (align/gap/pad/split variants) | Done |
+| **S4m** | Motion presets (`enter` / `press` / `reveal`) | Done |
+| **S5** | Canvas / WebGL | Done |
+| **S2** | Form controls | Done |
+| **S6** | Image, Icon, Meta, drawer menu, RWD polish | Done |
 
 ## Consequences
 
-- Roadmap treats **structure + chrome + presentation + motion** as one product arc, not “add Nav and done”.
-- Demo must be rebuilt against this stack after S3a–S3; until then, screenshots will look far from Plasma — expected.
+- Roadmap treats **structure + chrome + presentation + motion** as one product arc — now delivered in `0.4.0`.
+- Demo (`demo/app.py`) dogfoods the full stack (Nav + tokens + layout + motion + Canvas + Meta/Footer).
 - Reject feature requests that only add unstyled tags without emit CSS + defaults.

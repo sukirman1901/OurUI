@@ -1,8 +1,8 @@
 # ADR-005: Presentation strategy — intent + emit + escape
 
-**Status:** Accepted  
+**Status:** Accepted + **Implemented (S1–S6 complete, `0.4.0`)**  
 **Date:** 2026-07-18  
-**Tag:** `compiler-p0s1` (S1 shipped; further S slices TBD)
+**Tag:** `compiler-p0s1` → Phase S closed at package `0.4.0` / dump schema **21**
 
 ## Context
 
@@ -32,19 +32,22 @@ Explicit non-goals:
 
 ## Phase S slices (implementation order)
 
-| Slice | Deliverable |
-|-------|-------------|
-| **S1** | `ui.Link` + shell/layout intent (nav between routes; Studio-like regions) |
-| **S2** | Controls: Input, Slider, Select, Toggle (+ form → `@server`) |
-| **S3** | Deeper presentation tokens (type/space/elevation; theme toggle surface) |
-| **S4** | Richer layout intents (`stack` / `row` / `grid` / `split-*`, gap/pad/align) |
-| **S5** | Host escape: Canvas / WebGL (and optional scoped slot) |
-| **S6** | Host polish: control states, responsive emit rules, Image/Icon/Meta |
+| Slice | Deliverable | Status |
+|-------|-------------|--------|
+| **S1** | `ui.Link` + shell/layout intent | Done |
+| **S2** | Controls: Input, Slider, Select, Toggle | Done |
+| **S3a** | `ui.Nav` + placement + tone | Done |
+| **S3** | Type/space/elevation tokens; ThemeToggle | Done |
+| **S3b** | Footer + Hero/Section pad rhythm | Done |
+| **S4** | Richer layout (`gap`/`pad`/`align`/`split-*`) | Done |
+| **S4m** | Motion presets | Done |
+| **S5** | Host escape: Canvas / WebGL | Done |
+| **S6** | Host polish: states, Image/Icon/Meta, drawer | Done |
 
-Evidence for prioritization: `demo/GAPS.md` (Plasma-shaped dogfood).
+Evidence: `demo/GAPS.md` (language gaps closed; Redis/auth remain app-scope).
 
 ## Consequences
 
-- Visual quality rises **incrementally** with each slice; Plasma-class fidelity requires **S5**, not CSS utilities alone.
+- Visual quality rose incrementally with each slice; Plasma-class living backgrounds use **S5 Canvas**, not CSS utilities alone.
 - Language Spec / emitters grow via RFC or ADR when HostNode attributes or dump schema change.
 - usePyX remains a historical reference for what **not** to resurrect wholesale; useful ideas (`@var`/derived, forms) may return only as intent APIs under this ADR.

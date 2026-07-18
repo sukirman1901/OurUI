@@ -1,8 +1,10 @@
-# ourui 0.3.3
+# ourui 0.4.0
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
+
+Stable through Phase **S6** (dump schema **21**): Nav, forms, tokens, layout, motion, Canvas, polish.
 
 ## Install
 
@@ -18,14 +20,6 @@ source .venv/bin/activate
 pip install -e packages/ourui
 ```
 
-Build distributable artifacts (wheel + sdist):
-
-```bash
-pip install build
-python -m build packages/ourui
-# artifacts under packages/ourui/dist/
-```
-
 ## Quick commands
 
 ```bash
@@ -36,11 +30,12 @@ ourui serve path/to/app.py --prod
 ourui lsp
 ```
 
+Demo (from repo root): `ourui serve demo/app.py` → http://127.0.0.1:8765/
+
 ## Documentation
 
-Links below open on GitHub (PyPI cannot host the docs tree inside the wheel):
-
 - [User guide](https://github.com/sukirman1901/OurUI/tree/main/docs/user)
+- [Vision](https://github.com/sukirman1901/OurUI/blob/main/VISION.md)
 - [Changelog](https://github.com/sukirman1901/OurUI/blob/main/CHANGELOG.md)
 - [License (MIT)](https://github.com/sukirman1901/OurUI/blob/main/LICENSE)
 - [Repository](https://github.com/sukirman1901/OurUI)

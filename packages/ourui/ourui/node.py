@@ -60,25 +60,111 @@ class Node:
         }
 
 
-INTENT_KINDS = frozenset({"Page", "Hero", "Section", "Shell", "Nav"})
+INTENT_KINDS = frozenset(
+    {"Page", "Hero", "Section", "Shell", "Nav", "Footer", "Meta"}
+)
 PRESENTATION_KINDS = frozenset(
-    {"Button", "Text", "Card", "Grid", "Link", "Input", "Select", "Toggle", "Slider"}
+    {
+        "Button",
+        "Text",
+        "Card",
+        "Grid",
+        "Link",
+        "Input",
+        "Select",
+        "Toggle",
+        "Slider",
+        "ThemeToggle",
+        "Canvas",
+        "Image",
+        "Icon",
+        "Code",
+        "CopyButton",
+        "Menu",
+    }
 )
 KNOWN_KINDS = INTENT_KINDS | PRESENTATION_KINDS
 
 # Authoring layout= intents (emit as shell classes; not Tailwind utilities)
-SHELL_LAYOUT_INTENTS = frozenset({"stack", "row", "split-3", "grid"})
+SHELL_LAYOUT_INTENTS = frozenset(
+    {"stack", "row", "split-2", "split-3", "split-sidebar", "grid"}
+)
 
-# Form controls (S2) — value/name on RTR attrs, not Text children
+# Form controls (S2) — value/name on RTR attrs, not text children
 FORM_CONTROL_KINDS = frozenset({"Input", "Select", "Toggle", "Slider"})
 
 # Input type= enum (S2)
 INPUT_TYPES = frozenset({"text", "email", "password", "number", "search", "url", "tel"})
 
-# Nav chrome (S3a)
+# Nav chrome (S3a / S6)
 NAV_PLACEMENTS = frozenset(
     {"flow", "sticky-top", "fixed-top", "fixed-bottom", "overlay", "backdrop"}
 )
 NAV_TONES = frozenset({"solid", "glass"})
+NAV_MENUS = frozenset({"none", "drawer"})
+
+# Spacing / alignment intents (S3b / S4)
+SPACE_INTENTS = frozenset({"none", "xs", "sm", "md", "lg", "xl", "2xl"})
+ALIGN_INTENTS = frozenset({"start", "center", "end", "stretch"})
+JUSTIFY_INTENTS = frozenset({"start", "center", "end", "between"})
+
+# Motion presets (S4m)
+MOTION_INTENTS = frozenset({"none", "enter", "press", "reveal"})
+
+# Canvas escape (S5)
+CANVAS_MODES = frozenset({"gradient", "dither", "raymarch"})
+REDUCED_MOTION = frozenset({"static", "off"})
+
+# Image fit (S6)
+IMAGE_FITS = frozenset({"cover", "contain", "fill", "none"})
 
 THEME_ATTR_KEYS = frozenset({"variant", "color", "bg", "theme"})
+
+# Shared passthrough for layout → render → presentation
+LAYOUT_PASSTHROUGH = (
+    "title",
+    "subtitle",
+    "text",
+    "variant",
+    "color",
+    "bg",
+    "href",
+    "external",
+    "name",
+    "placeholder",
+    "type",
+    "label",
+    "value",
+    "options",
+    "min",
+    "max",
+    "step",
+    "placement",
+    "tone",
+    "brand",
+    "items",
+    "actions",
+    "links",
+    "meta",
+    "menu",
+    "gap",
+    "pad",
+    "align",
+    "justify",
+    "motion",
+    "mode",
+    "config",
+    "reduced_motion",
+    "src",
+    "alt",
+    "fit",
+    "icon",
+    "language",
+    "description",
+    "og",
+    "disabled",
+    "invalid",
+    "loading",
+    "action",
+    "copy",
+)
