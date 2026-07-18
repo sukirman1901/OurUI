@@ -12,9 +12,11 @@ _ROLE_TAG: dict[str, str] = {
     "page": "main",
     "hero": "header",
     "section": "section",
+    "shell": "div",
     "card": "div",
     "grid": "div",
     "text": "span",
+    "link": "a",
 }
 
 _BASE_CSS = """\
@@ -28,11 +30,27 @@ _BASE_CSS = """\
   padding: var(--ourui-space-md);
 }
 .ourui-col { display: flex; flex-direction: column; gap: var(--ourui-space-md); }
-.ourui-row { display: flex; flex-direction: row; gap: var(--ourui-space-md); }
+.ourui-row { display: flex; flex-direction: row; gap: var(--ourui-space-md); flex-wrap: wrap; }
 .ourui-grid {
   display: grid;
   gap: var(--ourui-space-md);
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+.ourui-shell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ourui-space-md);
+  width: 100%;
+}
+.ourui-shell-split-3 {
+  display: grid;
+  gap: var(--ourui-space-md);
+  grid-template-columns: minmax(11rem, 16rem) minmax(0, 1fr) minmax(11rem, 16rem);
+  align-items: start;
+  width: 100%;
+}
+@media (max-width: 767px) {
+  .ourui-shell-split-3 { grid-template-columns: 1fr; }
 }
 .ourui-card {
   padding: var(--ourui-space-md);
@@ -42,6 +60,16 @@ _BASE_CSS = """\
   color: var(--ourui-card-fg);
 }
 .ourui-leaf { display: inline-block; }
+a.ourui-link {
+  color: var(--ourui-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+a.ourui-link:hover { filter: brightness(1.1); }
+a.ourui-tone-primary { color: var(--ourui-primary); }
+a.ourui-tone-accent { color: var(--ourui-accent); }
+a.ourui-tone-danger { color: var(--ourui-danger); }
+a.ourui-tone-muted { color: var(--ourui-muted-fg); }
 button.ourui-control {
   padding: var(--ourui-space-sm) var(--ourui-space-md);
   cursor: pointer;
@@ -80,12 +108,35 @@ def _tone_name(attrs: dict[str, Any]) -> str | None:
     return None
 
 
+def _is_external_href(href: str, external: Any) -> bool:
+    if external is True:
+        return True
+    if external is False:
+        return False
+    return href.startswith("http://") or href.startswith("https://") or href.startswith("//")
+
+
+def _link_attrs(attrs: dict[str, Any]) -> str:
+    href = attrs.get("href")
+    if not isinstance(href, str) or not href:
+        return ""
+    parts = [f' href="{html.escape(href, quote=True)}"']
+    if _is_external_href(href, attrs.get("external")):
+        parts.append(' target="_blank" rel="noopener noreferrer"')
+    return "".join(parts)
+
+
 def _classes_for(node: dict[str, Any]) -> list[str]:
     attrs = node.get("attributes", {})
     layout = attrs.get("layout", "none")
+    shell = attrs.get("shell_layout")
     role = attrs.get("role", "")
     classes: list[str] = []
-    if layout == "vertical":
+    if shell == "split-3":
+        classes.append("ourui-shell-split-3")
+    elif shell == "stack":
+        classes.append("ourui-shell-stack")
+    elif layout == "vertical":
         classes.append("ourui-col")
     elif layout == "horizontal":
         classes.append("ourui-row")
@@ -93,12 +144,17 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         classes.append("ourui-grid")
     if role == "card":
         classes.append("ourui-card")
+    if role == "link":
+        classes.append("ourui-link")
+        tone = _tone_name(attrs)
+        if tone:
+            classes.append(f"ourui-tone-{tone}")
     if role == "button":
         classes.append("ourui-control")
         tone = _tone_name(attrs)
         if tone:
             classes.append(f"ourui-tone-{tone}")
-    if node["kind"] == "Leaf" and "ourui-control" not in classes:
+    if node["kind"] == "Leaf" and "ourui-control" not in classes and "ourui-link" not in classes:
         classes.append("ourui-leaf")
     return classes
 
@@ -143,9 +199,10 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     data_role = f' data-role="{html.escape(role)}"' if role else ""
     data_id = f' data-ourui-id="{html.escape(nid)}"'
     events = _event_attrs(node)
+    link = _link_attrs(node.get("attributes", {})) if role == "link" else ""
 
     children = node.get("children", [])
-    attrs = f"{class_attr}{data_role}{data_id}{events}"
+    attrs = f"{class_attr}{data_role}{data_id}{link}{events}"
 
     if not children:
         return [f"{pad}<{tag}{attrs}></{tag}>"]

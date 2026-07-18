@@ -76,7 +76,14 @@ Example output:
 
 ## Navigation
 
-Each route is a full page load — no client-side SPA router is required. Open paths directly in the browser (for example `/about`) or link from outside the app. Standard `<a href="/about">` links work when present in emitted HTML; `ui.Text` escapes content, so use separate pages and browser navigation for P0 multi-page demos.
+Each route is a full page load — no client-side SPA router. Use **`ui.Link`**:
+
+```python
+ui.Link("About", href="/about")
+ui.Link("Studio", href="/app")
+```
+
+External URLs open in a new tab by default (`https://…`).
 
 ## Unknown paths
 

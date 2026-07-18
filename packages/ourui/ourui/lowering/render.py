@@ -70,6 +70,9 @@ def lower_to_rtr(ltr: Any) -> RTR:
         for tone_key in ("color", "variant", "bg"):
             if tone_key in attrs and not isinstance(attrs[tone_key], dict):
                 props[tone_key] = attrs[tone_key]
+        for key in ("href", "external", "shell_layout"):
+            if key in attrs:
+                props[key] = attrs[key]
         children = list(lnode.get("children", []))
 
         # Promote textual props to Text HostNodes (still no HTML)
@@ -129,9 +132,11 @@ def _role_for(from_intent: str) -> str:
         "Page": "page",
         "Hero": "hero",
         "Section": "section",
+        "Shell": "shell",
         "Button": "button",
         "Card": "card",
         "Text": "text",
         "Grid": "grid",
+        "Link": "link",
     }
     return mapping.get(from_intent, from_intent.lower())

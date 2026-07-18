@@ -45,7 +45,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
     path = Path(path)
     artifacts = compile_to_rtr(path)
     return {
-        "version": 9,
+        "version": 10,
         "source": artifacts["source"],
         "semantic_graph": artifacts["semantic_graph"].to_dict(),
         "dependency_graph": artifacts["dependency_graph"].to_dict(),

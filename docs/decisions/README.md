@@ -10,3 +10,6 @@ ADRs record local or historical choices. RFCs change LOCKED architecture or voca
 | [ADR-002](ADR-002-prod-session-runtime.md) | Single-process prod serve + session State |
 | [ADR-003](ADR-003-file-multiworker-sessions.md) | File-backed multi-worker sessions |
 | [ADR-004](ADR-004-design-tokens.md) | OurUI-native design tokens |
+| [ADR-005](ADR-005-intent-emit-escape.md) | Presentation: intent + emit + escape (not Tailwind-in-Python) |
+| [ADR-006](ADR-006-chrome-nav-placement.md) | Chrome: `ui.Nav` + `placement=` → CSS position (not raw position) |
+| [ADR-007](ADR-007-site-structure-stack.md) | Full site stack: structure + chrome + tokens + motion (not Nav alone) |

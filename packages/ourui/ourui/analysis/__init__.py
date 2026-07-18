@@ -187,12 +187,12 @@ class _GraphBuilder:
                             child_ids.append(cid)
                 continue
             state_ref = self._maybe_state_ref(arg)
-            if state_ref and kind in {"Button", "Text", "Card"} and "text" not in attrs:
+            if state_ref and kind in {"Button", "Text", "Card", "Link"} and "text" not in attrs:
                 attrs["text"] = state_ref
                 continue
             val = literal_value(arg)
             if isinstance(val, str):
-                if kind in {"Button", "Text", "Card"} and "text" not in attrs:
+                if kind in {"Button", "Text", "Card", "Link"} and "text" not in attrs:
                     attrs["text"] = val
                 elif "title" not in attrs:
                     attrs["title"] = val

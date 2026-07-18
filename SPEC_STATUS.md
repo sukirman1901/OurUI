@@ -15,7 +15,9 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 **Phase N** (`compiler-p0n`): single-process production serve is **Stable**.  
 **Phase O** (`compiler-p0o`): file-backed multi-worker serve is **Stable** (Unix `fcntl`).  
 **Phase P** (`compiler-p0p`): OurUI design tokens (`--ourui-*`) are **Stable**.  
-**Phase R** (`v0.1.0` / `compiler-p0r`): first package release of the `ourui` compiler/runtime on PyPI-ready packaging (local install / wheel build; not necessarily published).
+**Phase R** (`v0.1.0` / `compiler-p0r`): first package release of the `ourui` compiler/runtime on PyPI-ready packaging (local install / wheel build; not necessarily published).  
+**Phase S1** (`compiler-p0s1` / `v0.1.2`): `ui.Link` + `ui.Shell` / `layout=` — Stable (dump schema **10**).  
+Further chrome (Nav, etc.) is **frozen** until [RFC-001](docs/rfcs/RFC-001-presentation-system.md) is Accepted.
 
 | Area | Status |
 |---|---|
@@ -46,5 +48,6 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | Runtime (single-process prod) | Stable (`ourui serve --prod`) |
 | Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
 | Package (`ourui` 0.1.1) | Stable (Phase R — MIT; [PyPI](https://pypi.org/project/ourui/); wheel/sdist via `python -m build packages/ourui`) |
+| `ui.Link` / `ui.Shell` / `layout=` | Stable (Phase S1 — dump schema **10**) |
 
 Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see ADRs 001–004 under `docs/decisions/`.

@@ -3,17 +3,19 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from ourui.node import Node, SourceSpan
+from ourui.node import SHELL_LAYOUT_INTENTS, Node, SourceSpan
 
 # IIR kind → LTR layout object kind
 _LAYOUT_KIND: dict[str, str] = {
     "Page": "Column",
     "Hero": "Column",
     "Section": "Column",
+    "Shell": "Row",
     "Grid": "Grid",
     "Card": "Box",
     "Button": "Box",
     "Text": "Box",
+    "Link": "Box",
 }
 
 _AXIS: dict[str, str] = {
@@ -24,6 +26,24 @@ _AXIS: dict[str, str] = {
     "Stack": "overlay",
     "Spacer": "none",
 }
+
+_SHELL_TO_LTR: dict[str, str] = {
+    "stack": "Column",
+    "row": "Row",
+    "split-3": "Grid",
+    "grid": "Grid",
+}
+
+_PASSTHROUGH_PROPS = (
+    "title",
+    "subtitle",
+    "text",
+    "variant",
+    "color",
+    "bg",
+    "href",
+    "external",
+)
 
 
 @dataclass
@@ -52,19 +72,31 @@ def _span_from_dict(data: dict[str, Any]) -> SourceSpan:
     )
 
 
+def _resolve_layout_kind(intent_kind: str, shell_layout: str | None) -> str:
+    if shell_layout in _SHELL_TO_LTR:
+        return _SHELL_TO_LTR[shell_layout]
+    return _LAYOUT_KIND.get(intent_kind, "Box")
+
+
 def lower_to_ltr(iir: Any) -> LTR:
     """Layout Lowering: IIR → Layout Object Tree (no host/HTML semantics)."""
     ltr = LTR(roots=list(iir.roots))
     for nid, inode in iir.nodes.items():
         intent_kind = inode["kind"]
-        layout_kind = _LAYOUT_KIND.get(intent_kind, "Box")
-        props = {
+        raw_attrs = inode.get("attributes", {})
+        shell_layout = raw_attrs.get("layout")
+        if shell_layout is not None and shell_layout not in SHELL_LAYOUT_INTENTS:
+            shell_layout = None
+        layout_kind = _resolve_layout_kind(intent_kind, shell_layout if isinstance(shell_layout, str) else None)
+        props: dict[str, Any] = {
             "axis": _AXIS.get(layout_kind, "none"),
             "from_intent": intent_kind,
         }
-        for key in ("title", "subtitle", "text", "variant", "color", "bg"):
-            if key in inode.get("attributes", {}):
-                props[key] = inode["attributes"][key]
+        if isinstance(shell_layout, str):
+            props["shell_layout"] = shell_layout
+        for key in _PASSTHROUGH_PROPS:
+            if key in raw_attrs:
+                props[key] = raw_attrs[key]
         if "events" in inode:
             props["events"] = dict(inode["events"])
         if "binds" in inode:

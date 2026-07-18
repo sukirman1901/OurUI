@@ -15,6 +15,8 @@ UI_COMPONENTS: dict[str, str] = {
     "Text": "Presentation domain text node.",
     "Card": "Presentation domain card container.",
     "Grid": "Layout grid container.",
+    "Link": "Presentation domain navigation anchor (href).",
+    "Shell": "Intent domain layout region (layout=stack|row|split-3|grid).",
     "Theme": "Design token overrides for --ourui-* CSS variables.",
 }
 

@@ -52,19 +52,33 @@ about = ui.Page(route="/about", ui.Section(title="About"))
 - A single `ui.Page` without `route=` defaults to `/`
 - Multiple pages require an explicit `route=` on each
 - `ourui serve` compiles the matching page per `GET` path; unknown paths → 404
-- Plain `<a href="/about">` works via full page loads (no SPA required)
+- Prefer `ui.Link("About", href="/about")` for in-app navigation (emits `<a href>`)
 
 ## Built-in kinds
 
 | Kind | Domain | Notes |
 |---|---|---|
-| `Page` | Intent | Root container |
+| `Page` | Intent | Root container; optional `layout=` |
 | `Hero` | Intent | Hero intent |
-| `Section` | Intent | Section intent |
+| `Section` | Intent | Section intent; optional `layout=` |
+| `Shell` | Intent | Layout region; `layout=` = `stack` \| `row` \| `split-3` \| `grid` |
 | `Button` | Presentation | Button-as-concept (not HTML); may carry `on_click` |
 | `Text` | Presentation | Text content |
 | `Card` | Presentation | Card concept |
 | `Grid` | Presentation | Grid concept (pre-layout) |
+| `Link` | Presentation | Navigation anchor; requires `href=` |
+
+### Layout intents (`layout=`)
+
+Authoring values (not CSS utilities): `stack`, `row`, `split-3`, `grid`.  
+Emit maps them to host classes (e.g. `.ourui-shell-split-3`) — see ADR-005.
+
+### Links
+
+```python
+ui.Link("Studio", href="/app")
+ui.Link("Docs", href="https://example.com", color="primary")  # external → target=_blank
+```
 
 ## Components (Phase I)
 

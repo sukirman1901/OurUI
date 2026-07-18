@@ -26,11 +26,13 @@ page = ui.Page(
 |-----------|--------|------|
 | `ui.Page` | Intent | Root container for a routable page |
 | `ui.Hero` | Intent | Prominent header block |
-| `ui.Section` | Intent | Grouped content section |
+| `ui.Section` | Intent | Grouped content section (`layout=` optional) |
+| `ui.Shell` | Intent | Layout region (`layout=stack\|row\|split-3\|grid`) |
 | `ui.Button` | Presentation | Clickable control |
 | `ui.Text` | Presentation | Inline text (or bound `State`) |
 | `ui.Card` | Presentation | Card container |
 | `ui.Grid` | Presentation | Responsive grid layout |
+| `ui.Link` | Presentation | In-app or external navigation (`href=`) |
 | `ui.Theme` | Tokens | Design token overrides (module-level) |
 
 ## `ui.Page`
@@ -165,17 +167,57 @@ theme = ui.Theme(primary="#1a5f4a", primary_fg="#f5faf8")
 
 See [Theme reference](theme.md) for all token keys and CSS variable mapping.
 
+## `ui.Link`
+
+Navigation control. Emits a real `<a href>` (full page load — no SPA router).
+
+```python
+ui.Link("Open Studio", href="/app")
+ui.Link("Docs", href="https://example.com/docs")  # external → target=_blank
+ui.Link("Home", href="/", color="primary")
+```
+
+| Prop | Notes |
+|------|--------|
+| `text` | Label (first positional string) |
+| `href` | Required path or URL |
+| `external` | Optional bool; default true for `http(s):` URLs |
+| `color` | Optional tone token |
+
+## `ui.Shell`
+
+Intent layout region for product chrome (e.g. Studio three-column). Children are laid out by `layout=`.
+
+```python
+ui.Shell(
+    ui.Section(title="Filters"),
+    ui.Section(title="Preview"),
+    ui.Section(title="Style"),
+    layout="split-3",
+)
+```
+
+| `layout=` | Emit |
+|-----------|------|
+| `stack` | `.ourui-shell-stack` (column) |
+| `row` | `.ourui-row` |
+| `split-3` | `.ourui-shell-split-3` (3 columns → 1 col under 768px) |
+| `grid` | `.ourui-grid` |
+
+`layout=` also works on `ui.Section` / `ui.Page`.
+
 ## Positional arguments
 
 The `ui` namespace accepts shorthand positional args:
 
-- First string on `Button`, `Text`, `Card` → `text`
+- First string on `Button`, `Text`, `Card`, `Link` → `text`
 - First string on other kinds → `title` when `title` is not set
 - UI node positional args → appended to `children`
 
 ## See also
 
 - [Tutorial 01 — Your first page](../tutorial/01-your-first-page.md)
+- [Routing](routing.md)
 - [Theme](theme.md)
 - [State](state.md)
 - [Server handlers](server.md)

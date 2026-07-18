@@ -64,7 +64,7 @@ class _UINamespace:
                 elif "children" not in props and not isinstance(arg, (str, int, float, bool)):
                     children.append(arg)
                 else:
-                    if "text" not in props and isinstance(arg, str) and name in {"Button", "Text", "Card"}:
+                    if "text" not in props and isinstance(arg, str) and name in {"Button", "Text", "Card", "Link"}:
                         props["text"] = arg
                     elif "title" not in props and isinstance(arg, str):
                         props["title"] = arg
