@@ -1,4 +1,4 @@
-# ourui 0.2.1
+# ourui 0.2.2
 
 Python package for the **OurUI** compiler and runtime.
 

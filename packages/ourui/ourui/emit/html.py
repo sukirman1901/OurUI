@@ -98,6 +98,60 @@ button.ourui-tone-muted {
   color: var(--ourui-muted-fg);
 }
 """
+# Tone classes above use CSS vars seeded from Resolved Design (Host Contract).
+# Per-node rules from Resolved Design override for concrete fill/fg/radius/pad.
+
+
+def _as_resolved_design(resolved_design: Any) -> dict[str, Any] | None:
+    if resolved_design is None:
+        return None
+    if hasattr(resolved_design, "to_dict"):
+        return resolved_design.to_dict()
+    return dict(resolved_design)
+
+
+def _tokens_from_resolved(rd: dict[str, Any]) -> dict[str, dict[str, str]]:
+    tokens = rd.get("tokens") or {}
+    return {
+        "light": dict(tokens.get("light") or {}),
+        "dark": dict(tokens.get("dark") or {}),
+    }
+
+
+def _emit_resolved_node_css(rd: dict[str, Any]) -> str:
+    """Host maps Resolved Design node values → CSS (no Design System tables)."""
+    lines: list[str] = []
+    nodes = rd.get("nodes") or {}
+    for nid in sorted(nodes):
+        node = nodes[nid]
+        role = node.get("role")
+        resolved = node.get("resolved") or {}
+        if role not in {"button", "link"}:
+            continue
+        fill = resolved.get("fill")
+        fg = resolved.get("fg")
+        if not fill and not fg:
+            continue
+        lines.append(f'[data-ourui-id="{nid}"] {{')
+        if role == "button":
+            if fill:
+                lines.append(f"  background: {fill};")
+            if fg:
+                lines.append(f"  color: {fg};")
+            if resolved.get("radius"):
+                lines.append(f"  border-radius: {resolved['radius']};")
+            pad_b = resolved.get("pad_block")
+            pad_i = resolved.get("pad_inline")
+            if pad_b and pad_i:
+                lines.append(f"  padding: {pad_b} {pad_i};")
+            lines.append("  border-color: transparent;")
+        else:
+            if fill:
+                lines.append(f"  color: {fill};")
+        lines.append("}")
+    if not lines:
+        return ""
+    return "\n".join(lines) + "\n"
 
 
 def _tone_name(attrs: dict[str, Any]) -> str | None:
@@ -232,7 +286,16 @@ def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None)
     return out
 
 
-def emit_css(tokens: dict[str, dict[str, str]] | None = None) -> str:
+def emit_css(
+    tokens: dict[str, dict[str, str]] | None = None,
+    *,
+    resolved_design: Any = None,
+) -> str:
+    """Emit host CSS. Prefer Resolved Design tokens + per-node rules (Host Contract)."""
+    rd = _as_resolved_design(resolved_design)
+    if rd is not None:
+        token_block = emit_tokens_css(_tokens_from_resolved(rd))
+        return token_block + _BASE_CSS + _emit_resolved_node_css(rd)
     token_block = emit_tokens_css(tokens or default_tokens())
     return token_block + _BASE_CSS
 
@@ -244,8 +307,9 @@ def emit_html_document(
     state_values: dict[str, Any] | None = None,
     hmr: bool = False,
     tokens: dict[str, dict[str, str]] | None = None,
+    resolved_design: Any = None,
 ) -> str:
-    """Emit a full HTML document from an RTR dict (HostNode tree only)."""
+    """Emit HTML from Host Contract inputs: RTR + Resolved Design (+ optional tokens fallback)."""
     rtr = apply_state_values(rtr, state_values)
     nodes = rtr["nodes"]
     roots = rtr["roots"]
@@ -255,7 +319,7 @@ def emit_html_document(
     body_lines.append("  </div>")
 
     js = emit_js(rtr, hmr=hmr).rstrip("\n")
-    css = emit_css(tokens).rstrip("\n")
+    css = emit_css(tokens, resolved_design=resolved_design).rstrip("\n")
     parts = [
         "<!DOCTYPE html>",
         '<html lang="en">',
@@ -283,10 +347,13 @@ def emit_bundle(
     *,
     title: str = "OurUI",
     tokens: dict[str, dict[str, str]] | None = None,
+    resolved_design: Any = None,
 ) -> dict[str, str]:
     """Serializable emit artifacts (I10): html + css + js."""
     return {
-        "html": emit_html_document(rtr, title=title, tokens=tokens),
-        "css": emit_css(tokens),
+        "html": emit_html_document(
+            rtr, title=title, tokens=tokens, resolved_design=resolved_design
+        ),
+        "css": emit_css(tokens, resolved_design=resolved_design),
         "js": emit_js(rtr),
     }

@@ -1,9 +1,9 @@
 # RFC-003: Host Contract
 
-**Status:** Draft  
+**Status:** Accepted + Spike B Implemented (`0.2.2` — emit consumes Resolved Design)  
 **Depends on:** [RFC-001](RFC-001-presentation-system.md) Accepted; [RFC-002](RFC-002-design-system.md) Accepted  
 **Track:** Generation 3 — Host  
-**Target release:** `0.3.0` (web host consumes contract; package may stay `ourui` until split)
+**Target release:** `0.3.0` when emit is contract-primary (DEFAULT token tables no longer emit source of truth)
 
 ## Motivation
 
@@ -14,117 +14,93 @@ Generation 2 proved presentation meaning can be separated from design knowledge:
 Presentation Graph  +  Design System  →  Resolved Design
 ```
 
-Those artifacts exist in `ourui dump` (schema 12). Emit does **not** consume them yet. The provisional web path is still:
+Those artifacts exist in `ourui dump` (schema 12). Generation 3 proves **Host** consumes them:
 
 ```text
-RTR  +  Theme tables  +  _BASE_CSS  →  HTML / CSS / JS
+RTR  +  Resolved Design  →  Host Emit  →  HTML / CSS / JS
 ```
 
-That makes the **web emitter** the accidental center of the architecture. Generation 3 must prove the opposite: **Host is a consumer of a stable contract**, and web is only the first host.
-
-## Center of this RFC (locked bias)
+## Center of this RFC (locked)
 
 **Not** “build a CSS AST first.”
 
-**Yes** — define a **Host Contract**:
+**Yes** — **Host Contract**:
 
 ```text
 Host
-  Input:   RTR  +  Resolved Design  (+ optional Layout / runtime metadata)
+  Input:   RTR  +  Resolved Design
   Output:  medium-specific product (HTML+CSS+JS today; PDF / native later)
 ```
 
-CSS AST (if any) is an **implementation detail of the web host**, not the product of the Presentation or Design System layers.
+CSS AST (if any) is an **implementation detail of the web host**.
 
 ## Generational context
 
 | Generation | Proof | Status |
 |------------|-------|--------|
-| **1** Language infrastructure | Intent → SG → IIR → LTR → RTR → running app | Done |
-| **2** Semantic presentation | PG + DS → Resolved Design (dump) | Done (`0.2.1`) |
-| **3** Host | Host consumes `RTR + Resolved Design` via a clean contract | **This RFC** |
+| **1** Language infrastructure | Intent → … → running app | Done |
+| **2** Semantic presentation | PG + DS → Resolved Design | Done (`0.2.1`) |
+| **3** Host | Host Contract → web emit | **In progress** (Spike B in `0.2.2`) |
 
-## Host Contract — v0 sketch
+## Host Contract — v0
 
 ### Inputs (required)
 
 | Input | Role |
 |-------|------|
 | **RTR** | Structure, text, events, binds, host kinds / attributes |
-| **Resolved Design** | Per-node concrete values (`fill`, `fg`, `radius`, spacing, …) + mode/pack metadata |
-
-### Inputs (optional / later)
-
-| Input | Role |
-|-------|------|
-| LTR | Layout hints if a host needs them beyond RTR |
-| Session / runtime metadata | Prod sessions, HMR — host runtime, not contract core |
+| **Resolved Design** | Per-node concrete values + mode/pack token maps |
 
 ### Outputs (web host v0)
 
-| Output | Notes |
-|--------|-------|
-| HTML | Structure + hooks from RTR; presentation attrs from Resolved Design |
-| CSS | Generated from Resolved Design (+ host-private chrome CSS if needed) |
-| JS | Events / binds / RPC — still driven by RTR runtime surface |
-| Assets | Fonts, icons later — out of v0 spike |
+| Output | How (Spike B) |
+|--------|----------------|
+| HTML | Structure + events from RTR (`data-ourui-id`, hooks) |
+| CSS | Pack vars from `resolved_design.tokens` + per-node rules from `resolved_design.nodes` for button/link; layout chrome remains host-private `_BASE_CSS` |
+| JS | Events / binds from RTR (unchanged) |
 
 ### Non-goals for Contract v0
 
 - Material / Fluent packs  
 - Plasma visual parity  
 - New chrome (`ui.Nav`)  
-- Splitting `ourui-web` as a separate package (may stay in-tree until contract stabilizes)  
-- Mandating a CSS AST shape before HTML emit can read Resolved Design  
-
-## Host responsibilities (questions the contract must answer)
-
-1. How does **HTML** attach Resolved Design values to nodes (classes, inline, data attrs, CSS vars)?  
-2. How does **JS** continue to read events / binds from RTR without owning design tokens?  
-3. How is **CSS** produced from Resolved Design (and what remains host-private chrome)?  
-4. How would **PDF** later map the same Resolved Design literals (no CSS required)?  
-5. How would **native** later map the same Resolved Design literals?
-
-Web answers (1)–(3) in the first implementation. (4)–(5) constrain the contract so we do not bake CSS-only shapes into Resolved Design (already host-neutral literals per RFC-002).
+- Mandating CSS AST before Host can read Resolved Design  
 
 ## Rules
 
-1. Web HTML emitter must **stop owning** design-token tables as the source of truth (`theme.py` / `_BASE_CSS` tone colors become migration debt).  
-2. **Resolved Design** remains host-neutral (hex/rem/literals — not `var(--ourui-*)` selectors). Hosts may *emit* CSS variables if they choose.  
-3. **Presentation Graph** is not a Host input for emit v0 (Host reads Resolved Design; PG stays compiler/debug).  
-4. Dump may gain host-facing emit notes; schema bump only if serialized contract fields change.  
-5. Chrome freeze continues until web emit is on the contract path.
+1. Emit prefers **Resolved Design** over Theme/`DEFAULT_*` as the design source for tones.  
+2. Resolved Design stays host-neutral literals; Host may emit CSS variables.  
+3. Presentation Graph is not a Host emit input (debug/compiler only).  
+4. Chrome freeze continues until contract path is primary (`0.3.0`).  
 
-## Migration plan (provisional → contract)
+## Migration plan
 
-| Step | Deliverable |
-|------|-------------|
-| **A** | Accept Host Contract text (this Draft → Accepted) |
-| **B** | Spike: web emit reads `resolved_design` for Button/`tone` colors (leave layout chrome CSS if needed) |
-| **C** | Remove emit dependency on `DEFAULT_*` token tables for tones |
-| **D** | Document remaining `_BASE_CSS` as host-private chrome only |
-| **E** | Release **0.3.0** when web emit path is contract-primary |
-| **F** | Optional later: CSS AST module inside web host; package split `ourui-web` |
+| Step | Deliverable | Status |
+|------|-------------|--------|
+| **A** | Accept Host Contract text | Done |
+| **B** | Spike: emit reads `resolved_design` for Button/link tones | **Done (`0.2.2`)** |
+| **C** | Remove remaining emit fallbacks that invent tones from `DEFAULT_*` alone | Next |
+| **D** | Document `_BASE_CSS` as host-private chrome only | Partial |
+| **E** | Release **0.3.0** when web emit is contract-primary | Planned |
+| **F** | Optional: CSS AST / `ourui-web` package split | Later |
 
 ## Acceptance criteria
 
-- [ ] Host Contract vocabulary frozen: **Host**, **Host Contract**, inputs `RTR` + `Resolved Design`  
-- [ ] Explicit: CSS AST is optional web implementation, not Gen-3 gate  
-- [ ] Spike plan B–E agreed  
-- [ ] No Material / Nav / Plasma in the critical path  
+- [x] Host Contract vocabulary frozen  
+- [x] CSS AST is optional, not Gen-3 gate  
+- [x] Spike B: pipeline passes Resolved Design into emit; CSS includes per-node fills  
+- [x] No Material / Nav / Plasma on the critical path  
 
-## Implementation checklist (post-Accept)
+## Implementation notes (Spike B)
 
-1. Wire `emit` to take `resolved_design` from pipeline  
-2. Tests: Button primary fill/fg from Resolved Design, not Theme table alone  
-3. CHANGELOG + SPEC_STATUS (emit provisional → contract-backed)  
-4. Roadmap Generation 3 → Done at `0.3.0`
+- `emit_html` / `emit_bundle` pass `resolved_design` from the pipeline.  
+- `emit_css(resolved_design=…)` seeds `--ourui-*` from RD tokens and appends `[data-ourui-id=…]` rules for button/link resolved values.  
+- Dump `emit.host_contract: true` (schema remains 12).  
 
 ## References
 
 - [RFC-001](RFC-001-presentation-system.md)  
 - [RFC-002](RFC-002-design-system.md)  
-- [ADR-004](../decisions/ADR-004-design-tokens.md) (provisional tokens)  
+- [ADR-004](../decisions/ADR-004-design-tokens.md)  
 - [ADR-005](../decisions/ADR-005-intent-emit-escape.md)  
-- [architecture sketch](../architecture/presentation-sketch.md)  
-- `packages/ourui/ourui/emit/html.py` (provisional consumer to replace)
+- `packages/ourui/ourui/emit/html.py`

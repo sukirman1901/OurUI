@@ -31,11 +31,15 @@ def test_emit_html_contains_host_mapping() -> None:
     assert "<Hero" not in html_out
 
 
-def test_emit_only_uses_rtr() -> None:
+def test_emit_uses_host_contract() -> None:
     artifacts = compile_to_rtr(FIXTURE)
-    from_rtr = emit_html_document(artifacts["rtr"].to_dict(), title="Welcome")
+    from_contract = emit_html_document(
+        artifacts["rtr"].to_dict(),
+        title="Welcome",
+        resolved_design=artifacts["resolved_design"],
+    )
     from_pipeline = emit_html(FIXTURE, title="Welcome")
-    assert from_rtr == from_pipeline
+    assert from_contract == from_pipeline
 
 
 def test_emit_deterministic() -> None:
@@ -48,6 +52,7 @@ def test_dump_version_notes_emit() -> None:
     assert doc["emit"]["html"] is True
     assert doc["emit"]["js"] is True
     assert doc["emit"]["state"] is True
+    assert doc["emit"]["host_contract"] is True
 
 
 def test_golden_html() -> None:

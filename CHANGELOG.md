@@ -4,6 +4,19 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.2.2] — 2026-07-18
+
+### Added
+
+- **Host Contract Spike B** (RFC-003): web emit consumes `RTR + Resolved Design`
+- CSS: pack variables from `resolved_design.tokens`; per-node button/link rules from `resolved_design.nodes`
+- Dump flag `emit.host_contract`
+
+### Notes
+
+- Layout chrome remains host-private `_BASE_CSS`
+- `0.3.0` will mark emit contract-primary (finish migration off Theme/`DEFAULT_*` as emit authority)
+
 ## [0.2.1] — 2026-07-18
 
 ### Added

@@ -71,6 +71,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "tokens": True,
             "presentation_graph": True,
             "resolved_design": True,
+            "host_contract": True,
         },
     }
 
@@ -87,7 +88,7 @@ def emit_html(
     state_values: dict[str, Any] | None = None,
     hmr: bool = False,
 ) -> str:
-    """Compile source → RTR → HTML. Emitter consumes HostNode only."""
+    """Compile source → RTR + Resolved Design → HTML (Host Contract)."""
     artifacts = compile_to_rtr(path, route=route)
     doc_title = title or Path(path).stem
     return emit_html_document(
@@ -96,6 +97,7 @@ def emit_html(
         state_values=state_values,
         hmr=hmr,
         tokens=artifacts["semantic_graph"].tokens,
+        resolved_design=artifacts["resolved_design"],
     )
 
 
@@ -106,4 +108,5 @@ def emit_all(path: str | Path, *, title: str | None = None) -> dict[str, str]:
         artifacts["rtr"].to_dict(),
         title=doc_title,
         tokens=artifacts["semantic_graph"].tokens,
+        resolved_design=artifacts["resolved_design"],
     )

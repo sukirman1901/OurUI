@@ -18,7 +18,8 @@ Compiler → Presentation Graph (RFC-001)
 CSS AST (if any) is a web-host implementation detail, not the Gen-3 gate.
 
 Today: dump includes `presentation_graph` + `resolved_design`.  
-Provisional emit still uses Theme + `_BASE_CSS` until RFC-003 spikes wire the contract.
+Spike B (`0.2.2`): web emit reads Resolved Design for pack vars + button/link node CSS.  
+Remaining for `0.3.0`: finish contract-primary path (Theme/`DEFAULT_*` no longer emit authority).
 
 See:
 
