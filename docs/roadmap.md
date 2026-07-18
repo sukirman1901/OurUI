@@ -15,3 +15,4 @@
 | **N** | Production runtime (`serve --prod`, session State) | Done |
 | **O** | Multi-worker + file session store (`--workers`, `--session-dir`) | Done |
 | **P** | Design tokens (`ui.Theme`, `--ourui-*` CSS vars) | Done |
+| **Q** | User documentation (`docs/user/`) | Done |

@@ -26,6 +26,9 @@ pytest tests/p0
 - `serve` — preview + RPC + HMR + multi-page routing; `--prod` for sessions/safe errors; `--workers` / `--session-dir` for multi-process file sessions  
 - `lsp` — stdio Language Server (completions + hover for `ui.*`, `State`, `@server`)
 
+## User documentation
+
+Full Getting started, Tutorial, Guides, and Reference: **[docs/user/](docs/user/README.md)**.
 
 ## Core documents
 

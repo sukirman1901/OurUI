@@ -40,7 +40,7 @@ API and CLI lookup:
 
 ## Concepts
 
-Light background (coming soon):
+Background on how OurUI works and what P0 covers:
 
-- [How OurUI compiles](concepts/how-ourui-compiles.md)
-- [What P0 includes](concepts/what-p0-includes.md)
+- [How OurUI compiles](concepts/how-ourui-compiles.md) — Parse → Analyze → Lower → Emit; Python intent to browser output
+- [What P0 includes](concepts/what-p0-includes.md) — supported features and explicit not-yet list
