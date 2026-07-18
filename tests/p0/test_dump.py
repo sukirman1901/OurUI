@@ -21,15 +21,18 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_has_required_sections() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 6
+    assert doc["version"] == 7
     for key in ("semantic_graph", "dependency_graph", "iir", "ltr", "rtr", "emit"):
         assert key in doc
     assert doc["emit"]["js"] is True
     assert doc["emit"]["state"] is True
+    assert doc["emit"]["components"] is True
     assert "get_started" in doc["iir"]["handlers"]
     assert doc["iir"]["handlers"]["get_started"]["kind"] == "server"
     assert "count" in doc["iir"]["states"]
     assert doc["iir"]["states"]["count"]["initial"] == 0
+    assert "FeatureCard" in doc["semantic_graph"]["components"]
+    assert "CounterPanel" in doc["semantic_graph"]["components"]
     assert doc["rtr"]["roots"]
     assert any(e["kind"] == "uses_theme" for e in doc["dependency_graph"]["edges"])
 
@@ -84,6 +87,15 @@ def test_rtr_binds_state_text() -> None:
     ]
     assert bound
     assert bound[0]["attributes"]["content"] == "0"
+
+
+def test_components_expand_in_provenance() -> None:
+    doc = compile_dump(FIXTURE)
+    cards = [n for n in doc["semantic_graph"]["nodes"].values() if n["kind"] == "Card"]
+    assert len(cards) >= 2
+    assert any("expand:FeatureCard" in n["provenance"] for n in cards)
+    sections = [n for n in doc["semantic_graph"]["nodes"].values() if n["kind"] == "Section"]
+    assert any("expand:CounterPanel" in n["provenance"] for n in sections)
 
 
 def test_golden_dump() -> None:

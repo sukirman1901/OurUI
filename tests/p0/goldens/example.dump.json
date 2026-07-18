@@ -12,18 +12,19 @@
         "to": "theme0004"
       },
       {
-        "from": "n0008",
+        "from": "n0009",
         "kind": "reads_state",
         "to": "count"
       },
       {
-        "from": "n0009",
+        "from": "n0010",
         "kind": "on_click",
         "to": "increment"
       }
     ]
   },
   "emit": {
+    "components": true,
     "css": true,
     "html": true,
     "js": true,
@@ -59,11 +60,12 @@
         "attributes": {},
         "children": [
           "n0002",
-          "n0005"
+          "n0005",
+          "n0008"
         ],
         "domain": "intent",
         "generation": 1,
-        "hash": "b1e49b0e1f8c9894",
+        "hash": "9cbb0fed359c97ca",
         "id": "n0001",
         "kind": "Page",
         "metadata": {
@@ -77,10 +79,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 32,
+          "end_line": 49,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 17
+          "start_line": 35
         }
       },
       "n0002": {
@@ -110,10 +112,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 22,
+          "end_line": 40,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 18
+          "start_line": 36
         }
       },
       "n0003": {
@@ -142,10 +144,10 @@
         "revision": 0,
         "span": {
           "end_col": 77,
-          "end_line": 21,
+          "end_line": 39,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 21
+          "start_line": 39
         }
       },
       "n0005": {
@@ -154,13 +156,11 @@
         },
         "children": [
           "n0006",
-          "n0007",
-          "n0008",
-          "n0009"
+          "n0007"
         ],
         "domain": "intent",
         "generation": 1,
-        "hash": "d6ba6346ee60ab99",
+        "hash": "86f60e61e2b742c0",
         "id": "n0005",
         "kind": "Section",
         "metadata": {
@@ -174,10 +174,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 31,
+          "end_line": 47,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 23
+          "start_line": 41
         }
       },
       "n0006": {
@@ -187,24 +187,28 @@
         "children": [],
         "domain": "presentation",
         "generation": 1,
-        "hash": "576dd6ac1e3f2eaa",
+        "hash": "98d4b20572ab52fd",
         "id": "n0006",
         "kind": "Card",
         "metadata": {
-          "domain": "presentation"
+          "domain": "presentation",
+          "expanded_from": [
+            "FeatureCard"
+          ]
         },
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 26,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 26
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0007": {
@@ -214,27 +218,65 @@
         "children": [],
         "domain": "presentation",
         "generation": 1,
-        "hash": "7c39deb0bc469381",
+        "hash": "b2228498fc1f85f5",
         "id": "n0007",
         "kind": "Card",
         "metadata": {
-          "domain": "presentation"
+          "domain": "presentation",
+          "expanded_from": [
+            "FeatureCard"
+          ]
         },
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 27,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 27
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0008": {
+        "attributes": {
+          "title": "Counter"
+        },
+        "children": [
+          "n0009",
+          "n0010"
+        ],
+        "domain": "intent",
+        "generation": 1,
+        "hash": "96426581400e939b",
+        "id": "n0008",
+        "kind": "Section",
+        "metadata": {
+          "domain": "intent",
+          "expanded_from": [
+            "CounterPanel"
+          ]
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 9,
+          "end_line": 32,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 15,
+          "start_line": 26
+        }
+      },
+      "n0009": {
         "attributes": {
           "text": 0
         },
@@ -244,28 +286,32 @@
         "children": [],
         "domain": "presentation",
         "generation": 1,
-        "hash": "f25e7d21310642d8",
-        "id": "n0008",
+        "hash": "0ad9126d167bfab7",
+        "id": "n0009",
         "kind": "Text",
         "metadata": {
           "behavior": true,
-          "domain": "presentation"
+          "domain": "presentation",
+          "expanded_from": [
+            "CounterPanel"
+          ]
         },
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent"
         ],
         "revision": 0,
         "span": {
-          "end_col": 26,
-          "end_line": 28,
+          "end_col": 30,
+          "end_line": 29,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 28
+          "start_col": 16,
+          "start_line": 29
         }
       },
-      "n0009": {
+      "n0010": {
         "attributes": {
           "text": "+1"
         },
@@ -275,25 +321,29 @@
           "click": "increment"
         },
         "generation": 1,
-        "hash": "24ad9a5d81b11106",
-        "id": "n0009",
+        "hash": "6eea16755e33221f",
+        "id": "n0010",
         "kind": "Button",
         "metadata": {
           "behavior": true,
-          "domain": "presentation"
+          "domain": "presentation",
+          "expanded_from": [
+            "CounterPanel"
+          ]
         },
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent"
         ],
         "revision": 0,
         "span": {
-          "end_col": 47,
-          "end_line": 29,
+          "end_col": 51,
+          "end_line": 30,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 29
+          "start_col": 16,
+          "start_line": 30
         }
       }
     },
@@ -347,10 +397,11 @@
         },
         "children": [
           "n0002",
-          "n0005"
+          "n0005",
+          "n0008"
         ],
         "generation": 2,
-        "hash": "4a77fe6b410c24b0",
+        "hash": "6c038269c7a05247",
         "id": "n0001",
         "kind": "Column",
         "metadata": {
@@ -365,10 +416,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 32,
+          "end_line": 49,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 17
+          "start_line": 35
         }
       },
       "n0002": {
@@ -397,10 +448,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 22,
+          "end_line": 40,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 18
+          "start_line": 36
         }
       },
       "n0003": {
@@ -430,10 +481,10 @@
         "revision": 0,
         "span": {
           "end_col": 77,
-          "end_line": 21,
+          "end_line": 39,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 21
+          "start_line": 39
         }
       },
       "n0005": {
@@ -444,12 +495,10 @@
         },
         "children": [
           "n0006",
-          "n0007",
-          "n0008",
-          "n0009"
+          "n0007"
         ],
         "generation": 2,
-        "hash": "ab393dd31693dcdc",
+        "hash": "b09bd00a0204e153",
         "id": "n0005",
         "kind": "Column",
         "metadata": {
@@ -464,10 +513,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 31,
+          "end_line": 47,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 23
+          "start_line": 41
         }
       },
       "n0006": {
@@ -478,7 +527,7 @@
         },
         "children": [],
         "generation": 2,
-        "hash": "34e71ae631609672",
+        "hash": "d81cda0eb2f57d81",
         "id": "n0006",
         "kind": "Box",
         "metadata": {
@@ -487,16 +536,17 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent",
           "lowering:layout"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 26,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 26
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0007": {
@@ -507,7 +557,7 @@
         },
         "children": [],
         "generation": 2,
-        "hash": "d3ef3f305186070f",
+        "hash": "3ace8965a644face",
         "id": "n0007",
         "kind": "Box",
         "metadata": {
@@ -516,19 +566,53 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent",
           "lowering:layout"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 27,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 27
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0008": {
+        "attributes": {
+          "axis": "vertical",
+          "from_intent": "Section",
+          "title": "Counter"
+        },
+        "children": [
+          "n0009",
+          "n0010"
+        ],
+        "generation": 2,
+        "hash": "d86bf9e2c799b2db",
+        "id": "n0008",
+        "kind": "Column",
+        "metadata": {
+          "stage": "ltr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:layout"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 9,
+          "end_line": 32,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 15,
+          "start_line": 26
+        }
+      },
+      "n0009": {
         "attributes": {
           "axis": "none",
           "binds": {
@@ -539,8 +623,8 @@
         },
         "children": [],
         "generation": 2,
-        "hash": "9cbe12259143299b",
-        "id": "n0008",
+        "hash": "c1877721e3a079c3",
+        "id": "n0009",
         "kind": "Box",
         "metadata": {
           "stage": "ltr"
@@ -548,19 +632,20 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent",
           "lowering:layout"
         ],
         "revision": 0,
         "span": {
-          "end_col": 26,
-          "end_line": 28,
+          "end_col": 30,
+          "end_line": 29,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 28
+          "start_col": 16,
+          "start_line": 29
         }
       },
-      "n0009": {
+      "n0010": {
         "attributes": {
           "axis": "none",
           "events": {
@@ -571,8 +656,8 @@
         },
         "children": [],
         "generation": 2,
-        "hash": "d1864fa460ad46e6",
-        "id": "n0009",
+        "hash": "c47dd71ac9608a99",
+        "id": "n0010",
         "kind": "Box",
         "metadata": {
           "stage": "ltr"
@@ -580,16 +665,17 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent",
           "lowering:layout"
         ],
         "revision": 0,
         "span": {
-          "end_col": 47,
-          "end_line": 29,
+          "end_col": 51,
+          "end_line": 30,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 29
+          "start_col": 16,
+          "start_line": 30
         }
       }
     },
@@ -645,10 +731,11 @@
         },
         "children": [
           "n0002",
-          "n0005"
+          "n0005",
+          "n0008"
         ],
         "generation": 3,
-        "hash": "78b1a567d992f85a",
+        "hash": "c8736da2bfec30b3",
         "id": "n0001",
         "kind": "Container",
         "metadata": {
@@ -665,10 +752,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 32,
+          "end_line": 49,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 17
+          "start_line": 35
         }
       },
       "n0002": {
@@ -701,10 +788,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 22,
+          "end_line": 40,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 18
+          "start_line": 36
         }
       },
       "n0003": {
@@ -738,10 +825,10 @@
         "revision": 0,
         "span": {
           "end_col": 77,
-          "end_line": 21,
+          "end_line": 39,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 21
+          "start_line": 39
         }
       },
       "n0005": {
@@ -752,14 +839,12 @@
           "role": "section"
         },
         "children": [
-          "text0008",
+          "text0006",
           "n0006",
-          "n0007",
-          "n0008",
-          "n0009"
+          "n0007"
         ],
         "generation": 3,
-        "hash": "249926a4cfb91ca9",
+        "hash": "fdd4d73cbf9c456e",
         "id": "n0005",
         "kind": "Container",
         "metadata": {
@@ -776,10 +861,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 31,
+          "end_line": 47,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 23
+          "start_line": 41
         }
       },
       "n0006": {
@@ -793,7 +878,7 @@
           "text0004"
         ],
         "generation": 3,
-        "hash": "4cc994fbcb2a600c",
+        "hash": "d68ed4f220d30c9c",
         "id": "n0006",
         "kind": "Container",
         "metadata": {
@@ -803,17 +888,18 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent",
           "lowering:layout",
           "lowering:render"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 26,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 26
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0007": {
@@ -827,7 +913,7 @@
           "text0005"
         ],
         "generation": 3,
-        "hash": "762de1164ffb0143",
+        "hash": "b77d7d0622a9ba37",
         "id": "n0007",
         "kind": "Container",
         "metadata": {
@@ -837,31 +923,34 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent",
           "lowering:layout",
           "lowering:render"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 27,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 27
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0008": {
         "attributes": {
-          "from_intent": "Text",
-          "from_layout": "Box",
-          "layout": "none",
-          "role": "text"
+          "from_intent": "Section",
+          "from_layout": "Column",
+          "layout": "vertical",
+          "role": "section"
         },
         "children": [
-          "text0006"
+          "text0009",
+          "n0009",
+          "n0010"
         ],
         "generation": 3,
-        "hash": "f74ab15e576410e0",
+        "hash": "d4795bbc8a27cc83",
         "id": "n0008",
         "kind": "Container",
         "metadata": {
@@ -871,20 +960,56 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent",
           "lowering:layout",
           "lowering:render"
         ],
         "revision": 0,
         "span": {
-          "end_col": 26,
-          "end_line": 28,
+          "end_col": 9,
+          "end_line": 32,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 28
+          "start_col": 15,
+          "start_line": 26
         }
       },
       "n0009": {
+        "attributes": {
+          "from_intent": "Text",
+          "from_layout": "Box",
+          "layout": "none",
+          "role": "text"
+        },
+        "children": [
+          "text0007"
+        ],
+        "generation": 3,
+        "hash": "34756b1c81fe72ab",
+        "id": "n0009",
+        "kind": "Container",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 30,
+          "end_line": 29,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 16,
+          "start_line": 29
+        }
+      },
+      "n0010": {
         "attributes": {
           "events": {
             "click": "increment"
@@ -895,11 +1020,11 @@
           "role": "button"
         },
         "children": [
-          "text0007"
+          "text0008"
         ],
         "generation": 3,
-        "hash": "55676153e2fb1e75",
-        "id": "n0009",
+        "hash": "e6e7d5a92822f50b",
+        "id": "n0010",
         "kind": "Container",
         "metadata": {
           "host": true,
@@ -908,17 +1033,18 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent",
           "lowering:layout",
           "lowering:render"
         ],
         "revision": 0,
         "span": {
-          "end_col": 47,
-          "end_line": 29,
+          "end_col": 51,
+          "end_line": 30,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 29
+          "start_col": 16,
+          "start_line": 30
         }
       },
       "text0001": {
@@ -946,10 +1072,10 @@
         "revision": 0,
         "span": {
           "end_col": 77,
-          "end_line": 21,
+          "end_line": 39,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 21
+          "start_line": 39
         }
       },
       "text0002": {
@@ -977,10 +1103,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 22,
+          "end_line": 40,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 18
+          "start_line": 36
         }
       },
       "text0003": {
@@ -1008,10 +1134,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 22,
+          "end_line": 40,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 18
+          "start_line": 36
         }
       },
       "text0004": {
@@ -1021,7 +1147,7 @@
         },
         "children": [],
         "generation": 3,
-        "hash": "bed7aed7e9cb995f",
+        "hash": "640576bb0d38a931",
         "id": "text0004",
         "kind": "Text",
         "metadata": {
@@ -1031,6 +1157,7 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent",
           "lowering:layout",
           "lowering:render",
@@ -1038,11 +1165,11 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 26,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 26
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "text0005": {
@@ -1052,7 +1179,7 @@
         },
         "children": [],
         "generation": 3,
-        "hash": "8a88ece534e1f449",
+        "hash": "415e38ab2fb1eedf",
         "id": "text0005",
         "kind": "Text",
         "metadata": {
@@ -1062,6 +1189,7 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:FeatureCard",
           "lowering:intent",
           "lowering:layout",
           "lowering:render",
@@ -1069,22 +1197,21 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 27,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 27
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "text0006": {
         "attributes": {
-          "bind": "count",
-          "content": "0",
-          "slot": "text"
+          "content": "Features",
+          "slot": "title"
         },
         "children": [],
         "generation": 3,
-        "hash": "90be10105daf7511",
+        "hash": "00e7b5ee5b2246ac",
         "id": "text0006",
         "kind": "Text",
         "metadata": {
@@ -1101,21 +1228,22 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 26,
-          "end_line": 28,
+          "end_col": 5,
+          "end_line": 47,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 28
+          "start_col": 4,
+          "start_line": 41
         }
       },
       "text0007": {
         "attributes": {
-          "content": "+1",
+          "bind": "count",
+          "content": "0",
           "slot": "text"
         },
         "children": [],
         "generation": 3,
-        "hash": "6b537006940a8465",
+        "hash": "4316f86abb7024d1",
         "id": "text0007",
         "kind": "Text",
         "metadata": {
@@ -1125,6 +1253,7 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent",
           "lowering:layout",
           "lowering:render",
@@ -1132,21 +1261,21 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 47,
+          "end_col": 30,
           "end_line": 29,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
+          "start_col": 16,
           "start_line": 29
         }
       },
       "text0008": {
         "attributes": {
-          "content": "Features",
-          "slot": "title"
+          "content": "+1",
+          "slot": "text"
         },
         "children": [],
         "generation": 3,
-        "hash": "00e7b5ee5b2246ac",
+        "hash": "e4ae32fd77d102a5",
         "id": "text0008",
         "kind": "Text",
         "metadata": {
@@ -1156,6 +1285,7 @@
         "provenance": [
           "parse:ui_call",
           "analyze:semantic_graph",
+          "expand:CounterPanel",
           "lowering:intent",
           "lowering:layout",
           "lowering:render",
@@ -1163,11 +1293,43 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 5,
-          "end_line": 31,
+          "end_col": 51,
+          "end_line": 30,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 4,
-          "start_line": 23
+          "start_col": 16,
+          "start_line": 30
+        }
+      },
+      "text0009": {
+        "attributes": {
+          "content": "Counter",
+          "slot": "title"
+        },
+        "children": [],
+        "generation": 3,
+        "hash": "9522e5913005225e",
+        "id": "text0009",
+        "kind": "Text",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render",
+          "expand:text"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 9,
+          "end_line": 32,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 15,
+          "start_line": 26
         }
       }
     },
@@ -1189,6 +1351,24 @@
     }
   },
   "semantic_graph": {
+    "components": {
+      "CounterPanel": {
+        "line": 21,
+        "name": "CounterPanel",
+        "params": [
+          "label"
+        ],
+        "style": "class"
+      },
+      "FeatureCard": {
+        "line": 17,
+        "name": "FeatureCard",
+        "params": [
+          "title"
+        ],
+        "style": "function"
+      }
+    },
     "edges": [
       {
         "from": "n0001",
@@ -1199,6 +1379,11 @@
         "from": "n0001",
         "kind": "contains",
         "to": "n0005"
+      },
+      {
+        "from": "n0001",
+        "kind": "contains",
+        "to": "n0008"
       },
       {
         "from": "n0002",
@@ -1226,22 +1411,22 @@
         "to": "n0007"
       },
       {
-        "from": "n0005",
-        "kind": "contains",
-        "to": "n0008"
-      },
-      {
-        "from": "n0005",
+        "from": "n0008",
         "kind": "contains",
         "to": "n0009"
       },
       {
         "from": "n0008",
+        "kind": "contains",
+        "to": "n0010"
+      },
+      {
+        "from": "n0009",
         "kind": "reads_state",
         "to": "count"
       },
       {
-        "from": "n0009",
+        "from": "n0010",
         "kind": "calls_handler",
         "to": "increment"
       }
@@ -1275,10 +1460,11 @@
         "attributes": {},
         "children": [
           "n0002",
-          "n0005"
+          "n0005",
+          "n0008"
         ],
         "generation": 0,
-        "hash": "bc7553119e148827",
+        "hash": "b8ab7dd5a13e4687",
         "id": "n0001",
         "kind": "Page",
         "metadata": {},
@@ -1289,10 +1475,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 32,
+          "end_line": 49,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 17
+          "start_line": 35
         }
       },
       "n0002": {
@@ -1318,10 +1504,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 22,
+          "end_line": 40,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 18
+          "start_line": 36
         }
       },
       "n0003": {
@@ -1345,10 +1531,10 @@
         "revision": 0,
         "span": {
           "end_col": 77,
-          "end_line": 21,
+          "end_line": 39,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 21
+          "start_line": 39
         }
       },
       "n0005": {
@@ -1357,12 +1543,10 @@
         },
         "children": [
           "n0006",
-          "n0007",
-          "n0008",
-          "n0009"
+          "n0007"
         ],
         "generation": 0,
-        "hash": "70c75b4b40dc4d8d",
+        "hash": "b80fc5b88930ec1d",
         "id": "n0005",
         "kind": "Section",
         "metadata": {},
@@ -1373,10 +1557,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 31,
+          "end_line": 47,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 23
+          "start_line": 41
         }
       },
       "n0006": {
@@ -1385,21 +1569,26 @@
         },
         "children": [],
         "generation": 0,
-        "hash": "1c08994a71a38a28",
+        "hash": "ae5547b00fbb638c",
         "id": "n0006",
         "kind": "Card",
-        "metadata": {},
+        "metadata": {
+          "expanded_from": [
+            "FeatureCard"
+          ]
+        },
         "provenance": [
           "parse:ui_call",
-          "analyze:semantic_graph"
+          "analyze:semantic_graph",
+          "expand:FeatureCard"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 26,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 26
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0007": {
@@ -1408,24 +1597,60 @@
         },
         "children": [],
         "generation": 0,
-        "hash": "a8190c9276b593d7",
+        "hash": "88e4e12068dc83f1",
         "id": "n0007",
         "kind": "Card",
-        "metadata": {},
+        "metadata": {
+          "expanded_from": [
+            "FeatureCard"
+          ]
+        },
         "provenance": [
           "parse:ui_call",
-          "analyze:semantic_graph"
+          "analyze:semantic_graph",
+          "expand:FeatureCard"
         ],
         "revision": 0,
         "span": {
-          "end_col": 31,
-          "end_line": 27,
+          "end_col": 25,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 27
+          "start_col": 11,
+          "start_line": 18
         }
       },
       "n0008": {
+        "attributes": {
+          "title": "Counter"
+        },
+        "children": [
+          "n0009",
+          "n0010"
+        ],
+        "generation": 0,
+        "hash": "9073fbe4879aa90c",
+        "id": "n0008",
+        "kind": "Section",
+        "metadata": {
+          "expanded_from": [
+            "CounterPanel"
+          ]
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 9,
+          "end_line": 32,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 15,
+          "start_line": 26
+        }
+      },
+      "n0009": {
         "attributes": {
           "text": {
             "__state__": "count"
@@ -1433,24 +1658,29 @@
         },
         "children": [],
         "generation": 0,
-        "hash": "299a09ba421caf1e",
-        "id": "n0008",
+        "hash": "2ce0ddc92b21505e",
+        "id": "n0009",
         "kind": "Text",
-        "metadata": {},
+        "metadata": {
+          "expanded_from": [
+            "CounterPanel"
+          ]
+        },
         "provenance": [
           "parse:ui_call",
-          "analyze:semantic_graph"
+          "analyze:semantic_graph",
+          "expand:CounterPanel"
         ],
         "revision": 0,
         "span": {
-          "end_col": 26,
-          "end_line": 28,
+          "end_col": 30,
+          "end_line": 29,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 28
+          "start_col": 16,
+          "start_line": 29
         }
       },
-      "n0009": {
+      "n0010": {
         "attributes": {
           "on_click": {
             "__handler__": "increment"
@@ -1459,21 +1689,26 @@
         },
         "children": [],
         "generation": 0,
-        "hash": "a2034de15ce384e6",
-        "id": "n0009",
+        "hash": "22db715a5b871fd1",
+        "id": "n0010",
         "kind": "Button",
-        "metadata": {},
+        "metadata": {
+          "expanded_from": [
+            "CounterPanel"
+          ]
+        },
         "provenance": [
           "parse:ui_call",
-          "analyze:semantic_graph"
+          "analyze:semantic_graph",
+          "expand:CounterPanel"
         ],
         "revision": 0,
         "span": {
-          "end_col": 47,
-          "end_line": 29,
+          "end_col": 51,
+          "end_line": 30,
           "path": "tests/p0/fixtures/example.py",
-          "start_col": 12,
-          "start_line": 29
+          "start_col": 16,
+          "start_line": 30
         }
       },
       "theme0004": {
@@ -1492,10 +1727,10 @@
         "revision": 0,
         "span": {
           "end_col": 77,
-          "end_line": 21,
+          "end_line": 39,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 21
+          "start_line": 39
         }
       }
     },
@@ -1517,5 +1752,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 6
+  "version": 7
 }

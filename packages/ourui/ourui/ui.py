@@ -36,6 +36,19 @@ class State(Generic[T]):
         return self._value
 
 
+class Component:
+    """Base class for class-style components (expanded at Analyze)."""
+
+    def build(self) -> Any:
+        raise NotImplementedError
+
+
+def component(fn: F) -> F:
+    """Optional marker for function components (auto-detected by return ui.*)."""
+    setattr(fn, "__ourui_component__", True)
+    return fn
+
+
 class _UINamespace:
     def __getattr__(self, name: str) -> Any:
         def factory(*args: Any, **kwargs: Any) -> dict[str, Any]:

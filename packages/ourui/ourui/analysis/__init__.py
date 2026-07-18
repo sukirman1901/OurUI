@@ -5,6 +5,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ourui.analysis.components import (
+    collect_components,
+    component_call_name,
+    expand_component_call,
+)
 from ourui.node import THEME_ATTR_KEYS, Node
 from ourui.parse import call_kind, literal_value, parse_file, span_for
 
@@ -16,6 +21,7 @@ class SemanticGraph:
     edges: list[dict[str, str]] = field(default_factory=list)
     handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
     states: dict[str, dict[str, Any]] = field(default_factory=dict)
+    components: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -24,6 +30,7 @@ class SemanticGraph:
             "edges": sorted(self.edges, key=lambda e: (e["from"], e["to"], e["kind"])),
             "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
             "states": {k: self.states[k] for k in sorted(self.states)},
+            "components": {k: self.components[k] for k in sorted(self.components)},
         }
 
 
@@ -54,12 +61,20 @@ def _is_state_call(call: ast.Call) -> bool:
 
 
 class _GraphBuilder:
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, components: dict) -> None:
         self.path = path
         self.counter = 0
         self.graph = SemanticGraph()
         self.dep = DependencyGraph()
         self._theme_nodes: dict[str, str] = {}
+        self.components = components
+        for name, cdef in components.items():
+            self.graph.components[name] = {
+                "name": name,
+                "style": cdef.style,
+                "params": list(cdef.params),
+                "line": cdef.span_line,
+            }
 
     def next_id(self, prefix: str = "n") -> str:
         self.counter += 1
@@ -102,7 +117,27 @@ class _GraphBuilder:
             return {"__state__": node.id}
         return None
 
-    def build_call(self, call: ast.Call, parent_id: str | None = None) -> str | None:
+    def _resolve_call(self, call: ast.Call, trail: list[str]) -> tuple[ast.Call, list[str]]:
+        """Expand user components until a ui.* call remains."""
+        while component_call_name(call, self.components):
+            name = component_call_name(call, self.components)
+            assert name is not None
+            expanded = expand_component_call(call, self.components)
+            if expanded is None:
+                break
+            trail = [*trail, name]
+            call = expanded
+        return call, trail
+
+    def build_call(
+        self,
+        call: ast.Call,
+        parent_id: str | None = None,
+        expansion_trail: list[str] | None = None,
+    ) -> str | None:
+        trail = list(expansion_trail or [])
+        call, trail = self._resolve_call(call, trail)
+
         kind = call_kind(call)
         if kind is None:
             return None
@@ -112,31 +147,32 @@ class _GraphBuilder:
         child_ids: list[str] = []
 
         for arg in call.args:
-            if isinstance(arg, ast.Call) and call_kind(arg):
-                cid = self.build_call(arg, parent_id=nid)
+            if isinstance(arg, ast.Call):
+                cid = self.build_call(arg, parent_id=nid, expansion_trail=trail)
                 if cid:
                     child_ids.append(cid)
-            elif isinstance(arg, ast.List):
+                    continue
+            if isinstance(arg, ast.List):
                 for elt in arg.elts:
-                    if isinstance(elt, ast.Call) and call_kind(elt):
-                        cid = self.build_call(elt, parent_id=nid)
+                    if isinstance(elt, ast.Call):
+                        cid = self.build_call(elt, parent_id=nid, expansion_trail=trail)
                         if cid:
                             child_ids.append(cid)
-            else:
-                state_ref = self._maybe_state_ref(arg)
-                if state_ref and kind in {"Button", "Text", "Card"} and "text" not in attrs:
-                    attrs["text"] = state_ref
-                    continue
-                val = literal_value(arg)
-                if isinstance(val, str):
-                    if kind in {"Button", "Text", "Card"} and "text" not in attrs:
-                        attrs["text"] = val
-                    elif "title" not in attrs:
-                        attrs["title"] = val
-                    else:
-                        attrs.setdefault("_args", []).append(val)
+                continue
+            state_ref = self._maybe_state_ref(arg)
+            if state_ref and kind in {"Button", "Text", "Card"} and "text" not in attrs:
+                attrs["text"] = state_ref
+                continue
+            val = literal_value(arg)
+            if isinstance(val, str):
+                if kind in {"Button", "Text", "Card"} and "text" not in attrs:
+                    attrs["text"] = val
+                elif "title" not in attrs:
+                    attrs["title"] = val
                 else:
                     attrs.setdefault("_args", []).append(val)
+            else:
+                attrs.setdefault("_args", []).append(val)
 
         for kw in call.keywords:
             if kw.arg is None:
@@ -145,12 +181,12 @@ class _GraphBuilder:
                 val_node = kw.value
                 if isinstance(val_node, (ast.List, ast.Tuple)):
                     for elt in val_node.elts:
-                        if isinstance(elt, ast.Call) and call_kind(elt):
-                            cid = self.build_call(elt, parent_id=nid)
+                        if isinstance(elt, ast.Call):
+                            cid = self.build_call(elt, parent_id=nid, expansion_trail=trail)
                             if cid:
                                 child_ids.append(cid)
-                elif isinstance(val_node, ast.Call) and call_kind(val_node):
-                    cid = self.build_call(val_node, parent_id=nid)
+                elif isinstance(val_node, ast.Call):
+                    cid = self.build_call(val_node, parent_id=nid, expansion_trail=trail)
                     if cid:
                         child_ids.append(cid)
                 continue
@@ -170,21 +206,23 @@ class _GraphBuilder:
                     else:
                         attrs[kw.arg] = state_ref
                     continue
-            if isinstance(kw.value, ast.Call) and call_kind(kw.value):
-                cid = self.build_call(kw.value, parent_id=nid)
+            if isinstance(kw.value, ast.Call):
+                cid = self.build_call(kw.value, parent_id=nid, expansion_trail=trail)
                 if cid:
                     attrs[kw.arg] = {"__node__": cid}
                     child_ids.append(cid)
-                continue
+                    continue
             attrs[kw.arg] = literal_value(kw.value)
 
+        provenance = ["parse:ui_call", "analyze:semantic_graph", *[f"expand:{n}" for n in trail]]
         node = Node(
             id=nid,
             kind=kind,
             span=span_for(self.path, call),
             attributes=attrs,
             children=child_ids,
-            provenance=["parse:ui_call", "analyze:semantic_graph"],
+            provenance=provenance,
+            metadata={"expanded_from": list(trail)} if trail else {},
         ).with_hash()
         self.graph.nodes[nid] = node
 
@@ -212,18 +250,19 @@ class _GraphBuilder:
     def visit_module(self, module: ast.Module) -> None:
         for stmt in module.body:
             if isinstance(stmt, ast.FunctionDef):
-                kind = "server" if any(_is_server_decorator(d) for d in stmt.decorator_list) else "client"
-                self.register_handler(stmt.name, kind=kind, at=stmt)
+                if any(_is_server_decorator(d) for d in stmt.decorator_list):
+                    self.register_handler(stmt.name, kind="server", at=stmt)
+                elif stmt.name not in self.components:
+                    self.register_handler(stmt.name, kind="client", at=stmt)
             elif isinstance(stmt, ast.Assign):
                 if isinstance(stmt.value, ast.Call) and _is_state_call(stmt.value):
                     for target in stmt.targets:
                         if isinstance(target, ast.Name):
                             self.register_state(target.id, stmt.value)
-                elif isinstance(stmt.value, ast.Call) and call_kind(stmt.value):
+                elif isinstance(stmt.value, ast.Call):
                     self.build_call(stmt.value)
             elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
-                if call_kind(stmt.value):
-                    self.build_call(stmt.value)
+                self.build_call(stmt.value)
 
 
 def _display_path(path: Path) -> str:
@@ -237,7 +276,8 @@ def _display_path(path: Path) -> str:
 def build_semantic_graph(path: str | Path) -> tuple[SemanticGraph, DependencyGraph]:
     path = Path(path)
     module = parse_file(path)
-    builder = _GraphBuilder(_display_path(path))
+    components = collect_components(module)
+    builder = _GraphBuilder(_display_path(path), components)
     builder.visit_module(module)
     builder.graph.roots = sorted(set(builder.graph.roots))
     return builder.graph, builder.dep

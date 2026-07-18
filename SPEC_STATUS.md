@@ -32,6 +32,7 @@ Status ladder:
 | `@server` / `on_click` | Draft |
 | `ourui serve` + RPC | Draft |
 | `State` / binds | Draft (Phase H) |
+| Components (expand) | Draft (Phase I) |
 | Runtime (production) | Experimental |
 | LSP / HMR | Experimental |
 

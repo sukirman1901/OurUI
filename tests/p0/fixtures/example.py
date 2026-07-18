@@ -1,4 +1,4 @@
-from ourui import State, server, ui
+from ourui import Component, State, server, ui
 
 count = State(0)
 
@@ -14,6 +14,24 @@ def increment() -> int:
     return count.get()
 
 
+def FeatureCard(title: str):
+    return ui.Card(title)
+
+
+class CounterPanel(Component):
+    def __init__(self, label: str):
+        self.label = label
+
+    def build(self):
+        return ui.Section(
+            title=self.label,
+            children=[
+                ui.Text(count),
+                ui.Button("+1", on_click=increment),
+            ],
+        )
+
+
 page = ui.Page(
     ui.Hero(
         title="Welcome",
@@ -23,10 +41,9 @@ page = ui.Page(
     ui.Section(
         title="Features",
         children=[
-            ui.Card("Analysis"),
-            ui.Card("Realtime"),
-            ui.Text(count),
-            ui.Button("+1", on_click=increment),
+            FeatureCard("Analysis"),
+            FeatureCard("Realtime"),
         ],
     ),
+    CounterPanel("Counter"),
 )
