@@ -28,6 +28,8 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | 3 — Host (`RTR + Resolved Design` via Host Contract) | Done (`0.3.0`) |
 | Phase S language surface (S1–S6) | Done (`0.4.x`, schema **21**) |
 | Phase T–W → 1.0 freeze | Done (`1.0.0`, schema **25 Frozen**) |
+| Enterprise E1 screen completeness | Done (`1.1.0`, schema **26**) |
+| Enterprise E2–E5 (pack/density/check, operate, kit, trust) | Done (`1.5.0`, schema **27**) |
 
 | Area | Status |
 |---|---|
@@ -46,8 +48,14 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | `ourui serve` / State / `@server` / HMR / routing / LSP | Stable |
 | `ourui check` / structured diagnostics | Stable (Phase V) |
 | Runtime (prod + multi-worker file store) | Stable |
-| Package (`ourui` **1.0.0**) | **Frozen** dump schema for 1.0.x ([PyPI](https://pypi.org/project/ourui/)) |
-| `ui.Link` / `Shell` / `layout=` | Stable (S1) |
+| Package (`ourui` **1.5.0**) | Dump schema **27** (additive; 25 Frozen baseline at 1.0) |
+| `ui.Show` / `ui.When` | Stable (Enterprise E1) |
+| Dynamic `List`/`Table` (`items=`/`rows=` State) | Stable (Enterprise E1) |
+| Pack versioning + density | Stable (Enterprise E2) |
+| `ourui check --profile enterprise` | Stable (Enterprise E2) |
+| Dump `attestation` + emit CSP baseline | Stable (Enterprise E5) |
+| PDF second host (RFC-004) | Draft (deferred) |
+| `Derived` | Draft (Phase V) |
 | `ui.Input` / `Select` / `Toggle` / `Slider` / `textarea` | Stable (S2 + 0.4.1) |
 | `ui.Nav` | Stable (S3a) |
 | Type/space/elevation tokens + `ui.ThemeToggle` | Stable (S3) |

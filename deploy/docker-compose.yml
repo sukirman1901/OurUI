@@ -1,0 +1,14 @@
+services:
+  ourui:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      - OURUI_SESSION_DIR=/var/lib/ourui/sessions
+    volumes:
+      - ourui-sessions:/var/lib/ourui/sessions
+
+volumes:
+  ourui-sessions:

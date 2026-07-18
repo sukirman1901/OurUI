@@ -51,8 +51,9 @@ page = ui.Page(
 | `ui.Form` | Presentation | Form shell (`on_submit=`) |
 | `ui.Dialog` | Presentation | Modal (`open=` / `title=` / `actions=`) |
 | `ui.Toast` | Presentation | Toast (`open=` / `text=`) |
-| `ui.List` / `ui.Table` | Presentation | List / semantic table |
+| `ui.List` / `ui.Table` | Presentation | List / table; `items=`/`rows=` may be `State` (dynamic) |
 | `ui.Empty` / `ui.Spinner` / `ui.Alert` | Presentation | Status primitives |
+| `ui.Show` / `ui.When` | Presentation | Conditional visibility (`show=`; When has `then=` / `else_=`) |
 | `ui.Theme` | Tokens | Design token overrides (module-level) |
 
 ## `ui.Page`

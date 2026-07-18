@@ -39,6 +39,8 @@ _LAYOUT_KIND: dict[str, str] = {
     "Empty": "Box",
     "Spinner": "Box",
     "Alert": "Box",
+    "Show": "Column",
+    "When": "Column",
 }
 
 _AXIS: dict[str, str] = {

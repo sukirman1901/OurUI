@@ -1,6 +1,6 @@
 # Roadmap
 
-Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capability generations are the north-star framing; lettered phases A–S are historical P0 / Phase S delivery; **T→1.0** is the post–Phase S language arc.
+Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capability generations are the north-star framing; lettered phases A–S / T→1.0 are historical; **E1–E5** is the post-1.0 **enterprise** arc.
 
 ## Capability generations
 
@@ -11,71 +11,59 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capabi
 | **3 — Host** | Host consumes `RTR + Resolved Design` via **Host Contract** | Done (`0.3.0`) |
 
 ```text
-Gen 1–3 complete. Phase S1–S6 shipped (0.4.x, schema 21).
-Phase T–W shipped; dump schema 25 Frozen at ourui 1.0.0.
+Gen 1–3 + Phase S + T–W complete at ourui 1.0.x (schema 25 Frozen baseline).
+Enterprise arc E1–E5 complete at ourui 1.5.0 (additive dump schema 27).
 ```
 
-## Historical phases (P0 → S)
+## Historical (done)
 
 | Phase | Deliverable | Status |
 |---|---|---|
-| **A–R** | Docs freeze through first PyPI package | Done |
-| **S1** | `ui.Link` + `ui.Shell` / `layout=` (schema 10, `0.1.2`) | Done |
-| **Presentation / Design / Host R&D** | RFC-001 → RFC-003; contract-primary emit (`0.3.0`) | Done |
-| **S2** | Form controls → `@server` (schema 14, `0.3.2`) | Done |
-| **S3a** | `ui.Nav` + `placement=` + `tone=` (schema 15, `0.3.3`) | Done |
-| **S3–S6** | Tokens, Footer, layout, motion, Canvas, polish (schema 21, `0.4.0`) | Done |
-| **0.4.1** | `textarea` Input + `ui.Frame` preview escape | Done |
+| **A–S / T–W / 1.0** | Language infra through Form/List/diagnostics + freeze | Done (`1.0.x`, schema **25**) |
+| **1.0.1** | Default visual quality (zinc/ink pack) | Done |
 
-ADRs 005–007 record intent+emit+escape. Phase S language arc closed at **0.4.0**.
+## Enterprise arc (post-1.0)
 
-## Post–Phase S (language arc → 1.0)
+Enterprise = org-scale packs + complete product screens + operable deploy + governance — **not** auth/ORM inside `ui.*`. See ADRs; kit templates keep SSO/DB at app-layer.
 
 | Phase | Deliverable | Target | Schema | Status |
 |---|---|---|---|---|
-| **T** | Form / Dialog / Toast + field error standardization | `0.5.0` → `1.0` | 22→25 | **Done** |
-| **U** | List / Table / Empty / Spinner / Alert | `0.6.0` → `1.0` | 23→25 | **Done** |
-| **V** | Structured diagnostics, `ourui check`, LSP diagnostics, Derived (Draft) | `0.7.0` → `1.0` | 24→25 | **Done** |
-| **W** | Trusted Publishing, deploy docs, design packs | `0.8–0.9` → `1.0` | as needed | **Done** |
-| **1.0** | Freeze bar (Stable surfaces + dump schema Frozen for 1.0.x) | `1.0.0` | **25 Frozen** | **Done** |
+| **E1** | Screen completeness: `Show`/`When`, dynamic List/Table, form depth, CRUD reference | `1.1.0` | **26** | **Done** |
+| **E2** | Org design system: pack versioning, density, a11y in `ourui check` | `1.2`–`1.5` | **27** | **Done** |
+| **E3** | Operate: CI emit artifact, Docker/K8s gold path | `1.3`–`1.5` | **27** | **Done** |
+| **E4** | Enterprise Kit 1.0 (clone → brand → deploy ≤5 days) | `1.4`–`1.5` | **27** | **Done** |
+| **E5** | Trust: CSP defaults, SBOM, IR attestation; optional PDF host (RFC Draft) | `1.5.0` | **27** | **Done** |
 
-Principles: intent + emit + escape ([ADR-005](decisions/ADR-005-intent-emit-escape.md)); Host Contract ([RFC-003](rfcs/RFC-003-host-emit.md)); playground dogfoods language — language does not depend on demo chrome.
+### E1 — Screen completeness (`1.1.0`)
 
-### Phase T — Form & overlay chrome
+- `ui.Show(show=State, …)` — visibility twin of Dialog `open=`
+- `ui.When(show=, then=, else_=)` — both branches in DOM; host toggles
+- `ui.List(items=State)` / `ui.Table(rows=State)` — host rebuilds from JSON
+- Form depth: documented error/`disabled`/`loading` patterns
+- Reference: `examples/enterprise/crud_app.py`
 
-- `ui.Form(..., on_submit=)` — collect fields on submit / Enter
-- Field `invalid=` + helper text (`aria-invalid`)
-- `ui.Dialog(title=, open=, actions=)` — modal overlay
-- `ui.Toast` — ephemeral messages via State
+### E2 — Org design system (`1.5.0`)
 
-### Phase U — Data & list patterns
+- Versioned named packs (`pack_version` on Resolved Design) + density recipes
+- `ui.Theme(density="compact"|"comfortable")` → `ourui-density-compact`
+- `ourui check --profile enterprise` (+ `--strict`); ADR-011
 
-- `ui.List` / `ui.Table` (semantic, not spreadsheet)
-- `ui.Empty` / `ui.Spinner` / `ui.Alert`
-- Document `@server` + State async patterns (no new FE framework)
+### E3 — Operate (`1.5.0`)
 
-### Phase V — Compiler & author UX
+- CI workflow emit + Docker/Compose/K8s recipes under `deploy/`
 
-- Structured diagnostics (`path` + span)
-- `ourui check` CLI
-- LSP diagnostics
-- `Derived` state (Draft → Stable with ADR)
+### E4 — Enterprise Kit (`1.5.0`)
 
-### Phase W — Ship maturity
+- Pack + Admin CRUD + Settings + Audit UI + AI console shells
+- Auth/DB as **templates** (FastAPI+OIDC stub), not language
 
-- GitHub Trusted Publishing → PyPI
-- Deploy recipe (Docker / static+RPC)
-- Design pack API growth (`ourui-default`)
+### E5 — Trust surface (`1.5.0`)
 
-### 1.0 freeze criteria
-
-1. Phases T–V implemented and documented Stable
-2. Dump schema Frozen for `1.0.x` (breaking → `2.0`)
-3. LANGUAGE_SPEC + Host Contract Frozen where applicable
-4. Non-goals restated: no Monaco-in-language, no auth-in-language
+- CSP-friendly emit defaults (`data-ourui-csp="1"`), SBOM note, dump attestation
+- Optional second host (PDF) via Host Contract — [RFC-004](rfcs/RFC-004-second-host-pdf.md) Draft (deferred)
 
 ## Out of language scope (unchanged)
 
-Redis share, auth, billing — app concerns. Optional PDF/native hosts only via Host Contract + RFC.
+Redis share, auth, billing, ORM — app concerns. No React/Tailwind clone; no Monaco-in-language.
 
 See [VISION.md](../VISION.md) and [SPEC_STATUS.md](../SPEC_STATUS.md).

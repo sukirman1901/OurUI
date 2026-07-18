@@ -4,6 +4,35 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.5.0] — 2026-07-18
+
+### Added — Enterprise E2–E5
+
+- **E2:** Pack `version` / Resolved Design `pack_version`; `ui.Theme(density=…)`; `ourui check --profile enterprise` (+ `--strict`); ADR-011
+- **E3:** `deploy/Dockerfile`, Compose, K8s sample; `.github/workflows/ci-emit.yml`; expanded deploy guide
+- **E4:** Enterprise Kit under `examples/enterprise/` (CRUD, settings, audit, AI console + OIDC stub)
+- **E5:** CSP meta (`data-ourui-csp="1"`); dump `attestation`; trust guide; RFC-004 PDF host (Draft)
+
+Dump schema **27** (additive): `emit.density` / `csp` / `attestation`.
+
+### Notes
+
+- Auth/ORM remain app-layer. Tree ready for a single PyPI release of `1.5.0`.
+
+## [1.1.0] — 2026-07-18
+
+### Added — Enterprise E1 (screen completeness)
+
+- `ui.Show(show=State|bool, …)` — Dialog-style visibility
+- `ui.When(show=, then=, else_=)` — both branches in DOM; host toggles
+- Dynamic `ui.List(items=State)` / `ui.Table(rows=State)` — `applyState` rebuilds DOM from JSON
+- ADR-010; reference `examples/enterprise/crud_app.py`
+- Dump schema **26** (additive): `emit.show` / `when` / `dynamic_list`
+
+### Notes
+
+- Auth/ORM remain app-layer. Enterprise arc E2–E5 completed in `1.5.0`.
+
 ## [1.0.1] — 2026-07-18
 
 ### Changed — default visual quality

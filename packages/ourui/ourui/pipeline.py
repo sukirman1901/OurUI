@@ -4,10 +4,12 @@ from pathlib import Path
 from typing import Any
 
 from ourui.analysis import build_semantic_graph
-from ourui.design import resolve_design
+from ourui.design import PACK_ID, PACK_VERSION, resolve_design
 from ourui.emit import emit_bundle, emit_html_document
 from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_presentation_graph, lower_to_rtr
 from ourui.serialize import dumps_deterministic
+
+DUMP_SCHEMA_VERSION = 27
 
 
 def _display_path(path: Path) -> str:
@@ -34,6 +36,7 @@ def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, A
     resolved_design = resolve_design(
         presentation_graph,
         token_overrides=sg.tokens,
+        density=getattr(sg, "density", None),
     )
     ltr = lower_to_ltr(iir)
     rtr = lower_to_rtr(ltr)
@@ -53,18 +56,25 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
     path = Path(path)
     artifacts = compile_to_rtr(path)
     sg = artifacts["semantic_graph"].to_dict()
+    rd = artifacts["resolved_design"]
+    rd_dict = rd.to_dict() if hasattr(rd, "to_dict") else dict(rd)
     return {
-        "version": 25,
+        "version": DUMP_SCHEMA_VERSION,
         "source": artifacts["source"],
         "semantic_graph": sg,
         "dependency_graph": artifacts["dependency_graph"].to_dict(),
         "iir": artifacts["iir"].to_dict(),
         "presentation_graph": artifacts["presentation_graph"].to_dict(),
-        "resolved_design": artifacts["resolved_design"].to_dict(),
+        "resolved_design": rd_dict,
         "ltr": artifacts["ltr"].to_dict(),
         "rtr": artifacts["rtr"].to_dict(),
         "derived": sg.get("derived", {}),
         "diagnostics": sg.get("diagnostics", []),
+        "attestation": {
+            "schema": DUMP_SCHEMA_VERSION,
+            "pack": str(rd_dict.get("pack", PACK_ID)),
+            "pack_version": str(rd_dict.get("pack_version", PACK_VERSION)),
+        },
         "emit": {
             "html": True,
             "css": True,
@@ -83,6 +93,12 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "toast": True,
             "list": True,
             "table": True,
+            "show": True,
+            "when": True,
+            "dynamic_list": True,
+            "density": True,
+            "csp": True,
+            "attestation": True,
         },
     }
 

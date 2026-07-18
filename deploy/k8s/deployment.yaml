@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ourui
+  labels:
+    app: ourui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ourui
+  template:
+    metadata:
+      labels:
+        app: ourui
+    spec:
+      containers:
+        - name: ourui
+          image: ourui:1.5.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - serve
+            - app.py
+            - --host
+            - 0.0.0.0
+            - --port
+            - "8765"
+            - --prod
+          ports:
+            - name: http
+              containerPort: 8765
+          readinessProbe:
+            httpGet:
+              path: /__ourui/health
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /__ourui/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ourui
+spec:
+  selector:
+    app: ourui
+  ports:
+    - name: http
+      port: 8765
+      targetPort: http
+  type: ClusterIP

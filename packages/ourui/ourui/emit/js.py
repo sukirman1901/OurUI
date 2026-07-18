@@ -43,6 +43,51 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
         }} else if (role === "dialog" || role === "toast") {{
           const on = Boolean(next) && next !== "false" && next !== "0" && next !== "";
           el.setAttribute("data-open", on ? "true" : "false");
+        }} else if (role === "show" || role === "when") {{
+          const on = Boolean(next) && next !== "false" && next !== "0" && next !== "";
+          el.setAttribute("data-show", on ? "true" : "false");
+        }} else if (role === "list" && Array.isArray(next)) {{
+          el.innerHTML = "";
+          next.forEach((item) => {{
+            const li = document.createElement("li");
+            li.className = "ourui-list-item";
+            if (item && typeof item === "object") {{
+              li.textContent = String(item.label || item.text || item.name || JSON.stringify(item));
+            }} else {{
+              li.textContent = item == null ? "" : String(item);
+            }}
+            el.appendChild(li);
+          }});
+        }} else if (role === "table" && Array.isArray(next)) {{
+          let columns = [];
+          try {{ columns = JSON.parse(el.getAttribute("data-ourui-columns") || "[]"); }} catch (e) {{}}
+          let tbody = el.querySelector("tbody");
+          if (!tbody) {{
+            tbody = document.createElement("tbody");
+            el.appendChild(tbody);
+          }}
+          tbody.innerHTML = "";
+          next.forEach((row) => {{
+            const tr = document.createElement("tr");
+            if (row && typeof row === "object" && !Array.isArray(row)) {{
+              (columns.length ? columns : Object.keys(row)).forEach((col) => {{
+                const td = document.createElement("td");
+                td.textContent = row[col] == null ? "" : String(row[col]);
+                tr.appendChild(td);
+              }});
+            }} else if (Array.isArray(row)) {{
+              row.forEach((cell) => {{
+                const td = document.createElement("td");
+                td.textContent = cell == null ? "" : String(cell);
+                tr.appendChild(td);
+              }});
+            }} else {{
+              const td = document.createElement("td");
+              td.textContent = row == null ? "" : String(row);
+              tr.appendChild(td);
+            }}
+            tbody.appendChild(tr);
+          }});
         }} else if (tag === "input" && el.type === "checkbox") {{
           el.checked = Boolean(next) && next !== "false" && next !== "0" && next !== "";
         }} else if (tag === "input" || tag === "textarea" || tag === "select") {{

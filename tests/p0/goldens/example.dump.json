@@ -1,4 +1,9 @@
 {
+  "attestation": {
+    "pack": "ourui-default",
+    "pack_version": "1.0.0",
+    "schema": 27
+  },
   "dependency_graph": {
     "edges": [
       {
@@ -31,11 +36,15 @@
   "derived": {},
   "diagnostics": [],
   "emit": {
+    "attestation": true,
     "components": true,
+    "csp": true,
     "css": true,
+    "density": true,
     "derived": true,
     "diagnostics": true,
     "dialog": true,
+    "dynamic_list": true,
     "form": true,
     "host_contract": true,
     "host_contract_primary": true,
@@ -44,10 +53,12 @@
     "list": true,
     "presentation_graph": true,
     "resolved_design": true,
+    "show": true,
     "state": true,
     "table": true,
     "toast": true,
-    "tokens": true
+    "tokens": true,
+    "when": true
   },
   "iir": {
     "handlers": {
@@ -861,6 +872,7 @@
     ]
   },
   "resolved_design": {
+    "density": "comfortable",
     "mode": "light",
     "nodes": {
       "n0001": {
@@ -1043,6 +1055,7 @@
       }
     },
     "pack": "ourui-default",
+    "pack_version": "1.0.0",
     "tokens": {
       "dark": {
         "accent": "#3b82f6",
@@ -1804,6 +1817,7 @@
         "style": "function"
       }
     },
+    "density": "comfortable",
     "derived": {},
     "diagnostics": [],
     "edges": [
@@ -2274,5 +2288,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 25
+  "version": 27
 }

@@ -46,6 +46,8 @@ _ROLE_TAG: dict[str, str] = {
     "empty": "div",
     "spinner": "div",
     "alert": "div",
+    "show": "div",
+    "when": "div",
 }
 
 _BASE_CSS = """\
@@ -404,6 +406,11 @@ select.ourui-select:focus {
   font-weight: 500;
 }
 .ourui-toast[data-open="true"] { display: block; }
+.ourui-show[data-show="false"] { display: none !important; }
+.ourui-when [data-when-branch="then"] { display: contents; }
+.ourui-when [data-when-branch="else"] { display: none; }
+.ourui-when[data-show="false"] [data-when-branch="then"] { display: none; }
+.ourui-when[data-show="false"] [data-when-branch="else"] { display: contents; }
 .ourui-list {
   list-style: none;
   margin: 0;
@@ -780,7 +787,30 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
   .ourui-motion-press:active { transform: none; }
 }
 .ourui-meta-host { display: none; }
+/* Density recipes (E2) — tighten space tokens when compact */
+html.ourui-density-compact,
+.ourui-root.ourui-density-compact {
+  --ourui-space-sm: 0.375rem;
+  --ourui-space-md: 0.5rem;
+  --ourui-space-lg: 0.75rem;
+}
+html.ourui-density-compact [data-role="page"],
+.ourui-root.ourui-density-compact [data-role="page"] {
+  padding-block: var(--ourui-space-lg);
+  padding-inline: var(--ourui-space-md);
+  gap: var(--ourui-space-md);
+}
 """
+
+
+# Baseline CSP for emitted documents (E5). Inline host shim requires 'unsafe-inline'.
+# Prefer Content-Security-Policy-Report-Only on the host until you audit third-party fonts.
+_CSP_CONTENT = (
+    "default-src 'self'; "
+    "script-src 'self' 'unsafe-inline'; "
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+    "font-src 'self' https://fonts.gstatic.com"
+)
 
 
 def _as_resolved_design(resolved_design: Any) -> dict[str, Any] | None:
@@ -975,6 +1005,10 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         classes.append("ourui-alert")
         sev = attrs.get("severity") or "info"
         classes.append(f"ourui-alert-{sev}")
+    if role == "show":
+        classes.append("ourui-show")
+    if role == "when":
+        classes.append("ourui-when")
     if role == "section" and attrs.get("chrome") == "tabs":
         classes.append("ourui-playground-tabs")
     if role == "section" and attrs.get("chrome") == "file-tabs":
@@ -1397,8 +1431,57 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
         attrs = f"{class_attr}{data_role}{data_id}{bind_attr}{open_attr}"
         return [f"{pad}<div{attrs}>{text}</div>"]
 
+    if role == "show":
+        show_val = node_attrs.get("show")
+        is_show = True
+        if isinstance(show_val, bool):
+            is_show = show_val
+        elif show_val is not None and not isinstance(show_val, dict):
+            is_show = str(show_val).lower() not in {"0", "false", "no", "off", ""}
+        bind = node_attrs.get("bind")
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if isinstance(bind, str) and bind else ""
+        show_attr = ' data-show="true"' if is_show else ' data-show="false"'
+        attrs = f"{class_attr}{data_role}{data_id}{bind_attr}{show_attr}"
+        lines = [f"{pad}<div{attrs}>"]
+        for child_id in node.get("children", []):
+            if child_id in nodes:
+                lines.extend(_render_node(child_id, nodes, indent + 1))
+        lines.append(f"{pad}</div>")
+        return lines
+
+    if role == "when":
+        show_val = node_attrs.get("show")
+        is_show = True
+        if isinstance(show_val, bool):
+            is_show = show_val
+        elif show_val is not None and not isinstance(show_val, dict):
+            is_show = str(show_val).lower() not in {"0", "false", "no", "off", ""}
+        bind = node_attrs.get("bind")
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if isinstance(bind, str) and bind else ""
+        show_attr = ' data-show="true"' if is_show else ' data-show="false"'
+        attrs = f"{class_attr}{data_role}{data_id}{bind_attr}{show_attr}"
+        then_ref = node_attrs.get("then")
+        else_ref = node_attrs.get("else_") or node_attrs.get("else")
+        then_id = then_ref.get("__node__") if isinstance(then_ref, dict) else then_ref
+        else_id = else_ref.get("__node__") if isinstance(else_ref, dict) else else_ref
+        lines = [f"{pad}<div{attrs}>"]
+        lines.append(f'{pad}  <div data-when-branch="then">')
+        if isinstance(then_id, str) and then_id in nodes:
+            lines.extend(_render_node(then_id, nodes, indent + 2))
+        lines.append(f"{pad}  </div>")
+        lines.append(f'{pad}  <div data-when-branch="else">')
+        if isinstance(else_id, str) and else_id in nodes:
+            lines.extend(_render_node(else_id, nodes, indent + 2))
+        lines.append(f"{pad}  </div>")
+        lines.append(f"{pad}</div>")
+        return lines
+
     if role == "list":
-        attrs = f"{class_attr}{data_role}{data_id}"
+        bind = node_attrs.get("bind")
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if isinstance(bind, str) and bind else ""
+        bind_kind = node_attrs.get("bind_kind") or ("items" if bind else "")
+        kind_attr = f' data-ourui-bind-kind="{html.escape(str(bind_kind))}"' if bind_kind else ""
+        attrs = f"{class_attr}{data_role}{data_id}{bind_attr}{kind_attr}"
         items = node_attrs.get("items")
         lines = [f"{pad}<ul{attrs}>"]
         if isinstance(items, list):
@@ -1407,6 +1490,9 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
                     lines.append(f'{pad}  <li class="ourui-list-item">')
                     lines.extend(_render_node(item, nodes, indent + 2))
                     lines.append(f"{pad}  </li>")
+                elif isinstance(item, dict):
+                    label = item.get("label", item.get("text", item.get("name", str(item))))
+                    lines.append(f'{pad}  <li class="ourui-list-item">{html.escape(str(label))}</li>')
                 else:
                     lines.append(f'{pad}  <li class="ourui-list-item">{html.escape(str(item))}</li>')
         for child_id in node.get("children", []):
@@ -1418,10 +1504,15 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
         return lines
 
     if role == "table":
-        attrs = f"{class_attr}{data_role}{data_id}"
+        bind = node_attrs.get("bind")
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if isinstance(bind, str) and bind else ""
+        bind_kind = node_attrs.get("bind_kind") or ("rows" if bind else "")
+        kind_attr = f' data-ourui-bind-kind="{html.escape(str(bind_kind))}"' if bind_kind else ""
+        attrs = f"{class_attr}{data_role}{data_id}{bind_attr}{kind_attr}"
         columns = node_attrs.get("columns") if isinstance(node_attrs.get("columns"), list) else []
         rows = node_attrs.get("rows") if isinstance(node_attrs.get("rows"), list) else []
-        lines = [f"{pad}<table{attrs}>"]
+        col_json = html.escape(json.dumps(columns), quote=True)
+        lines = [f'{pad}<table{attrs} data-ourui-columns="{col_json}">']
         if columns:
             lines.append(f"{pad}  <thead><tr>")
             for col in columns:
@@ -1460,7 +1551,9 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
 
     if role == "alert":
         text = html.escape(str(node_attrs.get("text") or node_attrs.get("message") or node_attrs.get("title") or ""))
-        attrs = f"{class_attr}{data_role}{data_id} role=\"status\""
+        bind = node_attrs.get("bind")
+        bind_attr = f' data-ourui-bind="{html.escape(str(bind))}"' if isinstance(bind, str) and bind else ""
+        attrs = f"{class_attr}{data_role}{data_id}{bind_attr} role=\"status\""
         return [f"{pad}<div{attrs}>{text}</div>"]
 
     if role == "image":
@@ -1614,7 +1707,20 @@ def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None)
     for node in out["nodes"].values():
         attrs = node.get("attributes", {}) or {}
         bind = attrs.get("bind")
-        if bind in state_values and attrs.get("role") in {"input", "select", "toggle", "slider", "code", "frame", "dialog", "toast"}:
+        if bind in state_values and attrs.get("role") in {
+            "input",
+            "select",
+            "toggle",
+            "slider",
+            "code",
+            "frame",
+            "dialog",
+            "toast",
+            "show",
+            "when",
+            "list",
+            "table",
+        }:
             attrs["value"] = state_values[bind]
             if attrs.get("role") == "code":
                 attrs["text"] = state_values[bind]
@@ -1622,6 +1728,12 @@ def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None)
                 attrs["srcdoc"] = state_values[bind]
             if attrs.get("role") in {"dialog", "toast"}:
                 attrs["open"] = state_values[bind]
+            if attrs.get("role") in {"show", "when"}:
+                attrs["show"] = state_values[bind]
+            if attrs.get("role") == "list":
+                attrs["items"] = state_values[bind]
+            if attrs.get("role") == "table":
+                attrs["rows"] = state_values[bind]
     return out
 
 
@@ -1648,7 +1760,16 @@ def emit_html_document(
     roots = rtr["roots"]
     meta = _collect_meta(nodes, roots)
     doc_title = meta.get("title") or title
-    body_lines: list[str] = ['  <div class="ourui-root">']
+    rd = _as_resolved_design(resolved_design) or {}
+    density = rd.get("density") or "comfortable"
+    density_class = "ourui-density-compact" if density == "compact" else ""
+    root_classes = "ourui-root"
+    if density_class:
+        root_classes = f"{root_classes} {density_class}"
+    html_attrs = 'lang="en"'
+    if density_class:
+        html_attrs = f'lang="en" class="{density_class}"'
+    body_lines: list[str] = [f'  <div class="{root_classes}">']
     for root in roots:
         body_lines.extend(_render_node(root, nodes, 2))
     body_lines.append("  </div>")
@@ -1668,6 +1789,10 @@ def emit_html_document(
             head_extra.append(
                 f'  <meta property="{html.escape(prop, quote=True)}" content="{html.escape(str(val), quote=True)}" />'
             )
+    head_extra.append(
+        f'  <meta http-equiv="Content-Security-Policy" content="{html.escape(_CSP_CONTENT, quote=True)}" '
+        f'data-ourui-csp="1" />'
+    )
     # Google Fonts for token fonts (display + sans)
     head_extra.append(
         '  <link rel="preconnect" href="https://fonts.googleapis.com" />'
@@ -1681,7 +1806,7 @@ def emit_html_document(
 
     parts = [
         "<!DOCTYPE html>",
-        '<html lang="en">',
+        f"<html {html_attrs}>",
         "<head>",
         '  <meta charset="utf-8" />',
         '  <meta name="viewport" content="width=device-width, initial-scale=1" />',

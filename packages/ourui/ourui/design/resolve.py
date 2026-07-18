@@ -10,10 +10,20 @@ from ourui.theme import DEFAULT_DARK, DEFAULT_LIGHT
 PACK_ID = "ourui-default"
 
 
+PACK_VERSION = "1.0.0"
+
+DENSITY_COMPACT: dict[str, str] = {
+    "space_sm": "0.375rem",
+    "space_md": "0.5rem",
+    "space_lg": "0.75rem",
+}
+
+
 def default_pack() -> dict[str, Any]:
     """Seed Design System pack from current theme tables (provisional migration)."""
     return {
         "id": PACK_ID,
+        "version": PACK_VERSION,
         "modes": {
             "light": dict(DEFAULT_LIGHT),
             "dark": dict(DEFAULT_DARK),
@@ -30,6 +40,10 @@ def default_pack() -> dict[str, Any]:
             "pad_inline": "space_lg",
             "gap": "space_lg",
         },
+        "density": {
+            "default": "comfortable",
+            "compact": dict(DENSITY_COMPACT),
+        },
     }
 
 
@@ -39,10 +53,13 @@ class ResolvedDesign:
     mode: str
     nodes: dict[str, dict[str, Any]] = field(default_factory=dict)
     tokens: dict[str, dict[str, str]] = field(default_factory=dict)
+    pack_version: str = PACK_VERSION
+    density: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "pack": self.pack,
+            "pack_version": self.pack_version,
             "mode": self.mode,
             "nodes": {nid: self.nodes[nid] for nid in sorted(self.nodes)},
             "tokens": {
@@ -50,6 +67,9 @@ class ResolvedDesign:
                 "dark": dict(self.tokens.get("dark", {})),
             },
         }
+        if self.density is not None:
+            out["density"] = self.density
+        return out
 
 
 def _tone_pair(
@@ -85,6 +105,7 @@ def resolve_design(
     pack: dict[str, Any] | None = None,
     mode: str = "light",
     token_overrides: dict[str, dict[str, str]] | None = None,
+    density: str | None = None,
 ) -> ResolvedDesign:
     """Pure resolution: PG + Design System pack → Resolved Design (no CSS)."""
     pack = pack or default_pack()
@@ -104,10 +125,20 @@ def resolve_design(
     pad_inline = mode_tokens.get(control.get("pad_inline", "space_md"), mode_tokens.get("space_md", ""))
     radius = mode_tokens.get(control.get("radius", "radius"), mode_tokens.get("radius", ""))
 
+    density_meta = pack.get("density") or {}
+    density_default = str(density_meta.get("default") or "comfortable")
+    density_key = density if density in ("compact", "comfortable") else density_default
+
     pg = presentation_graph.to_dict() if hasattr(presentation_graph, "to_dict") else dict(presentation_graph)
     nodes_in = pg.get("nodes") or {}
 
-    out = ResolvedDesign(pack=str(pack.get("id", PACK_ID)), mode=mode_key, tokens=modes)
+    out = ResolvedDesign(
+        pack=str(pack.get("id", PACK_ID)),
+        mode=mode_key,
+        tokens=modes,
+        pack_version=str(pack.get("version", PACK_VERSION)),
+        density=density_key,
+    )
     for nid, node in nodes_in.items():
         tone = node.get("tone")
         role = node.get("role")

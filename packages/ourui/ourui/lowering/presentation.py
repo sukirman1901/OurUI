@@ -42,6 +42,8 @@ _PRESENTATION_KINDS = frozenset(
         "Empty",
         "Spinner",
         "Alert",
+        "Show",
+        "When",
     }
 )
 

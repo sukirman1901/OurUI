@@ -90,6 +90,8 @@ PRESENTATION_KINDS = frozenset(
         "Empty",
         "Spinner",
         "Alert",
+        "Show",
+        "When",
     }
 )
 KNOWN_KINDS = INTENT_KINDS | PRESENTATION_KINDS
@@ -185,8 +187,11 @@ LAYOUT_PASSTHROUGH = (
     "chrome",
     "helper",
     "open",
+    "show",
     "columns",
     "rows",
     "severity",
     "message",
+    "then",
+    "else_",
 )

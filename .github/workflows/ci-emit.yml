@@ -1,0 +1,29 @@
+name: CI emit
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  emit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          pip install -e packages/ourui
+          pip install pytest
+      - name: Pytest P0
+        run: pytest tests/p0 -q
+      - name: Enterprise check
+        run: |
+          for f in examples/enterprise/*.py; do
+            ourui check "$f" --profile enterprise
+          done
+      - name: Emit CRUD reference
+        run: ourui emit examples/enterprise/crud_app.py -o /tmp/crud_app.html

@@ -8,6 +8,7 @@ The `ourui` command compiles Python OurUI modules and runs the interactive serve
 |---------|---------|
 | `ourui dump <file>` | JSON artifacts |
 | `ourui emit <file>` | HTML document |
+| `ourui check <file> [--profile default\|enterprise] [--strict]` | Compile diagnostics |
 | `ourui serve <file> [--prod] [--workers N] [--session-dir DIR] [--host] [--port] [--title]` | HTTP server |
 | `ourui lsp` | Stdio language server |
 
@@ -78,6 +79,24 @@ ourui serve app.py --prod --workers 4 --session-dir /var/lib/ourui/sessions
 | Health check | — | `GET /__ourui/health` |
 
 When `--workers > 1`, OurUI uses a file-backed session store so all workers share session state. See [Serve: dev and prod](../tutorial/06-serve-dev-and-prod.md) and [Deploying](../guides/deploying.md).
+
+## `ourui check`
+
+Run compile diagnostics (path + span). Exit **1** on errors.
+
+```bash
+ourui check app.py
+ourui check app.py --profile enterprise
+ourui check app.py --profile enterprise --strict
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `source` | (required) | Path to a Python OurUI module |
+| `--profile` | `default` | `default` = compile diags; `enterprise` = + a11y/escape warnings |
+| `--strict` | off | Promote enterprise warnings to errors (exit 1) |
+
+Enterprise warnings (missing labels, missing `alt=`, empty buttons, Canvas/Frame budget) print with exit **0** unless `--strict`. See [Trust and compliance](../guides/trust-and-compliance.md) and [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).
 
 ## `ourui lsp`
 

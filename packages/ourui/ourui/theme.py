@@ -174,7 +174,7 @@ def theme_kwargs_to_overrides(attrs: dict[str, Any]) -> tuple[dict[str, str], di
                 if mapped in TOKEN_KEYS and dv is not None:
                     dark[mapped] = str(dv)
             continue
-        if key == "name":
+        if key in {"name", "density"}:
             continue
         mapped = _KWARG_TO_KEY.get(key, key)
         if mapped in TOKEN_KEYS and value is not None and not isinstance(value, dict):

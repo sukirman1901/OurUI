@@ -42,6 +42,7 @@ class SemanticGraph:
     components: dict[str, dict[str, Any]] = field(default_factory=dict)
     routes: dict[str, str] = field(default_factory=dict)
     tokens: dict[str, dict[str, str]] = field(default_factory=dict)
+    density: str = "comfortable"
     diagnostics: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -55,6 +56,7 @@ class SemanticGraph:
             "derived": {k: self.derived[k] for k in sorted(self.derived)},
             "components": {k: self.components[k] for k in sorted(self.components)},
             "diagnostics": list(self.diagnostics),
+            "density": self.density,
             "tokens": {
                 "light": {k: self.tokens.get("light", {})[k] for k in sorted(self.tokens.get("light", {}))},
                 "dark": {k: self.tokens.get("dark", {})[k] for k in sorted(self.tokens.get("dark", {}))},
@@ -220,6 +222,9 @@ class _GraphBuilder:
             if kw.arg is None:
                 continue
             attrs[kw.arg] = literal_value(kw.value)
+        density = attrs.get("density")
+        if isinstance(density, str) and density in {"compact", "comfortable"}:
+            self.graph.density = density
         light, dark = theme_kwargs_to_overrides(attrs)
         self.graph.tokens = apply_theme_overrides(self.graph.tokens, light=light, dark=dark)
 
@@ -441,8 +446,13 @@ class _GraphBuilder:
                 "copy",
                 "srcdoc",
                 "open",
+                "show",
+                "items",
+                "rows",
                 "helper",
                 "message",
+                "disabled",
+                "loading",
             }:
                 state_ref = self._maybe_state_ref(kw.value)
                 if state_ref:
@@ -453,6 +463,12 @@ class _GraphBuilder:
                             attrs["srcdoc"] = state_ref
                         elif kind in {"Dialog", "Toast"}:
                             attrs["open"] = state_ref
+                        elif kind in {"Show", "When"}:
+                            attrs["show"] = state_ref
+                        elif kind == "List":
+                            attrs["items"] = state_ref
+                        elif kind == "Table":
+                            attrs["rows"] = state_ref
                         else:
                             attrs["text"] = state_ref
                     elif kw.arg == "value":
@@ -463,6 +479,16 @@ class _GraphBuilder:
                         attrs["srcdoc"] = state_ref
                     elif kw.arg == "open":
                         attrs["open"] = state_ref
+                    elif kw.arg == "show":
+                        attrs["show"] = state_ref
+                    elif kw.arg == "items":
+                        attrs["items"] = state_ref
+                    elif kw.arg == "rows":
+                        attrs["rows"] = state_ref
+                    elif kw.arg == "disabled":
+                        attrs["disabled"] = state_ref
+                    elif kw.arg == "loading":
+                        attrs["loading"] = state_ref
                     else:
                         attrs[kw.arg] = state_ref
                     continue
@@ -488,10 +514,19 @@ class _GraphBuilder:
                             attrs["srcdoc"] = resolved
                         elif kind in {"Dialog", "Toast"}:
                             attrs["open"] = resolved
+                        elif kind in {"Show", "When"}:
+                            attrs["show"] = resolved
+                        elif kind == "List":
+                            attrs["items"] = resolved
+                        elif kind == "Table":
+                            attrs["rows"] = resolved
                         else:
                             attrs["text"] = resolved
                     else:
                         attrs[kw.arg] = resolved
+                    continue
+                if kw.arg in {"items", "rows", "disabled", "loading", "show", "open"} and resolved is not None:
+                    attrs[kw.arg] = resolved
                     continue
             if kw.arg == "type" and kind == "Input":
                 type_val = literal_value(kw.value)
@@ -520,7 +555,7 @@ class _GraphBuilder:
             attrs.setdefault("reduced_motion", "static")
         if kind == "Image":
             attrs.setdefault("fit", "cover")
-            attrs.setdefault("alt", "")
+            # Do not default alt — missing key is an enterprise a11y signal (empty alt OK).
         if kind == "ThemeToggle":
             attrs.setdefault("text", "Theme")
         if kind == "CopyButton":

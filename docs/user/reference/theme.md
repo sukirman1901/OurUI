@@ -27,11 +27,19 @@ theme = ui.Theme(
     primary="#18181b",
     primary_fg="#fafafa",
     accent="#2563eb",
+    density="comfortable",  # or "compact"
     font_sans='"IBM Plex Sans", system-ui, sans-serif',
     space_lg="1.25rem",
     dark={"primary": "#fafafa", "primary_fg": "#09090b"},
 )
 ```
+
+### Density
+
+| Value | Effect |
+|-------|--------|
+| `comfortable` (default) | Pack space tokens as-is |
+| `compact` | Emit `ourui-density-compact` on `<html>` / `.ourui-root`; tighten `--ourui-space-sm/md/lg` |
 
 ### Color
 

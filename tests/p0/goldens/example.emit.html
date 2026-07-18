@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>example</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27; https://fonts.googleapis.com; font-src &#x27;self&#x27; https://fonts.gstatic.com" data-ourui-csp="1" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -437,6 +438,11 @@ select.ourui-select:focus {
   font-weight: 500;
 }
 .ourui-toast[data-open="true"] { display: block; }
+.ourui-show[data-show="false"] { display: none !important; }
+.ourui-when [data-when-branch="then"] { display: contents; }
+.ourui-when [data-when-branch="else"] { display: none; }
+.ourui-when[data-show="false"] [data-when-branch="then"] { display: none; }
+.ourui-when[data-show="false"] [data-when-branch="else"] { display: contents; }
 .ourui-list {
   list-style: none;
   margin: 0;
@@ -813,6 +819,19 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
   .ourui-motion-press:active { transform: none; }
 }
 .ourui-meta-host { display: none; }
+/* Density recipes (E2) — tighten space tokens when compact */
+html.ourui-density-compact,
+.ourui-root.ourui-density-compact {
+  --ourui-space-sm: 0.375rem;
+  --ourui-space-md: 0.5rem;
+  --ourui-space-lg: 0.75rem;
+}
+html.ourui-density-compact [data-role="page"],
+.ourui-root.ourui-density-compact [data-role="page"] {
+  padding-block: var(--ourui-space-lg);
+  padding-inline: var(--ourui-space-md);
+  gap: var(--ourui-space-md);
+}
 [data-ourui-id="n0003"] {
   background: #1a5f4a;
   color: #f5faf8;
@@ -1096,6 +1115,51 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
         } else if (role === "dialog" || role === "toast") {
           const on = Boolean(next) && next !== "false" && next !== "0" && next !== "";
           el.setAttribute("data-open", on ? "true" : "false");
+        } else if (role === "show" || role === "when") {
+          const on = Boolean(next) && next !== "false" && next !== "0" && next !== "";
+          el.setAttribute("data-show", on ? "true" : "false");
+        } else if (role === "list" && Array.isArray(next)) {
+          el.innerHTML = "";
+          next.forEach((item) => {
+            const li = document.createElement("li");
+            li.className = "ourui-list-item";
+            if (item && typeof item === "object") {
+              li.textContent = String(item.label || item.text || item.name || JSON.stringify(item));
+            } else {
+              li.textContent = item == null ? "" : String(item);
+            }
+            el.appendChild(li);
+          });
+        } else if (role === "table" && Array.isArray(next)) {
+          let columns = [];
+          try { columns = JSON.parse(el.getAttribute("data-ourui-columns") || "[]"); } catch (e) {}
+          let tbody = el.querySelector("tbody");
+          if (!tbody) {
+            tbody = document.createElement("tbody");
+            el.appendChild(tbody);
+          }
+          tbody.innerHTML = "";
+          next.forEach((row) => {
+            const tr = document.createElement("tr");
+            if (row && typeof row === "object" && !Array.isArray(row)) {
+              (columns.length ? columns : Object.keys(row)).forEach((col) => {
+                const td = document.createElement("td");
+                td.textContent = row[col] == null ? "" : String(row[col]);
+                tr.appendChild(td);
+              });
+            } else if (Array.isArray(row)) {
+              row.forEach((cell) => {
+                const td = document.createElement("td");
+                td.textContent = cell == null ? "" : String(cell);
+                tr.appendChild(td);
+              });
+            } else {
+              const td = document.createElement("td");
+              td.textContent = row == null ? "" : String(row);
+              tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+          });
         } else if (tag === "input" && el.type === "checkbox") {
           el.checked = Boolean(next) && next !== "false" && next !== "0" && next !== "";
         } else if (tag === "input" || tag === "textarea" || tag === "select") {

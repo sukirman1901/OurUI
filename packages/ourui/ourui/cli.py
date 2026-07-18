@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from ourui.diagnostics import collect_diagnostics
+from ourui.diagnostics import collect_diagnostics, collect_enterprise_diagnostics
 from ourui.lsp.server import run_stdio_server
 from ourui.pipeline import dump_json, emit_html
 from ourui.runtime import serve
@@ -34,6 +34,17 @@ def main(argv: list[str] | None = None) -> int:
         help="Run compile diagnostics (path + span); exit 1 on errors",
     )
     check_p.add_argument("source", type=Path, help="Path to a Python OurUI module")
+    check_p.add_argument(
+        "--profile",
+        choices=("default", "enterprise"),
+        default="default",
+        help="default = compile diags; enterprise = + a11y/escape warnings",
+    )
+    check_p.add_argument(
+        "--strict",
+        action="store_true",
+        help="Promote enterprise profile warnings to errors (exit 1)",
+    )
 
     serve_p = sub.add_parser(
         "serve",
@@ -95,6 +106,13 @@ def main(argv: list[str] | None = None) -> int:
             print(f"error: file not found: {args.source}", file=sys.stderr)
             return 1
         diags = collect_diagnostics(args.source)
+        if args.profile == "enterprise":
+            enterprise = collect_enterprise_diagnostics(args.source)
+            if args.strict:
+                for d in enterprise:
+                    if d.severity == "warning":
+                        d.severity = "error"
+            diags.extend(enterprise)
         errors = [d for d in diags if d.severity == "error"]
         for d in diags:
             print(d.format_line(), file=sys.stderr if d.severity == "error" else sys.stdout)

@@ -36,11 +36,13 @@ UI_COMPONENTS: dict[str, str] = {
     "Form": "Form shell; on_submit= collects fields.",
     "Dialog": "Modal; open= State; title=/actions=.",
     "Toast": "Ephemeral toast; text= + open=.",
-    "List": "Semantic list; items= or children.",
-    "Table": "Semantic table; columns= + rows=.",
+    "List": "Semantic list; items= list or State (dynamic).",
+    "Table": "Semantic table; columns= + rows= list or State.",
     "Empty": "Empty state; title=/subtitle=.",
     "Spinner": "Loading indicator.",
-    "Alert": "Alert; severity=info|success|warning|danger.",
+    "Alert": "Alert; severity=info|success|warning|danger; text= may bind State.",
+    "Show": "Conditional visibility; show= State|bool; children always in DOM.",
+    "When": "Branching visibility; show= + then= + else_= (both branches emitted).",
 }
 
 

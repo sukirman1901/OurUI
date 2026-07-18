@@ -76,7 +76,7 @@ def lower_to_iir(graph: SemanticGraph) -> IIR:
             events["submit"] = str(on_submit["__handler__"])
 
         binds: dict[str, str] = {}
-        for key in ("text", "title", "subtitle", "value", "srcdoc", "open"):
+        for key in ("text", "title", "subtitle", "value", "srcdoc", "open", "show", "items", "rows", "disabled", "loading"):
             if key not in attrs:
                 continue
             display, bind = _resolve_attr(attrs[key], graph.states)

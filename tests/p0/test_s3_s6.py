@@ -39,7 +39,7 @@ def test_token_keys_include_type_space_elevation() -> None:
 
 def test_dump_s3_s6_kinds() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 25
+    assert doc["version"] == 27
     kinds = {n["kind"] for n in doc["semantic_graph"]["nodes"].values()}
     for kind in (
         "ThemeToggle",
