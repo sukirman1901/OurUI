@@ -1,6 +1,6 @@
 # OurUI user documentation
 
-Learn how to build web apps in Python with OurUI. These pages cover the **Stable** language surface through Phase **S6** (`ourui` **0.4.0**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
+Learn how to build web apps in Python with OurUI. These pages cover the **Stable** language surface through Phase **S6** (`ourui` **0.4.1**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
 
 ## Getting started
 

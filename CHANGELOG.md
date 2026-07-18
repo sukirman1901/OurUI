@@ -4,6 +4,21 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.4.1] — 2026-07-18
+
+### Added
+
+- **`ui.Input(type="textarea")`** — multiline form field (playground / editor surfaces)
+- **`ui.Frame`** — host escape iframe preview (`bind=` / `srcdoc=`) for compiled HTML Result panes
+- Analysis: resolve `State(NAME)` initial from imported module-level string constants; sibling `from artifacts import …` strings for `ui.Code`
+
+### Changed
+
+- Host `applyState` updates iframe `srcdoc` and `<pre><code>` binds
+- Demo playground: editable source → Run → live Result/HTML/JS/CSS/AST (no display-only hardcode)
+
+Dump schema remains **21**.
+
 ## [0.4.0] — 2026-07-18
 
 ### Added

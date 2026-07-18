@@ -38,4 +38,4 @@ def test_presentation_graph_has_link_tone() -> None:
     pg = artifacts["presentation_graph"].to_dict()
     links = [n for n in pg["nodes"].values() if n.get("kind") == "Link"]
     assert links
-    assert any(n.get("href") == "/app" for n in links)
+    assert any(n.get("href") in {"/", "/about", "/html", "/js", "/css", "/ast"} for n in links)

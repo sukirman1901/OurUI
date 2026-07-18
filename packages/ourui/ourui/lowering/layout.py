@@ -25,6 +25,7 @@ _LAYOUT_KIND: dict[str, str] = {
     "Slider": "Box",
     "ThemeToggle": "Box",
     "Canvas": "Box",
+    "Frame": "Box",
     "Image": "Box",
     "Icon": "Box",
     "Code": "Box",

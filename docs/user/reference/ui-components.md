@@ -36,12 +36,13 @@ page = ui.Page(
 | `ui.Card` | Presentation | Card container |
 | `ui.Grid` | Presentation | Responsive grid layout |
 | `ui.Link` | Presentation | In-app or external navigation (`href=`) |
-| `ui.Input` | Presentation | Form field (`name=` → `@server` payload) |
+| `ui.Input` | Presentation | Form field (`name=` → `@server`; `type=` incl. `textarea`) |
 | `ui.Select` | Presentation | Dropdown (`options=`) |
 | `ui.Toggle` | Presentation | Checkbox (boolean payload) |
 | `ui.Slider` | Presentation | Range (`min=` / `max=` / `step=`) |
 | `ui.ThemeToggle` | Presentation | Toggle `.dark` on `<html>` |
 | `ui.Canvas` | Presentation | WebGL escape (`mode=gradient\|dither\|raymarch`) |
+| `ui.Frame` | Presentation | Host escape iframe preview (`bind=` / `srcdoc=`) |
 | `ui.Image` | Presentation | `src=` / `alt=` / `fit=` |
 | `ui.Icon` | Presentation | Reicon-style `name=` |
 | `ui.Code` | Presentation | Code block |
@@ -201,7 +202,7 @@ ui.Button("Save", on_click=save)
 | Prop | Type | Description |
 |------|------|-------------|
 | `name` | `str` | Field key in the RPC payload (required for form collection) |
-| `type` | `str` | `text` \| `email` \| `password` \| `number` \| `search` \| `url` \| `tel` |
+| `type` | `str` | `text` \| `email` \| `password` \| `number` \| `search` \| `url` \| `tel` \| `textarea` |
 | `placeholder` | `str` | Placeholder text |
 | `label` | `str` | Optional visible label |
 | `bind` / `value` | `State` or `str` | Initial value; `bind=` syncs from server State after RPC |
@@ -331,6 +332,7 @@ On `Shell` / `Section` / `Hero`:
 | `ui.ThemeToggle` | Toggle `.dark` on `<html>` |
 | `ui.Footer` | `brand=` / `links=` / `meta=` |
 | `ui.Canvas` | WebGL escape; `mode=gradient\|dither\|raymarch` |
+| `ui.Frame` | iframe preview escape; `bind=` / `srcdoc=` HTML string |
 | `ui.Image` | `src=` / `alt=` / `fit=` |
 | `ui.Icon` | Reicon-style `name=` |
 | `ui.Meta` | Document `title` / `description` / `og=` |

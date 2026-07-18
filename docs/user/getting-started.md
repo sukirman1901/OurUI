@@ -23,7 +23,7 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e packages/ourui
 ```
 
-Current Stable package: **0.4.0** ([PyPI](https://pypi.org/project/ourui/)).
+Current Stable package: **0.4.1** ([PyPI](https://pypi.org/project/ourui/)).
 
 ## Run the sample app
 

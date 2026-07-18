@@ -1,26 +1,27 @@
-# Gaps — Plasma-shaped SaaS dogfood (`demo/app.py`)
+# Gaps — OurUI Playground (`demo/app.py`)
 
 ## Closed
 
-| Phase | Deliverable |
-|-------|-------------|
-| **S1** | `ui.Link`, `ui.Shell` / `layout=` |
-| **S2** | `ui.Input` / `Select` / `Toggle` / `Slider` → `@server` |
-| **S3a** | `ui.Nav` + `placement=` + `tone=solid\|glass` |
-| **S3** | Type / space / elevation tokens + `ui.ThemeToggle` |
-| **S3b** | `ui.Footer` + Hero/Section `pad=` rhythm |
-| **S4** | `gap=` / `pad=` / `align=` / `justify=` + `split-sidebar` |
-| **S4m** | `motion=enter\|press\|reveal` + reduced-motion |
-| **S5** | `ui.Canvas` Plasma escape (gradient / dither / raymarch) |
-| **S6** | Drawer nav, Menu, Image, Icon, Meta, Code, CopyButton, control states |
+| Want | Reality |
+|------|---------|
+| Editable source | `ui.Input(type="textarea")` bound to `source_code` |
+| Run → compile | `@server run_playground` → `emit_all` / `dump_json` |
+| Live Result | `ui.Frame` iframe `srcdoc` from `preview_html` |
+| Live HTML/JS/CSS/AST | `ui.Code` bound to artifact States |
+| Tab set like Svelte | Result · HTML · JS · CSS · AST |
 
-## Still open (out of language scope)
+## Intentional limits
 
-| Plasma capability | Status |
-|-------------------|--------|
-| Redis share API | App concern + future data layer |
-| Auth / billing / tables | Classic SaaS — later |
+| Want | Reality |
+|------|---------|
+| Monaco / syntax highlight | Textarea only — not an IDE embed |
+| Tab swap without navigation | Tabs are **routes** |
+| Multi-tenant sandbox | Localhost dogfood; iframe sandbox only |
 
-## Verdict
+## Seed artifacts
 
-Landing + Studio dogfood the full Phase S arc. Living WebGL backgrounds ship via **S5 Canvas**. Remaining gaps are product/backend, not language surface.
+`python demo/bake_artifacts.py` refreshes initial hello sample strings in `playground_artifacts.py`. Day-to-day editing uses **Run**, not rebake.
+
+## Out of language scope
+
+Redis, auth, billing, tables — unchanged.

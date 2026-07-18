@@ -28,6 +28,7 @@ _PRESENTATION_KINDS = frozenset(
         "Slider",
         "ThemeToggle",
         "Canvas",
+        "Frame",
         "Image",
         "Icon",
         "Code",

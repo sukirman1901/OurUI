@@ -31,6 +31,7 @@ _ROLE_TAG: dict[str, str] = {
     "slider": "input",
     "theme-toggle": "button",
     "canvas": "canvas",
+    "frame": "iframe",
     "image": "img",
     "icon": "span",
     "code": "pre",
@@ -50,7 +51,7 @@ _BASE_CSS = """\
   color: var(--ourui-fg);
   min-height: 100vh;
   box-sizing: border-box;
-  padding: var(--ourui-space-md);
+  padding: 0;
 }
 .ourui-col { display: flex; flex-direction: column; gap: var(--ourui-space-md); }
 .ourui-row { display: flex; flex-direction: row; gap: var(--ourui-space-md); flex-wrap: wrap; }
@@ -74,10 +75,23 @@ _BASE_CSS = """\
 }
 .ourui-shell-split-2 {
   display: grid;
-  gap: var(--ourui-space-md);
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
+  gap: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
   width: 100%;
+  min-height: calc(100vh - 3.25rem);
+  border-top: 1px solid var(--ourui-border);
+  background: var(--ourui-card);
+}
+.ourui-shell-split-2 > *:first-child {
+  border-inline-end: 1px solid var(--ourui-border);
+  background: var(--ourui-card);
+  min-width: 0;
+}
+.ourui-shell-split-2 > *:last-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 .ourui-shell-split-3 {
   display: grid;
@@ -223,7 +237,8 @@ select.ourui-select[aria-invalid="true"] {
   font-size: var(--ourui-text-sm);
   color: var(--ourui-muted-fg);
 }
-input.ourui-input {
+input.ourui-input,
+textarea.ourui-input {
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -234,9 +249,32 @@ input.ourui-input {
   color: var(--ourui-card-fg);
   font: inherit;
 }
-input.ourui-input:focus {
+textarea.ourui-input {
+  min-height: 18rem;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  tab-size: 2;
+  white-space: pre;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--ourui-border);
+  flex: 1 1 auto;
+}
+input.ourui-input:focus,
+textarea.ourui-input:focus {
   outline: 2px solid var(--ourui-primary);
   outline-offset: 1px;
+}
+.ourui-frame {
+  display: block;
+  width: 100%;
+  min-height: 22rem;
+  flex: 1 1 auto;
+  border: none;
+  border-top: 1px solid var(--ourui-border);
+  background: var(--ourui-card);
 }
 select.ourui-select {
   display: block;
@@ -428,13 +466,69 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
   display: block;
   overflow: auto;
   padding: var(--ourui-space-md);
-  border-radius: var(--ourui-radius);
-  background: var(--ourui-muted);
+  border-radius: 0;
+  background: #ffffff;
   color: var(--ourui-fg);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  box-shadow: none;
+  white-space: pre;
+  min-height: 16rem;
+  border: none;
+  border-top: 1px solid var(--ourui-border);
+  line-height: 1.55;
+  tab-size: 2;
+}
+.dark .ourui-code {
+  background: #0c0c0e;
+}
+.ourui-playground-tabs a.ourui-link {
+  text-decoration: none;
+  color: var(--ourui-muted-fg);
+  font-weight: 500;
   font-size: var(--ourui-text-sm);
-  box-shadow: var(--ourui-elev-1);
-  white-space: pre-wrap;
+}
+.ourui-playground-tabs a.ourui-tone-primary {
+  color: var(--ourui-fg);
+  box-shadow: inset 0 -2px 0 var(--ourui-fg);
+  padding-bottom: 0.2rem;
+}
+.ourui-file-tab-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ourui-space-sm);
+  padding: var(--ourui-space-sm) var(--ourui-space-md) 0;
+  border-bottom: 1px solid var(--ourui-border);
+  background: var(--ourui-bg);
+}
+.ourui-file-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ourui-space-xs);
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  border: 1px solid var(--ourui-border);
+  border-bottom-color: var(--ourui-card);
+  margin-bottom: -1px;
+  border-radius: var(--ourui-radius) var(--ourui-radius) 0 0;
+  background: var(--ourui-card);
+  font-size: var(--ourui-text-sm);
+  font-weight: 500;
+}
+.ourui-result-hero {
+  font-family: var(--ourui-font-sans);
+  font-size: var(--ourui-text-2xl);
+  font-weight: 600;
+  line-height: var(--ourui-leading-tight);
+  margin: 0;
+}
+.ourui-nav {
+  box-shadow: none !important;
+}
+@media (max-width: 767px) {
+  .ourui-shell-split-2 > *:first-child {
+    border-inline-end: none;
+    border-bottom: 1px solid var(--ourui-border);
+  }
 }
 .ourui-menu {
   position: relative;
@@ -621,6 +715,8 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
             classes.append(f"ourui-tone-{tone}")
     if role == "input":
         classes.append("ourui-input")
+        if attrs.get("type") == "textarea":
+            classes.append("ourui-textarea")
     if role == "select":
         classes.append("ourui-select")
     if role == "toggle":
@@ -637,6 +733,8 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         classes.append("ourui-footer")
     if role == "canvas":
         classes.append("ourui-canvas")
+    if role == "frame":
+        classes.append("ourui-frame")
     if role == "image":
         classes.append("ourui-image")
         fit = attrs.get("fit") or "cover"
@@ -647,8 +745,14 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         classes.append("ourui-code")
     if role == "menu":
         classes.append("ourui-menu")
-    if role == "meta":
-        classes.append("ourui-meta-host")
+    if role == "section" and attrs.get("chrome") == "tabs":
+        classes.append("ourui-playground-tabs")
+    if role == "section" and attrs.get("chrome") == "file-tabs":
+        classes.append("ourui-file-tab-row")
+    if role == "text" and attrs.get("chrome") == "file-tab":
+        classes.append("ourui-file-tab")
+    if role == "text" and attrs.get("chrome") == "result-hero":
+        classes.append("ourui-result-hero")
     if role in {"section", "hero", "shell", "page"} and attrs.get("motion") in {"enter", "reveal"}:
         classes.append(f"ourui-motion-{attrs['motion']}")
     if (
@@ -722,13 +826,35 @@ def _input_attrs(attrs: dict[str, Any]) -> str:
     input_type = attrs.get("type") or "text"
     if not isinstance(input_type, str) or not input_type:
         input_type = "text"
-    parts.append(f' type="{html.escape(str(input_type), quote=True)}"')
+    if input_type != "textarea":
+        parts.append(f' type="{html.escape(str(input_type), quote=True)}"')
     placeholder = attrs.get("placeholder")
     if isinstance(placeholder, str) and placeholder:
         parts.append(f' placeholder="{html.escape(placeholder, quote=True)}"')
     value = attrs.get("value")
-    if value is not None and not isinstance(value, dict):
+    if input_type != "textarea" and value is not None and not isinstance(value, dict):
         parts.append(f' value="{html.escape(str(value), quote=True)}"')
+    return "".join(parts) + _state_attrs(attrs)
+
+
+def _textarea_body(attrs: dict[str, Any]) -> str:
+    value = attrs.get("value")
+    if value is None or isinstance(value, dict):
+        return ""
+    return html.escape(str(value))
+
+
+def _frame_attrs(attrs: dict[str, Any]) -> str:
+    parts: list[str] = []
+    title = attrs.get("title") or "Result"
+    parts.append(f' title="{html.escape(str(title), quote=True)}"')
+    parts.append(' sandbox="allow-scripts allow-forms allow-same-origin"')
+    srcdoc = attrs.get("srcdoc")
+    if srcdoc is not None and not isinstance(srcdoc, dict):
+        parts.append(f' srcdoc="{html.escape(str(srcdoc), quote=True)}"')
+    bind = attrs.get("bind")
+    if isinstance(bind, str) and bind:
+        parts.append(f' data-ourui-bind="{html.escape(bind, quote=True)}"')
     return "".join(parts) + _state_attrs(attrs)
 
 
@@ -800,9 +926,24 @@ def _icon_svg(name: str) -> str:
     )
 
 
-def _collect_meta(nodes: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def _collect_meta(nodes: dict[str, dict[str, Any]], roots: list[str] | None = None) -> dict[str, Any]:
     out: dict[str, Any] = {}
-    for node in nodes.values():
+    if roots:
+        stack = list(roots)
+        seen: set[str] = set()
+        walk: list[str] = []
+        while stack:
+            nid = stack.pop()
+            if nid in seen or nid not in nodes:
+                continue
+            seen.add(nid)
+            walk.append(nid)
+            stack.extend(reversed(nodes[nid].get("children") or []))
+        candidates = walk
+    else:
+        candidates = list(nodes)
+    for nid in candidates:
+        node = nodes[nid]
         if node.get("attributes", {}).get("role") != "meta":
             continue
         attrs = node.get("attributes", {})
@@ -862,6 +1003,13 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     if role == "input":
         field = _input_attrs(node_attrs)
         attrs = f"{class_attr}{data_role}{data_id}{field}{events}"
+        if node_attrs.get("type") == "textarea":
+            body = _textarea_body(node_attrs)
+            return _wrap_field(
+                pad,
+                node_attrs.get("label"),
+                [f"<textarea{attrs}>{body}</textarea>"],
+            )
         return _wrap_field(pad, node_attrs.get("label"), [f"<input{attrs} />"])
 
     if role == "select":
@@ -935,6 +1083,10 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
             f'data-ourui-canvas-config="{cfg_json}"'
         )
         return [f"{pad}<canvas{attrs}></canvas>"]
+
+    if role == "frame":
+        attrs = f"{class_attr}{data_role}{data_id}{_frame_attrs(node_attrs)}"
+        return [f"{pad}<iframe{attrs}></iframe>"]
 
     if role == "image":
         src = node_attrs.get("src") or ""
@@ -1087,10 +1239,12 @@ def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None)
     for node in out["nodes"].values():
         attrs = node.get("attributes", {}) or {}
         bind = attrs.get("bind")
-        if bind in state_values and attrs.get("role") in {"input", "select", "toggle", "slider", "code"}:
+        if bind in state_values and attrs.get("role") in {"input", "select", "toggle", "slider", "code", "frame"}:
             attrs["value"] = state_values[bind]
             if attrs.get("role") == "code":
                 attrs["text"] = state_values[bind]
+            if attrs.get("role") == "frame":
+                attrs["srcdoc"] = state_values[bind]
     return out
 
 
@@ -1115,7 +1269,7 @@ def emit_html_document(
     rtr = apply_state_values(rtr, state_values)
     nodes = rtr["nodes"]
     roots = rtr["roots"]
-    meta = _collect_meta(nodes)
+    meta = _collect_meta(nodes, roots)
     doc_title = meta.get("title") or title
     body_lines: list[str] = ['  <div class="ourui-root">']
     for root in roots:

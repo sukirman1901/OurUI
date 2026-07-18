@@ -43,7 +43,7 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | Design tokens (`ui.Theme`) | Stable — color, type, space, elevation |
 | `ourui serve` / State / `@server` / HMR / routing / LSP | Stable |
 | Runtime (prod + multi-worker file store) | Stable |
-| Package (`ourui` **0.4.0**) | Stable ([PyPI](https://pypi.org/project/ourui/)) |
+| Package (`ourui` **0.4.1**) | Stable ([PyPI](https://pypi.org/project/ourui/)) |
 | `ui.Link` / `Shell` / `layout=` | Stable (S1) |
 | `ui.Input` / `Select` / `Toggle` / `Slider` | Stable (S2) |
 | `ui.Nav` | Stable (S3a) |

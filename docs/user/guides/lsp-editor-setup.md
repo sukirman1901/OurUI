@@ -12,7 +12,7 @@ ourui lsp
 
 The process reads JSON-RPC messages on stdin and writes responses on stdout. Do not run it in a terminal for daily editing — configure your editor to launch this command instead.
 
-Server info reported on initialize: **`ourui-lsp`** (package version matches `ourui`, currently **0.4.0**).
+Server info reported on initialize: **`ourui-lsp`** (package version matches `ourui`, currently **0.4.1**).
 
 ## What you get
 

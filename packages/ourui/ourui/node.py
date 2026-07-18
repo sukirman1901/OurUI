@@ -76,6 +76,7 @@ PRESENTATION_KINDS = frozenset(
         "Slider",
         "ThemeToggle",
         "Canvas",
+        "Frame",
         "Image",
         "Icon",
         "Code",
@@ -93,8 +94,10 @@ SHELL_LAYOUT_INTENTS = frozenset(
 # Form controls (S2) — value/name on RTR attrs, not text children
 FORM_CONTROL_KINDS = frozenset({"Input", "Select", "Toggle", "Slider"})
 
-# Input type= enum (S2)
-INPUT_TYPES = frozenset({"text", "email", "password", "number", "search", "url", "tel"})
+# Input type= enum (S2 + textarea for playground / multiline)
+INPUT_TYPES = frozenset(
+    {"text", "email", "password", "number", "search", "url", "tel", "textarea"}
+)
 
 # Nav chrome (S3a / S6)
 NAV_PLACEMENTS = frozenset(
@@ -156,6 +159,7 @@ LAYOUT_PASSTHROUGH = (
     "config",
     "reduced_motion",
     "src",
+    "srcdoc",
     "alt",
     "fit",
     "icon",
@@ -167,4 +171,5 @@ LAYOUT_PASSTHROUGH = (
     "loading",
     "action",
     "copy",
+    "chrome",
 )

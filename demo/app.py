@@ -1,395 +1,464 @@
-"""Plasma-shaped SaaS dogfood — Phase S1–S6 complete.
+"""OurUI Playground — editable compiler REPL.
 
-Language surface: Nav, tokens/theme, Footer, layout, motion, Canvas, Image/Icon/Meta/Code.
+Write OurUI intent in the left textarea → Run → Result (iframe) + HTML / JS / CSS / AST.
 """
 
-from ourui import Component, State, server, ui
+from __future__ import annotations
 
+import sys
+import tempfile
+import traceback
+from pathlib import Path
+
+# Serve loads this file via importlib; ensure sibling artifacts import resolves.
+_DEMO_DIR = Path(__file__).resolve().parent
+if str(_DEMO_DIR) not in sys.path:
+    sys.path.insert(0, str(_DEMO_DIR))
+
+from ourui import Component, State, server, ui
+from ourui.pipeline import dump_json, emit_all
+from playground_artifacts import AST_OUT, CSS_OUT, HTML_OUT, JS_OUT, SAMPLE_SOURCE
+
+# CUSTOM — light IDE chrome (zinc / ink / teal Run)
 theme = ui.Theme(
-    primary="#6C5CE7",
-    primary_fg="#f5f3ff",
-    accent="#9AD013",
-    accent_fg="#0D0D0F",
-    bg="#09090b",
-    fg="#f4f4f5",
-    muted="#27272a",
-    muted_fg="#a1a1aa",
-    card="#18181b",
-    card_fg="#f4f4f5",
-    border="#3f3f46",
+    bg="#f4f4f5",
+    fg="#18181b",
+    primary="#18181b",
+    primary_fg="#fafafa",
+    muted="#e4e4e7",
+    muted_fg="#71717a",
+    border="#e4e4e7",
+    card="#ffffff",
+    card_fg="#18181b",
+    accent="#0f766e",
+    accent_fg="#f0fdfa",
+    danger="#b91c1c",
+    danger_fg="#fef2f2",
+    radius="0.375rem",
+    space_xs="0.25rem",
+    space_sm="0.5rem",
+    space_md="0.75rem",
+    space_lg="1rem",
+    space_xl="1.5rem",
+    font_sans='"DM Sans", "Segoe UI", system-ui, sans-serif',
+    font_display='"DM Sans", "Segoe UI", system-ui, sans-serif',
+    elev_0="none",
+    elev_1="none",
+    elev_2="0 4px 12px color-mix(in srgb, #18181b 8%, transparent)",
     dark={
         "bg": "#09090b",
-        "fg": "#f4f4f5",
-        "primary": "#8b7cf7",
-        "primary_fg": "#0b0a12",
-        "accent": "#9AD013",
-        "accent_fg": "#0D0D0F",
+        "fg": "#fafafa",
+        "primary": "#fafafa",
+        "primary_fg": "#18181b",
         "muted": "#27272a",
         "muted_fg": "#a1a1aa",
-        "card": "#18181b",
-        "card_fg": "#f4f4f5",
-        "border": "#3f3f46",
+        "border": "#27272a",
+        "card": "#0c0c0e",
+        "card_fg": "#fafafa",
+        "accent": "#2dd4bf",
+        "accent_fg": "#042f2e",
     },
 )
 
-pace = State(40)
-texture = State(55)
-lens = State(30)
-mode = State("gradient")
-preset = State("ember")
-share_id = State("")
-export_snippet = State("Plasma.init('#canvas', { mode: 'gradient', pace: 40 })")
+# Editable source + live compile artifacts (seeded from baked hello_sample)
+source_code = State(SAMPLE_SOURCE)
+preview_html = State(HTML_OUT)
+html_art = State(HTML_OUT)
+js_art = State(JS_OUT)
+css_art = State(CSS_OUT)
+ast_art = State(AST_OUT)
+console_log = State("Ready · edit source → Run to compile")
+
+
+def _compile_source(src: str) -> tuple[dict[str, str], str]:
+    path = Path(tempfile.mkdtemp(prefix="ourui_pg_")) / "user.py"
+    path.write_text(src, encoding="utf-8")
+    bundle = emit_all(path, title="Result")
+    return bundle, dump_json(path)
 
 
 @server
-def apply_playground(**payload: object) -> dict[str, int | str]:
-    if "mode" in payload:
-        mode.set(str(payload.get("mode", mode.get())))
-    if "lens" in payload:
-        try:
-            lens.set(int(payload.get("lens", lens.get())))  # type: ignore[arg-type]
-        except (TypeError, ValueError):
-            pass
-    return {"mode": mode.get(), "lens": lens.get(), "pace": pace.get()}
+def run_playground(**payload: object) -> str:
+    raw = payload.get("source", source_code.get())
+    src = "" if raw is None else str(raw)
+    source_code.set(src)
+    if not src.strip():
+        console_log.set("error · empty source")
+        return console_log.get()
+    try:
+        bundle, dump = _compile_source(src)
+        preview_html.set(bundle["html"])
+        html_art.set(bundle["html"])
+        js_art.set(bundle["js"])
+        css_art.set(bundle["css"])
+        ast_art.set(dump)
+        console_log.set(f"ok · compiled {len(src)} chars → HTML/JS/CSS/AST")
+    except Exception as exc:  # noqa: BLE001 — surface compile errors in console
+        console_log.set(f"error · {exc}\n{traceback.format_exc(limit=3)}")
+    return console_log.get()
 
 
 @server
-def set_mode_gradient() -> str:
-    mode.set("gradient")
-    return mode.get()
+def clear_console() -> str:
+    console_log.set("")
+    return console_log.get()
 
 
 @server
-def set_mode_dither() -> str:
-    mode.set("dither")
-    return mode.get()
-
-
-@server
-def set_mode_raymarch() -> str:
-    mode.set("raymarch")
-    return mode.get()
-
-
-@server
-def pace_down() -> int:
-    pace.set(max(0, pace.get() - 5))
-    return pace.get()
-
-
-@server
-def pace_up() -> int:
-    pace.set(min(100, pace.get() + 5))
-    return pace.get()
-
-
-@server
-def texture_down() -> int:
-    texture.set(max(0, texture.get() - 5))
-    return texture.get()
-
-
-@server
-def texture_up() -> int:
-    texture.set(min(100, texture.get() + 5))
-    return texture.get()
-
-
-@server
-def lens_down() -> int:
-    lens.set(max(0, lens.get() - 5))
-    return lens.get()
-
-
-@server
-def lens_up() -> int:
-    lens.set(min(100, lens.get() + 5))
-    return lens.get()
-
-
-@server
-def pick_ember() -> str:
-    preset.set("ember")
-    return preset.get()
-
-
-@server
-def pick_ocean() -> str:
-    preset.set("ocean")
-    return preset.get()
-
-
-@server
-def pick_noir() -> str:
-    preset.set("noir")
-    return preset.get()
-
-
-@server
-def randomize() -> dict[str, int | str]:
-    pace.set((pace.get() + 17) % 101)
-    texture.set((texture.get() + 23) % 101)
-    lens.set((lens.get() + 11) % 101)
-    return {"pace": pace.get(), "texture": texture.get(), "lens": lens.get(), "mode": mode.get()}
-
-
-@server
-def reset_filters() -> dict[str, int | str]:
-    pace.set(40)
-    texture.set(55)
-    lens.set(30)
-    mode.set("gradient")
-    preset.set("ember")
-    return {
-        "pace": pace.get(),
-        "texture": texture.get(),
-        "lens": lens.get(),
-        "mode": mode.get(),
-        "preset": preset.get(),
-    }
+def reset_sample() -> str:
+    source_code.set(SAMPLE_SOURCE)
+    preview_html.set(HTML_OUT)
+    html_art.set(HTML_OUT)
+    js_art.set(JS_OUT)
+    css_art.set(CSS_OUT)
+    ast_art.set(AST_OUT)
+    console_log.set("reset · hello_sample seed")
+    return console_log.get()
 
 
 @server
 def fake_save() -> str:
-    share_id.set("demo-local-only")
-    export_snippet.set(
-        f"Plasma.init('#canvas', {{ mode: '{mode.get()}', "
-        f"pace: {pace.get()}, texture: {texture.get()}, lens: {lens.get()}, preset: '{preset.get()}' }})"
-    )
-    return share_id.get()
+    console_log.set("saved · source (session State)")
+    return console_log.get()
 
 
-@server
-def fake_copy() -> str:
-    return export_snippet.get()
+class TopChrome(Component):
+    def build(self):
+        return ui.Nav(
+            brand=ui.Link("OurUI", href="/"),
+            items=[ui.Text("Playground")],
+            actions=[
+                ui.Button("Run", color="accent", on_click=run_playground, motion="press"),
+                ui.Button("Reset", color="muted", on_click=reset_sample, motion="press"),
+                ui.ThemeToggle(ui.Icon("moon")),
+                ui.Menu(
+                    "Account",
+                    items=[
+                        ui.Link("About", href="/about"),
+                        ui.Link(
+                            "Docs",
+                            href="https://github.com/sukirman1901/OurUI/tree/main/docs/user",
+                        ),
+                        ui.Button("Save", color="muted", on_click=fake_save),
+                    ],
+                ),
+            ],
+            placement="sticky-top",
+            tone="solid",
+            menu="drawer",
+        )
 
 
-def FeatureCard(title: str, body: str):
-    return ui.Card(title, children=[ui.Text(body)], motion="enter")
-
-
-def FaqItem(q: str, a: str):
-    return ui.Card(q, children=[ui.Text(a)])
-
-
-class FilterRow(Component):
-    def __init__(self, label: str, value: State, down, up):
-        self.label = label
-        self.value = value
-        self.down = down
-        self.up = up
-
+class SourcePane(Component):
     def build(self):
         return ui.Section(
-            title=self.label,
             layout="stack",
-            gap="sm",
+            gap="none",
+            pad="none",
             children=[
-                ui.Text(self.value),
-                ui.Button("−", color="muted", on_click=self.down, motion="press"),
-                ui.Button("+", color="muted", on_click=self.up, motion="press"),
+                ui.Section(
+                    layout="row",
+                    gap="sm",
+                    align="center",
+                    chrome="file-tabs",
+                    children=[
+                        ui.Text("app.py", chrome="file-tab"),
+                        ui.Text("+"),
+                    ],
+                ),
+                ui.Input(
+                    "source",
+                    type="textarea",
+                    bind=source_code,
+                    placeholder="from ourui import State, server, ui\n...",
+                ),
             ],
         )
 
 
-class StudioFilters(Component):
-    def build(self):
-        return ui.Section(
-            title="Filters",
-            layout="stack",
-            gap="md",
-            pad="md",
-            children=[
-                FilterRow("Pace", pace, pace_down, pace_up),
-                FilterRow("Texture", texture, texture_down, texture_up),
-                FilterRow("Lens", lens, lens_down, lens_up),
-            ],
-        )
-
-
-class StudioPreview(Component):
-    def build(self):
-        return ui.Section(
-            title="Preview canvas",
-            layout="stack",
-            gap="md",
-            pad="md",
-            children=[
-                ui.Canvas(mode="gradient", config={"pace": 40, "lens": 30, "texture": 55}),
-                ui.Text("Mode: "),
-                ui.Text(mode),
-                ui.Text(" · Preset: "),
-                ui.Text(preset),
-                ui.Button("Randomize", color="accent", on_click=randomize, motion="press"),
-                ui.Button("Reset", color="muted", on_click=reset_filters),
-            ],
-        )
-
-
-class StudioStyle(Component):
-    def build(self):
-        return ui.Section(
-            title="Style",
-            layout="stack",
-            gap="sm",
-            pad="md",
-            children=[
-                ui.Button("Ember", color="primary", on_click=pick_ember),
-                ui.Button("Ocean", color="primary", on_click=pick_ocean),
-                ui.Button("Noir", color="primary", on_click=pick_noir),
-                ui.Button("Fake save", color="accent", on_click=fake_save),
-                ui.Code(export_snippet, language="javascript"),
-                ui.CopyButton("Copy export", copy="Plasma.init('#canvas', { mode: 'gradient' })", color="muted"),
-                ui.Text("Share id: "),
-                ui.Text(share_id),
-            ],
-        )
-
-
-landing = ui.Page(
-    ui.Meta(
-        title="Plasma — OurUI",
-        description="Developer writes intent. Compiler writes implementation.",
-        og={"title": "Plasma", "description": "OurUI Plasma-shaped demo"},
-    ),
-    ui.Nav(
-        brand=ui.Link("Plasma", href="/"),
-        items=[
-            ui.Link("Features", href="#features"),
-            ui.Link("Playground", href="#playground"),
-            ui.Link("FAQ", href="#faq"),
-        ],
-        actions=[
-            ui.ThemeToggle(ui.Icon("moon")),
-            ui.Menu(
-                "More",
-                items=[
-                    ui.Link("Embed", href="/embed"),
-                    ui.Link("Studio", href="/app"),
-                ],
-            ),
-            ui.Link("Open Studio", href="/app", color="primary"),
-        ],
-        placement="sticky-top",
-        tone="glass",
-        menu="drawer",
-    ),
-    ui.Hero(
-        title="Plasma",
-        subtitle="Developer writes intent. Compiler writes implementation. Host receives primitives.",
-        pad="2xl",
-        motion="enter",
-        children=[
-            ui.Canvas(mode="gradient", reduced_motion="static", config={"pace": 40, "lens": 30}),
-            ui.Link("Open Studio", href="/app", color="primary"),
-        ],
-    ),
-    ui.Section(
-        title="Why Plasma",
-        pad="xl",
-        motion="reveal",
-        gap="lg",
-        children=[
-            ui.Grid(
-                children=[
-                    FeatureCard("Live tune", "ui.Canvas WebGL escape — Gradient / Dither / Raymarch"),
-                    FeatureCard("Copy shader", "ui.Code + ui.CopyButton clipboard"),
-                    FeatureCard("Theme", "Type / space / elevation tokens + ThemeToggle"),
-                    FeatureCard("Shell", "gap / pad / align + split-sidebar / split-3"),
-                ],
-            ),
-        ],
-    ),
-    ui.Section(
-        title="Playground",
-        layout="stack",
-        pad="xl",
+def OutputTabsResult():
+    return ui.Section(
+        layout="row",
         gap="md",
+        align="center",
+        pad="sm",
+        chrome="tabs",
         children=[
-            FilterRow("Pace", pace, pace_down, pace_up),
-            FilterRow("Texture", texture, texture_down, texture_up),
-            ui.Slider(name="lens", min=0, max=100, step=5, label="Lens", bind=lens),
-            ui.Select(
-                name="mode",
-                options=["gradient", "dither", "raymarch"],
-                label="Mode",
-                bind=mode,
-            ),
-            ui.Button("Apply", color="primary", on_click=apply_playground, motion="press"),
+            ui.Link("Result", href="/", color="primary"),
+            ui.Link("HTML", href="/html", color="muted"),
+            ui.Link("JS", href="/js", color="muted"),
+            ui.Link("CSS", href="/css", color="muted"),
+            ui.Link("AST", href="/ast", color="muted"),
         ],
-    ),
-    ui.Section(
-        title="FAQ",
-        pad="xl",
+    )
+
+
+def OutputTabsHtml():
+    return ui.Section(
+        layout="row",
+        gap="md",
+        align="center",
+        pad="sm",
+        chrome="tabs",
         children=[
-            FaqItem("Can I click to Studio now?", "Yes — ui.Link href=/app (Phase S1)."),
-            FaqItem("Where is WebGL?", "Shipped — ui.Canvas Plasma escape (S5)."),
+            ui.Link("Result", href="/", color="muted"),
+            ui.Link("HTML", href="/html", color="primary"),
+            ui.Link("JS", href="/js", color="muted"),
+            ui.Link("CSS", href="/css", color="muted"),
+            ui.Link("AST", href="/ast", color="muted"),
         ],
-    ),
-    ui.Footer(
-        brand=ui.Text("Plasma"),
-        links=[
-            ui.Link("Studio", href="/app"),
-            ui.Link("Embed", href="/embed"),
+    )
+
+
+def OutputTabsJs():
+    return ui.Section(
+        layout="row",
+        gap="md",
+        align="center",
+        pad="sm",
+        chrome="tabs",
+        children=[
+            ui.Link("Result", href="/", color="muted"),
+            ui.Link("HTML", href="/html", color="muted"),
+            ui.Link("JS", href="/js", color="primary"),
+            ui.Link("CSS", href="/css", color="muted"),
+            ui.Link("AST", href="/ast", color="muted"),
         ],
-        meta=[ui.Text("Built with OurUI 0.4")],
+    )
+
+
+def OutputTabsCss():
+    return ui.Section(
+        layout="row",
+        gap="md",
+        align="center",
+        pad="sm",
+        chrome="tabs",
+        children=[
+            ui.Link("Result", href="/", color="muted"),
+            ui.Link("HTML", href="/html", color="muted"),
+            ui.Link("JS", href="/js", color="muted"),
+            ui.Link("CSS", href="/css", color="primary"),
+            ui.Link("AST", href="/ast", color="muted"),
+        ],
+    )
+
+
+def OutputTabsAst():
+    return ui.Section(
+        layout="row",
+        gap="md",
+        align="center",
+        pad="sm",
+        chrome="tabs",
+        children=[
+            ui.Link("Result", href="/", color="muted"),
+            ui.Link("HTML", href="/html", color="muted"),
+            ui.Link("JS", href="/js", color="muted"),
+            ui.Link("CSS", href="/css", color="muted"),
+            ui.Link("AST", href="/ast", color="primary"),
+        ],
+    )
+
+
+class ConsoleBar(Component):
+    def build(self):
+        return ui.Section(
+            layout="stack",
+            gap="xs",
+            pad="sm",
+            children=[
+                ui.Section(
+                    layout="row",
+                    gap="sm",
+                    justify="between",
+                    align="center",
+                    children=[
+                        ui.Text("CONSOLE"),
+                        ui.Button("Clear", color="muted", on_click=clear_console, motion="press"),
+                    ],
+                ),
+                ui.Code(console_log, language="text"),
+            ],
+        )
+
+
+class ResultPreview(Component):
+    def build(self):
+        return ui.Frame(bind=preview_html, title="Result")
+
+
+def ArtifactHtml():
+    return ui.Section(
+        layout="stack",
+        gap="sm",
+        pad="md",
+        children=[ui.Code(html_art, language="html")],
+    )
+
+
+def ArtifactJs():
+    return ui.Section(
+        layout="stack",
+        gap="sm",
+        pad="md",
+        children=[ui.Code(js_art, language="javascript")],
+    )
+
+
+def ArtifactCss():
+    return ui.Section(
+        layout="stack",
+        gap="sm",
+        pad="md",
+        children=[ui.Code(css_art, language="css")],
+    )
+
+
+def ArtifactAst():
+    return ui.Section(
+        layout="stack",
+        gap="sm",
+        pad="md",
+        children=[ui.Code(ast_art, language="json")],
+    )
+
+
+def ShellResult():
+    return ui.Shell(
+        SourcePane(),
+        ui.Section(
+            layout="stack",
+            gap="none",
+            pad="none",
+            children=[OutputTabsResult(), ResultPreview(), ConsoleBar()],
+        ),
+        layout="split-2",
+        gap="none",
+        align="stretch",
+    )
+
+
+def ShellHtml():
+    return ui.Shell(
+        SourcePane(),
+        ui.Section(
+            layout="stack",
+            gap="none",
+            pad="none",
+            children=[OutputTabsHtml(), ArtifactHtml(), ConsoleBar()],
+        ),
+        layout="split-2",
+        gap="none",
+        align="stretch",
+    )
+
+
+def ShellJs():
+    return ui.Shell(
+        SourcePane(),
+        ui.Section(
+            layout="stack",
+            gap="none",
+            pad="none",
+            children=[OutputTabsJs(), ArtifactJs(), ConsoleBar()],
+        ),
+        layout="split-2",
+        gap="none",
+        align="stretch",
+    )
+
+
+def ShellCss():
+    return ui.Shell(
+        SourcePane(),
+        ui.Section(
+            layout="stack",
+            gap="none",
+            pad="none",
+            children=[OutputTabsCss(), ArtifactCss(), ConsoleBar()],
+        ),
+        layout="split-2",
+        gap="none",
+        align="stretch",
+    )
+
+
+def ShellAst():
+    return ui.Shell(
+        SourcePane(),
+        ui.Section(
+            layout="stack",
+            gap="none",
+            pad="none",
+            children=[OutputTabsAst(), ArtifactAst(), ConsoleBar()],
+        ),
+        layout="split-2",
+        gap="none",
+        align="stretch",
+    )
+
+
+playground = ui.Page(
+    ui.Meta(
+        title="OurUI Playground",
+        description="Edit OurUI intent → Run → Result / HTML / JS / CSS / AST.",
+        og={"title": "OurUI Playground"},
     ),
+    TopChrome(),
+    ShellResult(),
     route="/",
 )
 
-studio = ui.Page(
-    ui.Meta(title="Plasma Studio", description="Tune shaders with OurUI intent"),
+html_out = ui.Page(
+    ui.Meta(title="HTML — OurUI Playground"),
+    TopChrome(),
+    ShellHtml(),
+    route="/html",
+)
+
+js_out = ui.Page(
+    ui.Meta(title="JS — OurUI Playground"),
+    TopChrome(),
+    ShellJs(),
+    route="/js",
+)
+
+css_out = ui.Page(
+    ui.Meta(title="CSS — OurUI Playground"),
+    TopChrome(),
+    ShellCss(),
+    route="/css",
+)
+
+ast_out = ui.Page(
+    ui.Meta(title="AST — OurUI Playground"),
+    TopChrome(),
+    ShellAst(),
+    route="/ast",
+)
+
+about = ui.Page(
+    ui.Meta(title="About — OurUI Playground"),
     ui.Nav(
-        brand=ui.Link("Plasma Studio", href="/app"),
-        items=[ui.Link("Landing", href="/")],
-        actions=[ui.ThemeToggle("Theme")],
+        brand=ui.Link("OurUI", href="/"),
+        items=[ui.Link("Playground", href="/")],
+        actions=[ui.ThemeToggle(ui.Icon("sun"))],
         placement="sticky-top",
         tone="solid",
         menu="drawer",
     ),
-    ui.Section(
-        title="Plasma Studio",
-        layout="stack",
-        gap="md",
-        pad="md",
-        children=[
-            ui.Button("Gradient", color="primary", on_click=set_mode_gradient, motion="press"),
-            ui.Button("Dither", color="muted", on_click=set_mode_dither),
-            ui.Button("Raymarch", color="muted", on_click=set_mode_raymarch),
-            ui.Text("Mode: "),
-            ui.Text(mode),
-        ],
-    ),
-    ui.Shell(
-        StudioFilters(),
-        StudioPreview(),
-        StudioStyle(),
-        layout="split-3",
-        gap="lg",
-        align="start",
-    ),
-    route="/app",
-)
-
-embed = ui.Page(
-    ui.Meta(title="Embed", description="Shared Plasma view"),
     ui.Hero(
-        title="Embed",
-        subtitle="Canvas host escape for shared views.",
+        title="OurUI Playground",
+        subtitle="Editable compiler REPL: write intent → Run → Result iframe + HTML / JS / CSS / AST.",
         pad="xl",
-        children=[
-            ui.Canvas(mode="dither", config={"pace": 55, "texture": 70}),
-        ],
+        motion="enter",
     ),
     ui.Section(
-        layout="stack",
-        gap="md",
+        pad="lg",
         children=[
-            ui.Link("← Studio", href="/app"),
-            ui.Link("← Landing", href="/"),
-            ui.Text("Share id: "),
-            ui.Text(share_id),
+            ui.Link("Open playground", href="/", color="primary"),
         ],
     ),
-    route="/embed",
+    route="/about",
 )

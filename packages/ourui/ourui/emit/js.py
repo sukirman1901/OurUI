@@ -37,12 +37,19 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
       document.querySelectorAll('[data-ourui-bind="' + name + '"]').forEach((el) => {{
         const tag = (el.tagName || "").toLowerCase();
         const next = state[name];
-        if (tag === "input" && el.type === "checkbox") {{
+        if (tag === "iframe") {{
+          el.srcdoc = next == null ? "" : String(next);
+        }} else if (tag === "input" && el.type === "checkbox") {{
           el.checked = Boolean(next) && next !== "false" && next !== "0" && next !== "";
         }} else if (tag === "input" || tag === "textarea" || tag === "select") {{
-          el.value = String(next);
+          el.value = next == null ? "" : String(next);
+        }} else if (tag === "pre") {{
+          const code = el.querySelector("code");
+          const text = next == null ? "" : String(next);
+          if (code) code.textContent = text;
+          else el.textContent = text;
         }} else {{
-          el.textContent = String(next);
+          el.textContent = next == null ? "" : String(next);
         }}
       }});
     }});

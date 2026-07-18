@@ -82,6 +82,7 @@ def lower_to_rtr(ltr: Any) -> RTR:
         binds = attrs.get("binds") or {}
         skip_text_promote = from_intent in FORM_CONTROL_KINDS | {
             "Canvas",
+            "Frame",
             "Image",
             "Icon",
             "Meta",
@@ -116,6 +117,8 @@ def lower_to_rtr(ltr: Any) -> RTR:
             props["bind"] = binds["value"]
         elif "text" in binds:
             props["bind"] = binds["text"]
+        elif "srcdoc" in binds:
+            props["bind"] = binds["srcdoc"]
 
         # Text nodes first (label), then structural children
         all_children = text_children + children
@@ -163,6 +166,7 @@ def _role_for(from_intent: str) -> str:
         "Slider": "slider",
         "ThemeToggle": "theme-toggle",
         "Canvas": "canvas",
+        "Frame": "frame",
         "Image": "image",
         "Icon": "icon",
         "Code": "code",

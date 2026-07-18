@@ -101,6 +101,7 @@ class _GraphBuilder:
         self._theme_nodes: dict[str, str] = {}
         self._page_route_by_node: dict[str, str] = {}
         self.components = components
+        self._string_constants: dict[str, str] = {}
         for name, cdef in components.items():
             self.graph.components[name] = {
                 "name": name,
@@ -139,6 +140,10 @@ class _GraphBuilder:
         initial: Any = None
         if call.args:
             initial = literal_value(call.args[0])
+            if isinstance(initial, dict) and "__ref__" in initial:
+                ref = str(initial["__ref__"])
+                if ref in self._string_constants:
+                    initial = self._string_constants[ref]
         self.graph.states[name] = {
             "name": name,
             "initial": initial,
@@ -158,6 +163,20 @@ class _GraphBuilder:
         if isinstance(node, ast.Name) and node.id in self.graph.states:
             return {"__state__": node.id}
         return None
+
+    def _resolve_value(self, node: ast.AST) -> Any:
+        """Literal, State ref, or module-level string constant."""
+        state_ref = self._maybe_state_ref(node)
+        if state_ref:
+            return state_ref
+        val = literal_value(node)
+        if isinstance(val, dict) and "__ref__" in val:
+            name = str(val["__ref__"])
+            if name in self._string_constants:
+                return self._string_constants[name]
+            if name in self.graph.states:
+                return {"__state__": name}
+        return val
 
     def _resolve_call(self, call: ast.Call, trail: list[str]) -> tuple[ast.Call, list[str]]:
         """Expand user components until a ui.* call remains."""
@@ -202,12 +221,32 @@ class _GraphBuilder:
                             child_ids.append(cid)
                 continue
             state_ref = self._maybe_state_ref(arg)
-            if state_ref and kind in {"Button", "Text", "Card", "Link"} and "text" not in attrs:
+            if state_ref and kind == "Frame" and "srcdoc" not in attrs:
+                attrs["srcdoc"] = state_ref
+                continue
+            if state_ref and kind in {
+                "Button",
+                "Text",
+                "Card",
+                "Link",
+                "Code",
+                "CopyButton",
+            } and "text" not in attrs:
                 attrs["text"] = state_ref
                 continue
-            val = literal_value(arg)
+            val = self._resolve_value(arg)
+            if isinstance(val, dict) and "__state__" in val:
+                if kind == "Frame" and "srcdoc" not in attrs:
+                    attrs["srcdoc"] = val
+                elif kind in {"Button", "Text", "Card", "Link", "Code", "CopyButton"} and "text" not in attrs:
+                    attrs["text"] = val
+                else:
+                    attrs.setdefault("_args", []).append(val)
+                continue
             if isinstance(val, str):
-                if kind in {"Button", "Text", "Card", "Link", "CopyButton", "Code", "ThemeToggle", "Menu"} and "text" not in attrs:
+                if kind == "Frame" and "srcdoc" not in attrs:
+                    attrs["srcdoc"] = val
+                elif kind in {"Button", "Text", "Card", "Link", "CopyButton", "Code", "ThemeToggle", "Menu"} and "text" not in attrs:
                     attrs["text"] = val
                 elif kind == "Icon" and "name" not in attrs:
                     attrs["name"] = val
@@ -329,15 +368,42 @@ class _GraphBuilder:
                 else:
                     attrs["on_click"] = literal_value(kw.value)
                 continue
-            if kw.arg in {"text", "title", "subtitle", "bind", "value"}:
+            if kw.arg in {"text", "title", "subtitle", "bind", "value", "copy", "srcdoc"}:
                 state_ref = self._maybe_state_ref(kw.value)
                 if state_ref:
                     if kw.arg == "bind":
-                        attrs["value" if kind in FORM_CONTROL_KINDS else "text"] = state_ref
+                        if kind in FORM_CONTROL_KINDS:
+                            attrs["value"] = state_ref
+                        elif kind == "Frame":
+                            attrs["srcdoc"] = state_ref
+                        else:
+                            attrs["text"] = state_ref
                     elif kw.arg == "value":
                         attrs["value"] = state_ref
+                    elif kw.arg == "copy":
+                        attrs["copy"] = state_ref
+                    elif kw.arg == "srcdoc":
+                        attrs["srcdoc"] = state_ref
                     else:
                         attrs[kw.arg] = state_ref
+                    continue
+                resolved = self._resolve_value(kw.value)
+                if kw.arg == "copy" and isinstance(resolved, str):
+                    attrs["copy"] = resolved
+                    continue
+                if isinstance(resolved, str) and kw.arg in {"text", "title", "subtitle", "srcdoc"}:
+                    attrs[kw.arg] = resolved
+                    continue
+                if isinstance(resolved, dict) and "__state__" in resolved:
+                    if kw.arg == "bind":
+                        if kind in FORM_CONTROL_KINDS:
+                            attrs["value"] = resolved
+                        elif kind == "Frame":
+                            attrs["srcdoc"] = resolved
+                        else:
+                            attrs["text"] = resolved
+                    else:
+                        attrs[kw.arg] = resolved
                     continue
             if kw.arg == "type" and kind == "Input":
                 type_val = literal_value(kw.value)
@@ -366,6 +432,8 @@ class _GraphBuilder:
             attrs.setdefault("text", "Theme")
         if kind == "CopyButton":
             attrs.setdefault("text", "Copy")
+        if kind == "Frame":
+            attrs.setdefault("title", "Result")
 
         provenance = ["parse:ui_call", "analyze:semantic_graph", *[f"expand:{n}" for n in trail]]
         node = Node(
@@ -405,7 +473,53 @@ class _GraphBuilder:
 
         return nid
 
+    def _ingest_sibling_import_strings(self, module: ast.Module) -> None:
+        """Load string literals from same-dir `from sibling import NAME` (playground artifacts)."""
+        base = Path(self.path).resolve().parent
+        for stmt in module.body:
+            if not isinstance(stmt, ast.ImportFrom) or not stmt.module:
+                continue
+            if stmt.level > 1:
+                continue
+            mod_name = stmt.module.rsplit(".", 1)[-1]
+            candidate = base / f"{mod_name}.py"
+            if not candidate.is_file():
+                continue
+            try:
+                tree = ast.parse(candidate.read_text(encoding="utf-8"), filename=str(candidate))
+            except (OSError, SyntaxError, UnicodeError):
+                continue
+            aliases = {
+                alias.name: (alias.asname or alias.name)
+                for alias in stmt.names
+                if alias.name != "*"
+            }
+            if not aliases:
+                continue
+            for node in tree.body:
+                if not isinstance(node, ast.Assign):
+                    continue
+                if len(node.targets) != 1 or not isinstance(node.targets[0], ast.Name):
+                    continue
+                src_name = node.targets[0].id
+                if src_name not in aliases:
+                    continue
+                raw = literal_value(node.value)
+                if isinstance(raw, str):
+                    self._string_constants[aliases[src_name]] = raw
+
     def visit_module(self, module: ast.Module) -> None:
+        # First pass: module-level string constants (for ui.Code(NAME) etc.)
+        for stmt in module.body:
+            if not isinstance(stmt, ast.Assign):
+                continue
+            if len(stmt.targets) != 1 or not isinstance(stmt.targets[0], ast.Name):
+                continue
+            raw = literal_value(stmt.value)
+            if isinstance(raw, str):
+                self._string_constants[stmt.targets[0].id] = raw
+        self._ingest_sibling_import_strings(module)
+
         for stmt in module.body:
             if isinstance(stmt, ast.FunctionDef):
                 if any(_is_server_decorator(d) for d in stmt.decorator_list):

@@ -3,4 +3,4 @@
 from ourui.ui import Component, State, component, server, ui
 
 __all__ = ["ui", "server", "State", "Component", "component"]
-__version__ = "0.4.0"
+__version__ = "0.4.1"
