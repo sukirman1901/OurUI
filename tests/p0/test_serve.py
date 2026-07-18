@@ -13,7 +13,7 @@ from ourui.emit.js import emit_js
 from ourui.pipeline import compile_to_rtr, emit_html
 from ourui.runtime import OurUIRequestHandler
 from ourui.runtime.hmr import HmrHub
-from ourui.runtime.invoke import _MODULE_CACHE, invoke_handler, load_source_module
+from ourui.runtime.invoke import _MODULE_CACHE, _STATE_DEFAULTS, invoke_handler, load_source_module
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = Path(__file__).parent / "fixtures" / "example.py"
@@ -23,6 +23,7 @@ FIXTURE = Path(__file__).parent / "fixtures" / "example.py"
 def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(ROOT)
     _MODULE_CACHE.clear()
+    _STATE_DEFAULTS.clear()
 
 
 def test_invoke_server_handler() -> None:
@@ -86,7 +87,7 @@ def test_http_serve_get_and_call() -> None:
     handler = type(
         "Bound",
         (OurUIRequestHandler,),
-        {"source": FIXTURE.resolve(), "title": "test", "hmr": hmr},
+        {"source": FIXTURE.resolve(), "title": "test", "hmr": hmr, "prod": False, "sessions": None},
     )
     httpd = ThreadingHTTPServer(("127.0.0.1", 0), handler)
     port = httpd.server_address[1]

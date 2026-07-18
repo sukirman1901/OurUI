@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -10,28 +11,61 @@ from urllib.parse import urlparse
 from ourui.analysis import build_semantic_graph
 from ourui.pipeline import emit_html
 from ourui.runtime.hmr import HmrHub
-from ourui.runtime.invoke import _MODULE_CACHE, invoke_handler, load_source_module, snapshot_states
+from ourui.runtime.invoke import (
+    _INVOKE_LOCK,
+    _MODULE_CACHE,
+    apply_states,
+    invoke_handler,
+    load_source_module,
+    snapshot_states,
+)
+from ourui.runtime.session import SessionStore, parse_sid_cookie, set_cookie_header
 
 
 class OurUIRequestHandler(BaseHTTPRequestHandler):
     source: Path
     title: str
-    hmr: HmrHub
+    hmr: HmrHub | None = None
+    prod: bool = False
+    sessions: SessionStore | None = None
 
     def log_message(self, fmt: str, *args: Any) -> None:
-        sys_stderr_write = __import__("sys").stderr.write
-        sys_stderr_write("%s - %s\n" % (self.address_string(), fmt % args))
+        sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
-    def _send(self, code: int, body: bytes, content_type: str) -> None:
+    def _send(
+        self,
+        code: int,
+        body: bytes,
+        content_type: str,
+        *,
+        extra_headers: list[tuple[str, str]] | None = None,
+    ) -> None:
         self.send_response(code)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        if extra_headers:
+            for key, value in extra_headers:
+                self.send_header(key, value)
         self.end_headers()
         self.wfile.write(body)
 
+    def _cookie_headers(self, sid: str, created: bool) -> list[tuple[str, str]]:
+        if self.prod and created:
+            return [("Set-Cookie", set_cookie_header(sid))]
+        return []
+
+    def _session(self) -> tuple[str | None, dict[str, Any], bool]:
+        if not self.prod or self.sessions is None:
+            return None, {}, False
+        raw = parse_sid_cookie(self.headers.get("Cookie"))
+        sid, values, created = self.sessions.get_or_create(raw)
+        return sid, values, created
+
     def _reload_if_stale(self) -> None:
         """Drop cached module when HMR generation advances after a file edit."""
+        if self.hmr is None:
+            return
         key = self.source.resolve().as_posix()
         snap = self.hmr.snapshot()
         token = snap["generation"]
@@ -51,24 +85,66 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
+        if path == "/__ourui/health":
+            mode = "prod" if self.prod else "dev"
+            body = json.dumps({"ok": True, "mode": mode}) + "\n"
+            self._send(200, body.encode("utf-8"), "application/json")
+            return
         if path == "/__ourui/hmr":
+            if self.prod or self.hmr is None:
+                self._send(404, b'{"error":"not found"}\n', "application/json")
+                return
             self._sse_loop()
             return
         if path == "/__ourui/hmr/status":
+            if self.prod or self.hmr is None:
+                self._send(404, b'{"error":"not found"}\n', "application/json")
+                return
             body = json.dumps(self.hmr.snapshot()) + "\n"
             self._send(200, body.encode("utf-8"), "application/json")
             return
         route = self._match_page_route(path)
         if route is not None:
             self._reload_if_stale()
+            sid, session_values, created = self._session()
+            if self.prod:
+                with _INVOKE_LOCK:
+                    module = load_source_module(self.source)
+                    apply_states(module, session_values, path=self.source)
+                    state = snapshot_states(module)
+                    if sid is not None and self.sessions is not None:
+                        # Seed defaults into session on first visit
+                        if created or not session_values:
+                            self.sessions.set(sid, state)
+                            state = self.sessions.get(sid)
+                html = emit_html(
+                    self.source,
+                    title=self.title,
+                    route=route,
+                    state_values=state,
+                    hmr=False,
+                )
+                headers = self._cookie_headers(sid or "", created) if sid else []
+                self._send(200, html.encode("utf-8"), "text/html; charset=utf-8", extra_headers=headers)
+                return
             module = load_source_module(self.source)
             state = snapshot_states(module)
-            html = emit_html(self.source, title=self.title, route=route, state_values=state, hmr=True)
+            html = emit_html(
+                self.source,
+                title=self.title,
+                route=route,
+                state_values=state,
+                hmr=True,
+            )
             self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
+            return
+        if self.prod and not path.startswith("/__ourui/"):
+            self._send(404, b"<h1>404 Not Found</h1>\n", "text/html; charset=utf-8")
             return
         self._send(404, b'{"error":"not found"}\n', "application/json")
 
     def _sse_loop(self) -> None:
+        assert self.hmr is not None
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
@@ -76,7 +152,6 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         gen = self.hmr.generation
         try:
-            # Initial hello so clients know the stream is alive
             self.wfile.write(b"event: hello\ndata: ok\n\n")
             self.wfile.flush()
             while True:
@@ -112,8 +187,25 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             self._send(400, b'{"error":"invalid json"}\n', "application/json")
             return
+        sid: str | None = None
+        created = False
         try:
-            outcome = invoke_handler(self.source, name, payload)
+            if self.prod and self.sessions is not None:
+                # Hold invoke lock across session read → handler → session write
+                # so concurrent requests cannot clobber the same sid.
+                with _INVOKE_LOCK:
+                    raw = parse_sid_cookie(self.headers.get("Cookie"))
+                    sid, session_values, created = self.sessions.get_or_create(raw)
+                    outcome = invoke_handler(
+                        self.source,
+                        name,
+                        payload,
+                        state_values=session_values,
+                        use_lock=False,
+                    )
+                    self.sessions.set(sid, outcome["state"])
+            else:
+                outcome = invoke_handler(self.source, name, payload, use_lock=True)
             body = json.dumps(
                 {
                     "ok": True,
@@ -123,45 +215,72 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
                 },
                 default=str,
             )
-            self._send(200, (body + "\n").encode("utf-8"), "application/json")
+            headers = self._cookie_headers(sid or "", created) if sid else []
+            self._send(
+                200,
+                (body + "\n").encode("utf-8"),
+                "application/json",
+                extra_headers=headers,
+            )
         except KeyError as exc:
             body = json.dumps({"ok": False, "error": str(exc)})
             self._send(404, (body + "\n").encode("utf-8"), "application/json")
         except Exception as exc:  # noqa: BLE001
-            body = json.dumps(
-                {
-                    "ok": False,
-                    "error": str(exc),
-                    "traceback": traceback.format_exc(),
-                }
-            )
-            self._send(500, (body + "\n").encode("utf-8"), "application/json")
+            sys.stderr.write(traceback.format_exc() + "\n")
+            err: dict[str, Any] = {"ok": False, "error": str(exc)}
+            if not self.prod:
+                err["traceback"] = traceback.format_exc()
+            self._send(500, (json.dumps(err) + "\n").encode("utf-8"), "application/json")
 
 
-def serve(source: Path, *, host: str = "127.0.0.1", port: int = 8765, title: str | None = None) -> None:
+def serve(
+    source: Path,
+    *,
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    title: str | None = None,
+    prod: bool = False,
+) -> None:
     source = source.resolve()
     sg, _ = build_semantic_graph(source)
-    hmr = HmrHub(source)
-    load_source_module(source)
-    hmr._loaded_generation = hmr.generation  # noqa: SLF001
+    hmr: HmrHub | None = None
+    sessions: SessionStore | None = None
+    if prod:
+        sessions = SessionStore()
+    else:
+        hmr = HmrHub(source)
+        load_source_module(source)
+        hmr._loaded_generation = hmr.generation  # noqa: SLF001
+    if prod:
+        load_source_module(source)
     handler = type(
         "BoundOurUIHandler",
         (OurUIRequestHandler,),
-        {"source": source, "title": title or source.stem, "hmr": hmr},
+        {
+            "source": source,
+            "title": title or source.stem,
+            "hmr": hmr,
+            "prod": prod,
+            "sessions": sessions,
+        },
     )
     httpd = ThreadingHTTPServer((host, port), handler)
-    print(f"OurUI serve {source}")
+    mode = "prod" if prod else "dev"
+    print(f"OurUI serve ({mode}) {source}")
     if sg.routes:
         for route_path in sorted(sg.routes):
             print(f"  http://{host}:{port}{route_path}")
     else:
         print(f"  http://{host}:{port}/")
     print("  POST /__ourui/call/<handler>")
-    print("  GET  /__ourui/hmr  (SSE reload)")
+    print("  GET  /__ourui/health")
+    if not prod:
+        print("  GET  /__ourui/hmr  (SSE reload)")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         print("\nStopped.")
     finally:
-        hmr.stop()
+        if hmr is not None:
+            hmr.stop()
         httpd.server_close()

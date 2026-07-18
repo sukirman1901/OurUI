@@ -4,7 +4,7 @@
 
 OurUI is a Python-first language platform for building SaaS and AI web apps. You author UI in Python; the compiler lowers intent through the **OurIR** stack and emits host primitives. No JavaScript required from application developers.
 
-P0 specs are **Stable** ([SPEC_STATUS.md](SPEC_STATUS.md), tag `spec-p0-stable`). Production runtime hardening remains **Experimental**.
+P0 specs are **Stable** ([SPEC_STATUS.md](SPEC_STATUS.md), tag `spec-p0-stable`). Single-process production serve (`ourui serve --prod`) is **Stable**; multi-worker runtime remains **Experimental**.
 
 ## Quick start (P0)
 
@@ -15,13 +15,14 @@ pip install -e packages/ourui pytest
 ourui dump examples/example.py
 ourui emit examples/example.py
 ourui serve examples/example.py
+ourui serve examples/example.py --prod
 ourui lsp
 pytest tests/p0
 ```
 
 - `dump` — JSON artifacts (SG, DG, IIR, LTR, RTR, handlers)  
 - `emit` — HTML + CSS + JS shim  
-- `serve` — preview + RPC + HMR + multi-page routing (SSE reload on save)  
+- `serve` — preview + RPC + HMR + multi-page routing (SSE reload on save); `--prod` disables HMR, uses session State, safe errors  
 - `lsp` — stdio Language Server (completions + hover for `ui.*`, `State`, `@server`)
 
 

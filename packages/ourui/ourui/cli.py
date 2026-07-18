@@ -30,12 +30,17 @@ def main(argv: list[str] | None = None) -> int:
 
     serve_p = sub.add_parser(
         "serve",
-        help="Dev server: GET / emits HTML; POST /__ourui/call/<handler> runs @server fns",
+        help="Serve app: GET / emits HTML; POST /__ourui/call/<handler> runs @server fns",
     )
     serve_p.add_argument("source", type=Path, help="Path to a Python OurUI module")
     serve_p.add_argument("--host", default="127.0.0.1")
     serve_p.add_argument("--port", type=int, default=8765)
     serve_p.add_argument("--title", default=None)
+    serve_p.add_argument(
+        "--prod",
+        action="store_true",
+        help="Production mode: no HMR, session State, safe errors, /__ourui/health",
+    )
 
     sub.add_parser(
         "lsp",
@@ -70,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
         if not args.source.exists():
             print(f"error: file not found: {args.source}", file=sys.stderr)
             return 1
-        serve(args.source, host=args.host, port=args.port, title=args.title)
+        serve(args.source, host=args.host, port=args.port, title=args.title, prod=args.prod)
         return 0
 
     if args.command == "lsp":
