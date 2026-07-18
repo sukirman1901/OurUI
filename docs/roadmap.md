@@ -9,4 +9,5 @@
 | **H** | `State` bind + live updates | Done |
 | **I** | Components expand | Done |
 | **J** | HMR (SSE reload on file change) | Done |
-| Later | Routing, LSP | Planned |
+| **L** | Lightweight LSP (`ourui lsp`) | Done |
+| Later | Routing | Planned |

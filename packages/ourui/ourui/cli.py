@@ -4,6 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from ourui.lsp.server import run_stdio_server
 from ourui.pipeline import dump_json, emit_html
 from ourui.runtime import serve
 
@@ -36,6 +37,11 @@ def main(argv: list[str] | None = None) -> int:
     serve_p.add_argument("--port", type=int, default=8765)
     serve_p.add_argument("--title", default=None)
 
+    sub.add_parser(
+        "lsp",
+        help="Start the OurUI Language Server (stdio JSON-RPC for editors)",
+    )
+
     args = parser.parse_args(argv)
 
     if args.command == "dump":
@@ -65,6 +71,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"error: file not found: {args.source}", file=sys.stderr)
             return 1
         serve(args.source, host=args.host, port=args.port, title=args.title)
+        return 0
+
+    if args.command == "lsp":
+        run_stdio_server()
         return 0
 
     return 2

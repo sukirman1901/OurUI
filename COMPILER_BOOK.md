@@ -23,7 +23,7 @@ Python source
   → Emit HTML/CSS (`ourui emit`)
 ```
 
-Later: JS emit, runtime, HMR, LSP.
+Later: routing refinements. LSP ships as Phase L (`ourui lsp`).
 
 ## 2. How the parser works (P0)
 
@@ -105,10 +105,30 @@ pip install -e packages/ourui
 ourui dump examples/example.py
 ourui emit examples/example.py
 ourui serve examples/example.py   # http://127.0.0.1:8765/
+ourui lsp                         # stdio LSP for editors
 pytest tests/p0
 ```
 
 `serve` recompiles on each GET, executes `@server` handlers on `POST /__ourui/call/<name>`, and pushes HMR reloads over `GET /__ourui/hmr` (SSE) when the source file changes.
+
+## 13. Language Server (Phase L)
+
+`ourui lsp` speaks LSP over stdio (Content-Length framed JSON-RPC). It helps author OurUI Python modules with:
+
+- **Completion** after `ui.` → `Page`, `Hero`, `Section`, `Button`, `Text`, `Card`, `Grid`
+- **Completion** for top-level keywords: `State`, `server`, `Component`
+- **Hover** one-line docs for `ui.*` components
+
+Editor setup (VS Code / Cursor example — add to workspace or user settings):
+
+```json
+{
+  "python.languageServer": "None",
+  "python.analysis.diagnosticMode": "openFilesOnly"
+}
+```
+
+Use an LSP client extension or `"ourui.lsp.command": ["ourui", "lsp"]` if your editor supports custom language servers. The server lives in `packages/ourui/ourui/lsp/` and does not require full compiler analysis for completions.
 
 ## 12. Changing LOCKED architecture
 

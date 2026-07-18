@@ -35,6 +35,6 @@ Status ladder:
 | Components (expand) | Draft (Phase I) |
 | HMR (`ourui serve`) | Draft (Phase J) |
 | Runtime (production) | Experimental |
-| LSP | Experimental |
+| LSP | Draft (`ourui lsp` — completions + hover) |
 
 Update this table when phases land and when RFCs promote artifacts to Stable/Frozen.
