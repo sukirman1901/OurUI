@@ -48,7 +48,7 @@ def test_emit_deterministic() -> None:
 
 def test_dump_version_notes_emit() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 28
+    assert doc["version"] == 29
     assert doc["emit"]["html"] is True
     assert doc["emit"]["js"] is True
     assert doc["emit"]["state"] is True

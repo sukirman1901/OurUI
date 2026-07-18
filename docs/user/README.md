@@ -1,6 +1,6 @@
 # OurUI user documentation
 
-Learn how to build web apps in Python with OurUI. These pages cover the language surface through Enterprise (`ourui` **1.6.0**, dump schema **28**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
+Learn how to build web apps in Python with OurUI. These pages cover the language surface through Enterprise (`ourui` **1.7.0**, dump schema **29**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
 
 ## Getting started
 

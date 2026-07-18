@@ -10,7 +10,7 @@ from ourui.emit import emit_bundle, emit_html_document
 from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_presentation_graph, lower_to_rtr
 from ourui.serialize import dumps_deterministic
 
-DUMP_SCHEMA_VERSION = 28
+DUMP_SCHEMA_VERSION = 29
 
 
 def _display_path(path: Path) -> str:
@@ -38,6 +38,8 @@ def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, A
         presentation_graph,
         token_overrides=sg.tokens,
         density=getattr(sg, "density", None),
+        pack_id=getattr(sg, "pack", None),
+        recipe_id=getattr(sg, "recipe", None),
     )
     ltr = lower_to_ltr(iir)
     rtr = lower_to_rtr(ltr)
@@ -102,6 +104,8 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "attestation": True,
             "csrf": True,
             "security_headers": True,
+            "packs": True,
+            "recipes": True,
         },
     }
     digest_body = dumps_deterministic(dump)

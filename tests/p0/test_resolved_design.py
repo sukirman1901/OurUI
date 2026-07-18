@@ -22,12 +22,12 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_includes_resolved_design() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 28
+    assert doc["version"] == 29
     assert "resolved_design" in doc
     assert doc["emit"]["resolved_design"] is True
     rd = doc["resolved_design"]
     assert rd["pack"] == "ourui-default"
-    assert rd["pack_version"] == "1.0.0"
+    assert rd["pack_version"] == "1.1.0"
     assert rd["mode"] == "light"
     assert rd["density"] == "comfortable"
     assert rd["nodes"]
@@ -58,7 +58,7 @@ def test_theme_overrides_flow_into_resolved_design() -> None:
 def test_default_pack_seeded_from_theme() -> None:
     pack = default_pack()
     assert pack["id"] == "ourui-default"
-    assert pack["version"] == "1.0.0"
+    assert pack["version"] == "1.1.0"
     assert pack["modes"]["light"]["primary"] == DEFAULT_LIGHT["primary"]
 
 

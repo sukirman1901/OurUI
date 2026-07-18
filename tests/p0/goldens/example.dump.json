@@ -1,9 +1,9 @@
 {
   "attestation": {
     "pack": "ourui-default",
-    "pack_version": "1.0.0",
-    "schema": 28,
-    "sha256": "7b7b130d3b0f15e533f35af97f4911556d9c8e5de6d230cbc989344691504a78"
+    "pack_version": "1.1.0",
+    "schema": 29,
+    "sha256": "b72b8d47754a35cec29f92fec0b180f9d568031812abf46b10bb5b35c0b096c0"
   },
   "dependency_graph": {
     "edges": [
@@ -53,7 +53,9 @@
     "html": true,
     "js": true,
     "list": true,
+    "packs": true,
     "presentation_graph": true,
+    "recipes": true,
     "resolved_design": true,
     "security_headers": true,
     "show": true,
@@ -1058,7 +1060,13 @@
       }
     },
     "pack": "ourui-default",
-    "pack_version": "1.0.0",
+    "pack_version": "1.1.0",
+    "page": {
+      "gap": "space_lg",
+      "max_width": "42rem",
+      "pad_block": "space_xl",
+      "pad_inline": "space_lg"
+    },
     "tokens": {
       "dark": {
         "accent": "#3b82f6",
@@ -2194,6 +2202,7 @@
         }
       }
     },
+    "pack": "ourui-default",
     "roots": [
       "n0001"
     ],
@@ -2291,5 +2300,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 28
+  "version": 29
 }

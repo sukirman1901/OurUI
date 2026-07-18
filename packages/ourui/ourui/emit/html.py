@@ -69,11 +69,11 @@ _BASE_CSS = """\
 [data-role="page"] {
   box-sizing: border-box;
   width: 100%;
-  max-width: 42rem;
+  max-width: var(--ourui-page-max-width, 42rem);
   margin-inline: auto;
-  padding-block: var(--ourui-space-xl);
-  padding-inline: var(--ourui-space-lg);
-  gap: var(--ourui-space-lg);
+  padding-block: var(--ourui-page-pad-block, var(--ourui-space-xl));
+  padding-inline: var(--ourui-page-pad-inline, var(--ourui-space-lg));
+  gap: var(--ourui-page-gap, var(--ourui-space-lg));
 }
 .ourui-root:has([data-role="shell"]) [data-role="page"],
 .ourui-root:has(.ourui-shell-stack) [data-role="page"],
@@ -1728,13 +1728,39 @@ def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None)
     return out
 
 
+def _page_chrome_css(rd: dict[str, Any]) -> str:
+    """Emit page measure vars from Resolved Design page recipe."""
+    page = rd.get("page") or {}
+    if not page:
+        return ""
+
+    def _space_or_raw(raw: str) -> str:
+        if raw.startswith("space_"):
+            return f"var(--ourui-{raw.replace('_', '-')})"
+        return raw
+
+    max_w = page.get("max_width", "42rem")
+    pad_b = _space_or_raw(str(page.get("pad_block", "space_xl")))
+    pad_i = _space_or_raw(str(page.get("pad_inline", "space_lg")))
+    gap = _space_or_raw(str(page.get("gap", "space_lg")))
+    return (
+        ":root {\n"
+        f"  --ourui-page-max-width: {max_w};\n"
+        f"  --ourui-page-pad-block: {pad_b};\n"
+        f"  --ourui-page-pad-inline: {pad_i};\n"
+        f"  --ourui-page-gap: {gap};\n"
+        "}\n"
+    )
+
+
 def emit_css(*, resolved_design: Any) -> str:
     """Emit host CSS from Resolved Design (Host Contract — required)."""
     rd = _as_resolved_design(resolved_design)
     if rd is None:
         raise TypeError("resolved_design is required (Host Contract: RTR + Resolved Design)")
     token_block = emit_tokens_css(_tokens_from_resolved(rd))
-    return token_block + _BASE_CSS + _emit_resolved_node_css(rd)
+    page_block = _page_chrome_css(rd)
+    return token_block + page_block + _BASE_CSS + _emit_resolved_node_css(rd)
 
 
 def emit_html_document(

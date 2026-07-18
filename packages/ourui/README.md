@@ -1,10 +1,10 @@
-# ourui 1.6.0
+# ourui 1.7.0
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-Dump schema **28** (additive). Security hardening: CSRF, session gate, CSP nonce, rate limit, attestation `sha256`.
+Dump schema **29** (additive). Named packs + recipes (`pack=` / `recipe=`) on `ui.Theme`.
 
 ## Install
 

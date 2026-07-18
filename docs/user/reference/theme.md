@@ -6,7 +6,8 @@ OurUI emits semantic CSS variables under the `--ourui-*` namespace. Defaults (1.
 from ourui import ui
 
 # Optional — omit Theme to use ourui-default zinc/ink pack
-theme = ui.Theme(primary="#18181b", primary_fg="#fafafa", accent="#2563eb")
+theme = ui.Theme(recipe="product")  # or pack="ourui-editorial" / recipe="ops"
+# theme = ui.Theme(primary="#18181b", primary_fg="#fafafa", accent="#2563eb")
 
 page = ui.Page(
     ui.Hero(title="Themed"),
@@ -24,10 +25,11 @@ Assign at **module level**. The compiler merges overrides into Semantic Graph `t
 
 ```python
 theme = ui.Theme(
+    recipe="product",  # or pack="ourui-console", density="compact"
     primary="#18181b",
     primary_fg="#fafafa",
     accent="#2563eb",
-    density="comfortable",  # or "compact"
+    density="comfortable",  # or "compact" (overrides recipe density)
     font_sans='"IBM Plex Sans", system-ui, sans-serif',
     space_lg="1.25rem",
     dark={"primary": "#fafafa", "primary_fg": "#09090b"},

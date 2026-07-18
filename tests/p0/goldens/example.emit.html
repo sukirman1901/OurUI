@@ -83,6 +83,12 @@
   --ourui-elev-2: 0 4px 16px color-mix(in srgb, var(--ourui-fg) 10%, transparent);
   --ourui-elev-3: 0 12px 28px color-mix(in srgb, var(--ourui-fg) 14%, transparent);
 }
+:root {
+  --ourui-page-max-width: 42rem;
+  --ourui-page-pad-block: var(--ourui-space-xl);
+  --ourui-page-pad-inline: var(--ourui-space-lg);
+  --ourui-page-gap: var(--ourui-space-lg);
+}
 /* Host-private chrome (layout / structure). Not Design System knowledge.
    Tone colors come from Resolved Design (CSS vars + per-node rules). */
 .ourui-root {
@@ -100,11 +106,11 @@
 [data-role="page"] {
   box-sizing: border-box;
   width: 100%;
-  max-width: 42rem;
+  max-width: var(--ourui-page-max-width, 42rem);
   margin-inline: auto;
-  padding-block: var(--ourui-space-xl);
-  padding-inline: var(--ourui-space-lg);
-  gap: var(--ourui-space-lg);
+  padding-block: var(--ourui-page-pad-block, var(--ourui-space-xl));
+  padding-inline: var(--ourui-page-pad-inline, var(--ourui-space-lg));
+  gap: var(--ourui-page-gap, var(--ourui-space-lg));
 }
 .ourui-root:has([data-role="shell"]) [data-role="page"],
 .ourui-root:has(.ourui-shell-stack) [data-role="page"],

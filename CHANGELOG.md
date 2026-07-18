@@ -4,6 +4,17 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.7.0] — 2026-07-18
+
+### Added — Named packs + recipes
+
+- Packs: `ourui-default`, `ourui-editorial`, `ourui-console` (`ui.Theme(pack=…)`)
+- Recipes: `product`, `ops`, `editorial`, `console` (`ui.Theme(recipe=…)`) — pack + density + page measure
+- Page chrome CSS vars (`--ourui-page-max-width`, …) from Resolved Design
+- Anti-slop catalog (no purple defaults, no cream/serif brochure, no neon accents)
+
+Dump schema **29** (additive): `emit.packs` / `recipes`; dump `recipe` / `page` on Resolved Design.
+
 ## [1.6.0] — 2026-07-18
 
 ### Added — Security hardening (P0–P2)

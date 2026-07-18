@@ -18,6 +18,7 @@ Org-scale products need a stable default pack identity (`ourui-default` + versio
 
 - Dump schema **27** adds `emit.density` / `csp` / `attestation` and Resolved Design `pack_version` (+ optional `density`).
 - Schema **28** (`1.6.0`) adds `emit.csrf` / `security_headers` and `attestation.sha256`; enterprise `SEC001` for Frame/srcdoc.
+- Schema **29** (`1.7.0`) adds named packs/recipes (`emit.packs` / `recipes`) and Resolved Design `recipe` / `page`.
 - Auth/SSO remain outside `ui.*` (see Enterprise Kit templates + gateway).
 
 ## Alternatives rejected

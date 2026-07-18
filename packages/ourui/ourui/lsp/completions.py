@@ -24,7 +24,7 @@ UI_COMPONENTS: dict[str, str] = {
     "Nav": "Chrome bar; placement= + tone=solid|glass; menu=drawer; brand/items/actions.",
     "Footer": "Page footer; brand=/links=/meta= slots.",
     "ThemeToggle": "Client control that toggles .dark on <html>.",
-    "Theme": "Design token overrides for --ourui-* CSS variables.",
+    "Theme": "Design tokens: pack=, recipe=, density=, or color overrides for --ourui-*.",
     "Canvas": "WebGL escape; mode=gradient|dither|raymarch (Plasma.init).",
     "Frame": "Host escape iframe preview; bind=/srcdoc= HTML document string.",
     "Image": "Image; src=/alt=/fit=cover|contain.",
