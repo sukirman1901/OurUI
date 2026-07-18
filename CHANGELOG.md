@@ -4,6 +4,12 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.7.1] — 2026-07-18
+
+### Changed
+
+- `ui.Link`: no default underline; underline only on hover / `:focus-visible`
+
 ## [1.7.0] — 2026-07-18
 
 ### Added — Named packs + recipes

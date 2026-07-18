@@ -248,8 +248,12 @@
 }
 a.ourui-link {
   color: var(--ourui-primary);
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 0.15em;
+}
+a.ourui-link:hover,
+a.ourui-link:focus-visible {
+  text-decoration: underline;
 }
 a.ourui-link:hover { filter: brightness(1.1); }
 a.ourui-tone-primary { color: var(--ourui-primary); }
