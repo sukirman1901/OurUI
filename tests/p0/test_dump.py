@@ -21,8 +21,17 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_has_required_sections() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 11
-    for key in ("semantic_graph", "dependency_graph", "iir", "ltr", "rtr", "emit"):
+    assert doc["version"] == 12
+    for key in (
+        "semantic_graph",
+        "dependency_graph",
+        "iir",
+        "presentation_graph",
+        "resolved_design",
+        "ltr",
+        "rtr",
+        "emit",
+    ):
         assert key in doc
     assert doc["emit"]["js"] is True
     assert doc["emit"]["state"] is True

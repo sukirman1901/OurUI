@@ -34,6 +34,7 @@
     "html": true,
     "js": true,
     "presentation_graph": true,
+    "resolved_design": true,
     "state": true,
     "tokens": true
   },
@@ -846,6 +847,228 @@
     "roots": [
       "n0001"
     ]
+  },
+  "resolved_design": {
+    "mode": "light",
+    "nodes": {
+      "n0001": {
+        "id": "n0001",
+        "kind": "Page",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#57534e",
+          "fill": "#e7e5e0",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "page"
+      },
+      "n0002": {
+        "id": "n0002",
+        "kind": "Hero",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#57534e",
+          "fill": "#e7e5e0",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "hero"
+      },
+      "n0003": {
+        "id": "n0003",
+        "kind": "Button",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#f5faf8",
+          "fill": "#1a5f4a",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "button",
+        "tone": "primary"
+      },
+      "n0005": {
+        "id": "n0005",
+        "kind": "Section",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#57534e",
+          "fill": "#e7e5e0",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "section"
+      },
+      "n0006": {
+        "id": "n0006",
+        "kind": "Card",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:FeatureCard",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#57534e",
+          "fill": "#e7e5e0",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "card"
+      },
+      "n0007": {
+        "id": "n0007",
+        "kind": "Card",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:FeatureCard",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#57534e",
+          "fill": "#e7e5e0",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "card"
+      },
+      "n0008": {
+        "id": "n0008",
+        "kind": "Section",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#57534e",
+          "fill": "#e7e5e0",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "section"
+      },
+      "n0009": {
+        "id": "n0009",
+        "kind": "Text",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#57534e",
+          "fill": "#e7e5e0",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "text"
+      },
+      "n0010": {
+        "id": "n0010",
+        "kind": "Button",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:presentation",
+          "resolve:design"
+        ],
+        "resolved": {
+          "fg": "#f5faf8",
+          "fill": "#1a5f4a",
+          "pad_block": "0.5rem",
+          "pad_inline": "0.75rem",
+          "radius": "0.5rem"
+        },
+        "role": "button",
+        "tone": "primary"
+      }
+    },
+    "pack": "ourui-default",
+    "tokens": {
+      "dark": {
+        "accent": "#14b8a6",
+        "accent_fg": "#042f2e",
+        "bg": "#1c1917",
+        "border": "#44403c",
+        "card": "#292524",
+        "card_fg": "#f5f5f4",
+        "danger": "#f87171",
+        "danger_fg": "#1c1917",
+        "fg": "#f5f5f4",
+        "muted": "#292524",
+        "muted_fg": "#a8a29e",
+        "primary": "#2dd4a8",
+        "primary_fg": "#042f2e",
+        "radius": "0.5rem",
+        "space_md": "0.75rem",
+        "space_sm": "0.5rem"
+      },
+      "light": {
+        "accent": "#0f766e",
+        "accent_fg": "#f0fdfa",
+        "bg": "#f7f6f2",
+        "border": "#d6d3d1",
+        "card": "#ffffff",
+        "card_fg": "#1c1917",
+        "danger": "#b91c1c",
+        "danger_fg": "#fef2f2",
+        "fg": "#1c1917",
+        "muted": "#e7e5e0",
+        "muted_fg": "#57534e",
+        "primary": "#1a5f4a",
+        "primary_fg": "#f5faf8",
+        "radius": "0.5rem",
+        "space_md": "0.75rem",
+        "space_sm": "0.5rem"
+      }
+    }
   },
   "rtr": {
     "handlers": {
@@ -1952,5 +2175,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 11
+  "version": 12
 }

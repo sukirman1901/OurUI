@@ -17,7 +17,8 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 **Phase P** (`compiler-p0p`): OurUI design tokens (`--ourui-*`) are **Stable**.  
 **Phase R** (`v0.1.0` / `compiler-p0r`): first package release of the `ourui` compiler/runtime on PyPI-ready packaging (local install / wheel build; not necessarily published).  
 **Phase S1** (`compiler-p0s1` / `v0.1.2`): `ui.Link` + `ui.Shell` / `layout=` — Stable (dump schema **10**).  
-**RFC-001** (`v0.2.0`): Presentation Graph in dump (schema **11**, Option A). Chrome freeze continues until RFC-002/003 progress.
+**RFC-001** (`v0.2.0`): Presentation Graph in dump (schema **11**, Option A).  
+**RFC-002** (`v0.2.1`): Resolved Design in dump (schema **12**). Emit still provisional until RFC-003. Chrome freeze continues until Host path progresses.
 
 | Area | Status |
 |---|---|
@@ -47,8 +48,10 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | LSP | Stable (`ourui lsp` — completions + hover + tokens) |
 | Runtime (single-process prod) | Stable (`ourui serve --prod`) |
 | Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
-| Package (`ourui` 0.2.0) | Stable ([PyPI](https://pypi.org/project/ourui/); dump schema 11 + `presentation_graph`) |
+| Package (`ourui` 0.2.1) | Stable ([PyPI](https://pypi.org/project/ourui/); dump schema 12 + `resolved_design`) |
 | Presentation Graph | Stable (RFC-001 Option A — lowering; emit still provisional) |
+| Resolved Design | Stable (RFC-002 — dump artifact; emit does not consume yet) |
+| Design System pack (`ourui-default`) | Draft (seeded from `theme.py`; packs API may grow) |
 | `ui.Link` / `ui.Shell` / `layout=` | Stable (Phase S1 — dump schema **10**) |
 
 Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see ADRs 001–004 under `docs/decisions/`.

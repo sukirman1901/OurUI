@@ -4,6 +4,19 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.2.1] — 2026-07-18
+
+### Added
+
+- **Resolved Design** in `ourui dump` (RFC-002 — `Presentation Graph` + Design System pack → host-neutral resolved values)
+- `ourui.design.resolve` with default pack `ourui-default` (seeded from `theme.py`)
+- Dump schema **version 12**
+
+### Notes
+
+- HTML/CSS emit still provisional (does **not** consume Resolved Design yet — RFC-003)
+- `ui.Theme` overrides continue to merge into SG tokens and now flow into Resolved Design
+
 ## [0.2.0] — 2026-07-18
 
 ### Added

@@ -5,18 +5,19 @@
 ```text
 Compiler → Presentation Graph (RFC-001, Option A lowering)
                 +
-         Design System input (RFC-002)
+         Design System pack (RFC-002, ourui-default)
                 ↓
-       Resolved Presentation
+         Resolved Design (dump schema 12)
                 ↓
-         Host Emit (RFC-003 / ourui-web)
+         Host Emit (RFC-003 — not yet wired)
 ```
 
-Provisional 0.1.x Theme + `_BASE_CSS` remains until RFC-002/003 migrate web emit.
+Today: dump includes `presentation_graph` + `resolved_design`.  
+Provisional emit still uses Theme + `_BASE_CSS` until RFC-003 wires `RTR + Resolved Design → HTML/CSS`.
 
 See:
 
-- [RFC-001](../rfcs/RFC-001-presentation-system.md)  
-- [RFC-002 stub](../rfcs/RFC-002-design-system.md)  
+- [RFC-001](../rfcs/RFC-001-presentation-system.md) Accepted + Implemented  
+- [RFC-002](../rfcs/RFC-002-design-system.md) Accepted + Implemented  
 - [RFC-003 stub](../rfcs/RFC-003-host-emit.md)  
 - [Spike A/B/C](../rfcs/spikes/2026-07-18-presentation-abc.md)
