@@ -12,6 +12,7 @@ from ourui.analysis.components import (
 )
 from ourui.node import THEME_ATTR_KEYS, Node
 from ourui.parse import call_kind, literal_value, parse_file, span_for
+from ourui.theme import apply_theme_overrides, default_tokens, theme_kwargs_to_overrides
 
 
 @dataclass
@@ -23,6 +24,7 @@ class SemanticGraph:
     states: dict[str, dict[str, Any]] = field(default_factory=dict)
     components: dict[str, dict[str, Any]] = field(default_factory=dict)
     routes: dict[str, str] = field(default_factory=dict)
+    tokens: dict[str, dict[str, str]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -33,6 +35,10 @@ class SemanticGraph:
             "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
             "states": {k: self.states[k] for k in sorted(self.states)},
             "components": {k: self.components[k] for k in sorted(self.components)},
+            "tokens": {
+                "light": {k: self.tokens.get("light", {})[k] for k in sorted(self.tokens.get("light", {}))},
+                "dark": {k: self.tokens.get("dark", {})[k] for k in sorted(self.tokens.get("dark", {}))},
+            },
         }
 
 
@@ -62,11 +68,20 @@ def _is_state_call(call: ast.Call) -> bool:
     return False
 
 
+def _is_theme_call(call: ast.Call) -> bool:
+    if isinstance(call.func, ast.Attribute) and call.func.attr == "Theme":
+        if isinstance(call.func.value, ast.Name) and call.func.value.id == "ui":
+            return True
+    if isinstance(call.func, ast.Name) and call.func.id == "Theme":
+        return True
+    return False
+
+
 class _GraphBuilder:
     def __init__(self, path: str, components: dict) -> None:
         self.path = path
         self.counter = 0
-        self.graph = SemanticGraph()
+        self.graph = SemanticGraph(tokens=default_tokens())
         self.dep = DependencyGraph()
         self._theme_nodes: dict[str, str] = {}
         self._page_route_by_node: dict[str, str] = {}
@@ -114,6 +129,15 @@ class _GraphBuilder:
             "initial": initial,
             "span": span_for(self.path, call).to_dict(),
         }
+
+    def register_theme(self, call: ast.Call) -> None:
+        attrs: dict[str, Any] = {}
+        for kw in call.keywords:
+            if kw.arg is None:
+                continue
+            attrs[kw.arg] = literal_value(kw.value)
+        light, dark = theme_kwargs_to_overrides(attrs)
+        self.graph.tokens = apply_theme_overrides(self.graph.tokens, light=light, dark=dark)
 
     def _maybe_state_ref(self, node: ast.AST) -> dict[str, str] | None:
         if isinstance(node, ast.Name) and node.id in self.graph.states:
@@ -272,10 +296,15 @@ class _GraphBuilder:
                     for target in stmt.targets:
                         if isinstance(target, ast.Name):
                             self.register_state(target.id, stmt.value)
+                elif isinstance(stmt.value, ast.Call) and _is_theme_call(stmt.value):
+                    self.register_theme(stmt.value)
                 elif isinstance(stmt.value, ast.Call):
                     self.build_call(stmt.value)
             elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
-                self.build_call(stmt.value)
+                if _is_theme_call(stmt.value):
+                    self.register_theme(stmt.value)
+                else:
+                    self.build_call(stmt.value)
         self._finalize_routes()
 
     def _finalize_routes(self) -> None:

@@ -62,7 +62,7 @@ def lower_to_ltr(iir: Any) -> LTR:
             "axis": _AXIS.get(layout_kind, "none"),
             "from_intent": intent_kind,
         }
-        for key in ("title", "subtitle", "text", "variant", "color"):
+        for key in ("title", "subtitle", "text", "variant", "color", "bg"):
             if key in inode.get("attributes", {}):
                 props[key] = inode["attributes"][key]
         if "events" in inode:

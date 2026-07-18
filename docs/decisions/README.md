@@ -9,3 +9,4 @@ ADRs record local or historical choices. RFCs change LOCKED architecture or voca
 | [ADR-001](ADR-001-p0-spec-stable.md) | Promote P0 specs to Stable |
 | [ADR-002](ADR-002-prod-session-runtime.md) | Single-process prod serve + session State |
 | [ADR-003](ADR-003-file-multiworker-sessions.md) | File-backed multi-worker sessions |
+| [ADR-004](ADR-004-design-tokens.md) | OurUI-native design tokens |

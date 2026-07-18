@@ -13,7 +13,8 @@ Status ladder:
 
 Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.  
 **Phase N** (`compiler-p0n`): single-process production serve is **Stable**.  
-**Phase O** (`compiler-p0o`): file-backed multi-worker serve is **Stable** (Unix `fcntl`).
+**Phase O** (`compiler-p0o`): file-backed multi-worker serve is **Stable** (Unix `fcntl`).  
+**Phase P** (`compiler-p0p`): OurUI design tokens (`--ourui-*`) are **Stable**.
 
 | Area | Status |
 |---|---|
@@ -31,7 +32,8 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | LTR | Stable (Layout Lowering in `ourui dump`) |
 | RTR / HostNode | Stable (Render Lowering in `ourui dump`) |
 | HTML emitter | Stable (`ourui emit`) |
-| CSS emit | Stable (inlined + bundle) |
+| CSS emit | Stable (inlined + bundle; `--ourui-*` tokens) |
+| Design tokens (`ui.Theme`) | Stable (Phase P) |
 | JS emit / runtime shim | Stable (fetch RPC) |
 | `@server` / `on_click` | Stable |
 | `ourui serve` + RPC | Stable |
@@ -39,8 +41,8 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | Components (expand) | Stable |
 | HMR (`ourui serve`) | Stable |
 | Routing (`route=` on `ui.Page`) | Stable |
-| LSP | Stable (`ourui lsp` — completions + hover) |
+| LSP | Stable (`ourui lsp` — completions + hover + tokens) |
 | Runtime (single-process prod) | Stable (`ourui serve --prod`) |
 | Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
 
-Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see [ADR-001](docs/decisions/ADR-001-p0-spec-stable.md), [ADR-002](docs/decisions/ADR-002-prod-session-runtime.md), and [ADR-003](docs/decisions/ADR-003-file-multiworker-sessions.md).
+Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see ADRs 001–004 under `docs/decisions/`.

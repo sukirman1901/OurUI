@@ -67,6 +67,9 @@ def lower_to_rtr(ltr: Any) -> RTR:
         }
         if "events" in attrs:
             props["events"] = dict(attrs["events"])
+        for tone_key in ("color", "variant", "bg"):
+            if tone_key in attrs and not isinstance(attrs[tone_key], dict):
+                props[tone_key] = attrs[tone_key]
         children = list(lnode.get("children", []))
 
         # Promote textual props to Text HostNodes (still no HTML)

@@ -4,7 +4,7 @@
 
 OurUI is a Python-first language platform for building SaaS and AI web apps. You author UI in Python; the compiler lowers intent through the **OurIR** stack and emits host primitives. No JavaScript required from application developers.
 
-P0 specs are **Stable** ([SPEC_STATUS.md](SPEC_STATUS.md), tag `spec-p0-stable`). Production serve is **Stable** for single-process and file-backed multi-worker (`--prod --workers N`).
+P0 specs are **Stable** ([SPEC_STATUS.md](SPEC_STATUS.md), tag `spec-p0-stable`). Production serve is **Stable** for single-process and file-backed multi-worker (`--prod --workers N`). Design tokens emit as `--ourui-*` CSS variables (`ui.Theme`).
 
 ## Quick start (P0)
 

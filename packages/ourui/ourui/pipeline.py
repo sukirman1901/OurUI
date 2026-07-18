@@ -45,7 +45,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
     path = Path(path)
     artifacts = compile_to_rtr(path)
     return {
-        "version": 8,
+        "version": 9,
         "source": artifacts["source"],
         "semantic_graph": artifacts["semantic_graph"].to_dict(),
         "dependency_graph": artifacts["dependency_graph"].to_dict(),
@@ -58,6 +58,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "js": True,
             "state": True,
             "components": True,
+            "tokens": True,
         },
     }
 
@@ -82,10 +83,15 @@ def emit_html(
         title=doc_title,
         state_values=state_values,
         hmr=hmr,
+        tokens=artifacts["semantic_graph"].tokens,
     )
 
 
 def emit_all(path: str | Path, *, title: str | None = None) -> dict[str, str]:
     artifacts = compile_to_rtr(path)
     doc_title = title or Path(path).stem
-    return emit_bundle(artifacts["rtr"].to_dict(), title=doc_title)
+    return emit_bundle(
+        artifacts["rtr"].to_dict(),
+        title=doc_title,
+        tokens=artifacts["semantic_graph"].tokens,
+    )

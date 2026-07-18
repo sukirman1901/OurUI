@@ -4,13 +4,93 @@
   <meta charset="utf-8" />
   <title>example</title>
   <style>
-.ourui-root { font-family: system-ui, sans-serif; line-height: 1.5; }
-.ourui-col { display: flex; flex-direction: column; gap: 0.75rem; }
-.ourui-row { display: flex; flex-direction: row; gap: 0.75rem; }
-.ourui-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
-.ourui-card { padding: 1rem; border: 1px solid #d4d4d8; border-radius: 0.5rem; }
+:root {
+  --ourui-bg: #f7f6f2;
+  --ourui-fg: #1c1917;
+  --ourui-primary: #1a5f4a;
+  --ourui-primary-fg: #f5faf8;
+  --ourui-muted: #e7e5e0;
+  --ourui-muted-fg: #57534e;
+  --ourui-border: #d6d3d1;
+  --ourui-card: #ffffff;
+  --ourui-card-fg: #1c1917;
+  --ourui-accent: #0f766e;
+  --ourui-accent-fg: #f0fdfa;
+  --ourui-danger: #b91c1c;
+  --ourui-danger-fg: #fef2f2;
+  --ourui-radius: 0.5rem;
+  --ourui-space-sm: 0.5rem;
+  --ourui-space-md: 0.75rem;
+}
+.dark {
+  --ourui-bg: #1c1917;
+  --ourui-fg: #f5f5f4;
+  --ourui-primary: #2dd4a8;
+  --ourui-primary-fg: #042f2e;
+  --ourui-muted: #292524;
+  --ourui-muted-fg: #a8a29e;
+  --ourui-border: #44403c;
+  --ourui-card: #292524;
+  --ourui-card-fg: #f5f5f4;
+  --ourui-accent: #14b8a6;
+  --ourui-accent-fg: #042f2e;
+  --ourui-danger: #f87171;
+  --ourui-danger-fg: #1c1917;
+  --ourui-radius: 0.5rem;
+  --ourui-space-sm: 0.5rem;
+  --ourui-space-md: 0.75rem;
+}
+.ourui-root {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  background: var(--ourui-bg);
+  color: var(--ourui-fg);
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: var(--ourui-space-md);
+}
+.ourui-col { display: flex; flex-direction: column; gap: var(--ourui-space-md); }
+.ourui-row { display: flex; flex-direction: row; gap: var(--ourui-space-md); }
+.ourui-grid {
+  display: grid;
+  gap: var(--ourui-space-md);
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+.ourui-card {
+  padding: var(--ourui-space-md);
+  border: 1px solid var(--ourui-border);
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+}
 .ourui-leaf { display: inline-block; }
-button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
+button.ourui-control {
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  cursor: pointer;
+  border-radius: var(--ourui-radius);
+  border: 1px solid var(--ourui-border);
+  background: var(--ourui-muted);
+  color: var(--ourui-muted-fg);
+}
+button.ourui-tone-primary {
+  background: var(--ourui-primary);
+  color: var(--ourui-primary-fg);
+  border-color: transparent;
+}
+button.ourui-tone-accent {
+  background: var(--ourui-accent);
+  color: var(--ourui-accent-fg);
+  border-color: transparent;
+}
+button.ourui-tone-danger {
+  background: var(--ourui-danger);
+  color: var(--ourui-danger-fg);
+  border-color: transparent;
+}
+button.ourui-tone-muted {
+  background: var(--ourui-muted);
+  color: var(--ourui-muted-fg);
+}
   </style>
 </head>
 <body>
@@ -19,7 +99,7 @@ button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
       <header class="ourui-col" data-role="hero" data-ourui-id="n0002">
         <span data-slot="title">Welcome</span>
         <span data-slot="subtitle">Build SaaS in Python</span>
-        <button class="ourui-control" data-role="button" data-ourui-id="n0003" data-ourui-on-click="get_started">
+        <button class="ourui-control ourui-tone-primary" data-role="button" data-ourui-id="n0003" data-ourui-on-click="get_started">
           <span data-slot="text">Get Started</span>
         </button>
       </header>
@@ -37,7 +117,7 @@ button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
         <span data-role="text" data-ourui-id="n0009">
           <span data-slot="text" data-ourui-bind="count">0</span>
         </span>
-        <button class="ourui-control" data-role="button" data-ourui-id="n0010" data-ourui-on-click="increment">
+        <button class="ourui-control ourui-tone-primary" data-role="button" data-ourui-id="n0010" data-ourui-on-click="increment">
           <span data-slot="text">+1</span>
         </button>
       </section>

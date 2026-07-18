@@ -18,12 +18,26 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 - Nested calls as children / nested props
 - String and numeric literals; simple dict/list literals for structured props
 - `State(...)`, `@server` handlers, function/class components
+- `ui.Theme(...)` for design token overrides
 
 ### Not yet
 
 - Full Python execution semantics for arbitrary side effects in UI construction
 - Client-only `State` (browser-local)
-- Production multi-worker state store (dev `serve` uses in-process module cache)
+
+## Design tokens (Phase P)
+
+OurUI emits semantic CSS variables under the `--ourui-*` namespace (hex/px defaults — not a third-party theme dump).
+
+```python
+theme = ui.Theme(primary="#1a5f4a", primary_fg="#f5faf8", dark={"primary": "#2dd4a8"})
+ui.Button("Go", color="primary")
+```
+
+- Builtin light + dark maps live in the compiler; `ui.Theme` merges overrides into Semantic Graph `tokens`
+- HTML emit writes `:root { … }` and `.dark { … }`; components use `var(--ourui-…)`
+- `color=` / `variant=` / `bg=` values that match token roles (`primary`, `accent`, `danger`, `muted`, …) add tone classes
+- Dump schema version **9** includes `semantic_graph.tokens`
 
 ## Routing (Phase K)
 
