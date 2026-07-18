@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ourui"
+version = "0.1.0"
+description = "OurUI compiler — P0 dump (Semantic Graph, Dependency Graph, IIR)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+ourui = "ourui.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ourui*"]
+
+[tool.pytest.ini_options]
+testpaths = ["../../tests/p0"]
+pythonpath = ["."]

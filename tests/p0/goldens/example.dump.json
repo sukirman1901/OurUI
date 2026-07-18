@@ -1,0 +1,1000 @@
+{
+  "dependency_graph": {
+    "edges": [
+      {
+        "from": "n0003",
+        "kind": "uses_theme",
+        "to": "theme0004"
+      }
+    ]
+  },
+  "emit": {
+    "css": true,
+    "html": true,
+    "js": false
+  },
+  "iir": {
+    "nodes": {
+      "n0001": {
+        "attributes": {},
+        "children": [
+          "n0002",
+          "n0005"
+        ],
+        "domain": "intent",
+        "generation": 1,
+        "hash": "b1e49b0e1f8c9894",
+        "id": "n0001",
+        "kind": "Page",
+        "metadata": {
+          "domain": "intent"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 1,
+          "end_line": 16,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 7,
+          "start_line": 3
+        }
+      },
+      "n0002": {
+        "attributes": {
+          "cta": {
+            "__node__": "n0003"
+          },
+          "subtitle": "Build SaaS in Python",
+          "title": "Welcome"
+        },
+        "children": [
+          "n0003"
+        ],
+        "domain": "intent",
+        "generation": 1,
+        "hash": "68eb0210dc13846e",
+        "id": "n0002",
+        "kind": "Hero",
+        "metadata": {
+          "domain": "intent"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 8,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 4
+        }
+      },
+      "n0003": {
+        "attributes": {
+          "text": "Get Started",
+          "variant": "primary"
+        },
+        "children": [],
+        "domain": "presentation",
+        "generation": 1,
+        "hash": "af39003e2d7a5288",
+        "id": "n0003",
+        "kind": "Button",
+        "metadata": {
+          "domain": "presentation"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 55,
+          "end_line": 7,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 7
+        }
+      },
+      "n0005": {
+        "attributes": {
+          "title": "Features"
+        },
+        "children": [
+          "n0006",
+          "n0007"
+        ],
+        "domain": "intent",
+        "generation": 1,
+        "hash": "86f60e61e2b742c0",
+        "id": "n0005",
+        "kind": "Section",
+        "metadata": {
+          "domain": "intent"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 15,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 9
+        }
+      },
+      "n0006": {
+        "attributes": {
+          "text": "Analysis"
+        },
+        "children": [],
+        "domain": "presentation",
+        "generation": 1,
+        "hash": "576dd6ac1e3f2eaa",
+        "id": "n0006",
+        "kind": "Card",
+        "metadata": {
+          "domain": "presentation"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 12,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 12
+        }
+      },
+      "n0007": {
+        "attributes": {
+          "text": "Realtime"
+        },
+        "children": [],
+        "domain": "presentation",
+        "generation": 1,
+        "hash": "7c39deb0bc469381",
+        "id": "n0007",
+        "kind": "Card",
+        "metadata": {
+          "domain": "presentation"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 13,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 13
+        }
+      }
+    },
+    "roots": [
+      "n0001"
+    ]
+  },
+  "ltr": {
+    "nodes": {
+      "n0001": {
+        "attributes": {
+          "axis": "vertical",
+          "from_intent": "Page"
+        },
+        "children": [
+          "n0002",
+          "n0005"
+        ],
+        "generation": 2,
+        "hash": "4a77fe6b410c24b0",
+        "id": "n0001",
+        "kind": "Column",
+        "metadata": {
+          "stage": "ltr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 1,
+          "end_line": 16,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 7,
+          "start_line": 3
+        }
+      },
+      "n0002": {
+        "attributes": {
+          "axis": "vertical",
+          "from_intent": "Hero",
+          "subtitle": "Build SaaS in Python",
+          "title": "Welcome"
+        },
+        "children": [
+          "n0003"
+        ],
+        "generation": 2,
+        "hash": "85b3725f0ffc8bce",
+        "id": "n0002",
+        "kind": "Column",
+        "metadata": {
+          "stage": "ltr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 8,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 4
+        }
+      },
+      "n0003": {
+        "attributes": {
+          "axis": "none",
+          "from_intent": "Button",
+          "text": "Get Started",
+          "variant": "primary"
+        },
+        "children": [],
+        "generation": 2,
+        "hash": "39c53345e11730c4",
+        "id": "n0003",
+        "kind": "Box",
+        "metadata": {
+          "stage": "ltr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 55,
+          "end_line": 7,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 7
+        }
+      },
+      "n0005": {
+        "attributes": {
+          "axis": "vertical",
+          "from_intent": "Section",
+          "title": "Features"
+        },
+        "children": [
+          "n0006",
+          "n0007"
+        ],
+        "generation": 2,
+        "hash": "b09bd00a0204e153",
+        "id": "n0005",
+        "kind": "Column",
+        "metadata": {
+          "stage": "ltr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 15,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 9
+        }
+      },
+      "n0006": {
+        "attributes": {
+          "axis": "none",
+          "from_intent": "Card",
+          "text": "Analysis"
+        },
+        "children": [],
+        "generation": 2,
+        "hash": "34e71ae631609672",
+        "id": "n0006",
+        "kind": "Box",
+        "metadata": {
+          "stage": "ltr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 12,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 12
+        }
+      },
+      "n0007": {
+        "attributes": {
+          "axis": "none",
+          "from_intent": "Card",
+          "text": "Realtime"
+        },
+        "children": [],
+        "generation": 2,
+        "hash": "d3ef3f305186070f",
+        "id": "n0007",
+        "kind": "Box",
+        "metadata": {
+          "stage": "ltr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 13,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 13
+        }
+      }
+    },
+    "roots": [
+      "n0001"
+    ]
+  },
+  "rtr": {
+    "nodes": {
+      "n0001": {
+        "attributes": {
+          "from_intent": "Page",
+          "from_layout": "Column",
+          "layout": "vertical",
+          "role": "page"
+        },
+        "children": [
+          "n0002",
+          "n0005"
+        ],
+        "generation": 3,
+        "hash": "78b1a567d992f85a",
+        "id": "n0001",
+        "kind": "Container",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 1,
+          "end_line": 16,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 7,
+          "start_line": 3
+        }
+      },
+      "n0002": {
+        "attributes": {
+          "from_intent": "Hero",
+          "from_layout": "Column",
+          "layout": "vertical",
+          "role": "hero"
+        },
+        "children": [
+          "text0002",
+          "text0003",
+          "n0003"
+        ],
+        "generation": 3,
+        "hash": "485d6ab77e9f68e6",
+        "id": "n0002",
+        "kind": "Container",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 8,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 4
+        }
+      },
+      "n0003": {
+        "attributes": {
+          "from_intent": "Button",
+          "from_layout": "Box",
+          "layout": "none",
+          "role": "button"
+        },
+        "children": [
+          "text0001"
+        ],
+        "generation": 3,
+        "hash": "1f06276cba3ba856",
+        "id": "n0003",
+        "kind": "Container",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 55,
+          "end_line": 7,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 7
+        }
+      },
+      "n0005": {
+        "attributes": {
+          "from_intent": "Section",
+          "from_layout": "Column",
+          "layout": "vertical",
+          "role": "section"
+        },
+        "children": [
+          "text0006",
+          "n0006",
+          "n0007"
+        ],
+        "generation": 3,
+        "hash": "fdd4d73cbf9c456e",
+        "id": "n0005",
+        "kind": "Container",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 15,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 9
+        }
+      },
+      "n0006": {
+        "attributes": {
+          "from_intent": "Card",
+          "from_layout": "Box",
+          "layout": "none",
+          "role": "card"
+        },
+        "children": [
+          "text0004"
+        ],
+        "generation": 3,
+        "hash": "4cc994fbcb2a600c",
+        "id": "n0006",
+        "kind": "Container",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 12,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 12
+        }
+      },
+      "n0007": {
+        "attributes": {
+          "from_intent": "Card",
+          "from_layout": "Box",
+          "layout": "none",
+          "role": "card"
+        },
+        "children": [
+          "text0005"
+        ],
+        "generation": 3,
+        "hash": "762de1164ffb0143",
+        "id": "n0007",
+        "kind": "Container",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 13,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 13
+        }
+      },
+      "text0001": {
+        "attributes": {
+          "content": "Get Started",
+          "slot": "text"
+        },
+        "children": [],
+        "generation": 3,
+        "hash": "89e903b2486b42a7",
+        "id": "text0001",
+        "kind": "Text",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render",
+          "expand:text"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 55,
+          "end_line": 7,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 7
+        }
+      },
+      "text0002": {
+        "attributes": {
+          "content": "Welcome",
+          "slot": "title"
+        },
+        "children": [],
+        "generation": 3,
+        "hash": "e4d06d32dde4072b",
+        "id": "text0002",
+        "kind": "Text",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render",
+          "expand:text"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 8,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 4
+        }
+      },
+      "text0003": {
+        "attributes": {
+          "content": "Build SaaS in Python",
+          "slot": "subtitle"
+        },
+        "children": [],
+        "generation": 3,
+        "hash": "4f70eda78c06f54e",
+        "id": "text0003",
+        "kind": "Text",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render",
+          "expand:text"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 8,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 4
+        }
+      },
+      "text0004": {
+        "attributes": {
+          "content": "Analysis",
+          "slot": "text"
+        },
+        "children": [],
+        "generation": 3,
+        "hash": "bed7aed7e9cb995f",
+        "id": "text0004",
+        "kind": "Text",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render",
+          "expand:text"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 12,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 12
+        }
+      },
+      "text0005": {
+        "attributes": {
+          "content": "Realtime",
+          "slot": "text"
+        },
+        "children": [],
+        "generation": 3,
+        "hash": "8a88ece534e1f449",
+        "id": "text0005",
+        "kind": "Text",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render",
+          "expand:text"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 13,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 13
+        }
+      },
+      "text0006": {
+        "attributes": {
+          "content": "Features",
+          "slot": "title"
+        },
+        "children": [],
+        "generation": 3,
+        "hash": "00e7b5ee5b2246ac",
+        "id": "text0006",
+        "kind": "Text",
+        "metadata": {
+          "host": true,
+          "stage": "rtr"
+        },
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:layout",
+          "lowering:render",
+          "expand:text"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 15,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 9
+        }
+      }
+    },
+    "roots": [
+      "n0001"
+    ]
+  },
+  "semantic_graph": {
+    "edges": [
+      {
+        "from": "n0001",
+        "kind": "contains",
+        "to": "n0002"
+      },
+      {
+        "from": "n0001",
+        "kind": "contains",
+        "to": "n0005"
+      },
+      {
+        "from": "n0002",
+        "kind": "contains",
+        "to": "n0003"
+      },
+      {
+        "from": "n0003",
+        "kind": "uses_theme",
+        "to": "theme0004"
+      },
+      {
+        "from": "n0005",
+        "kind": "contains",
+        "to": "n0006"
+      },
+      {
+        "from": "n0005",
+        "kind": "contains",
+        "to": "n0007"
+      }
+    ],
+    "nodes": {
+      "n0001": {
+        "attributes": {},
+        "children": [
+          "n0002",
+          "n0005"
+        ],
+        "generation": 0,
+        "hash": "bc7553119e148827",
+        "id": "n0001",
+        "kind": "Page",
+        "metadata": {},
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 1,
+          "end_line": 16,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 7,
+          "start_line": 3
+        }
+      },
+      "n0002": {
+        "attributes": {
+          "cta": {
+            "__node__": "n0003"
+          },
+          "subtitle": "Build SaaS in Python",
+          "title": "Welcome"
+        },
+        "children": [
+          "n0003"
+        ],
+        "generation": 0,
+        "hash": "5e1e85fd0d8fa129",
+        "id": "n0002",
+        "kind": "Hero",
+        "metadata": {},
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 8,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 4
+        }
+      },
+      "n0003": {
+        "attributes": {
+          "text": "Get Started",
+          "variant": "primary"
+        },
+        "children": [],
+        "generation": 0,
+        "hash": "739fec19793d9402",
+        "id": "n0003",
+        "kind": "Button",
+        "metadata": {},
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 55,
+          "end_line": 7,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 7
+        }
+      },
+      "n0005": {
+        "attributes": {
+          "title": "Features"
+        },
+        "children": [
+          "n0006",
+          "n0007"
+        ],
+        "generation": 0,
+        "hash": "b80fc5b88930ec1d",
+        "id": "n0005",
+        "kind": "Section",
+        "metadata": {},
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 5,
+          "end_line": 15,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 4,
+          "start_line": 9
+        }
+      },
+      "n0006": {
+        "attributes": {
+          "text": "Analysis"
+        },
+        "children": [],
+        "generation": 0,
+        "hash": "1c08994a71a38a28",
+        "id": "n0006",
+        "kind": "Card",
+        "metadata": {},
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 12,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 12
+        }
+      },
+      "n0007": {
+        "attributes": {
+          "text": "Realtime"
+        },
+        "children": [],
+        "generation": 0,
+        "hash": "a8190c9276b593d7",
+        "id": "n0007",
+        "kind": "Card",
+        "metadata": {},
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 31,
+          "end_line": 13,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 13
+        }
+      },
+      "theme0004": {
+        "attributes": {
+          "token": "primary"
+        },
+        "children": [],
+        "generation": 0,
+        "hash": "da5ed495bcca5beb",
+        "id": "theme0004",
+        "kind": "ThemeToken",
+        "metadata": {},
+        "provenance": [
+          "analyze:theme_token"
+        ],
+        "revision": 0,
+        "span": {
+          "end_col": 55,
+          "end_line": 7,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 12,
+          "start_line": 7
+        }
+      }
+    },
+    "roots": [
+      "n0001"
+    ]
+  },
+  "source": "tests/p0/fixtures/example.py",
+  "version": 4
+}
