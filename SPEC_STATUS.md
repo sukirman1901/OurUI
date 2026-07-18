@@ -28,9 +28,10 @@ Status ladder:
 | RTR / HostNode | Draft (Phase D — Render Lowering in `ourui dump`) |
 | HTML emitter | Draft (`ourui emit`) |
 | CSS emit | Draft (inlined + bundle) |
-| JS emit / runtime shim | Draft (Phase F — `data-ourui-on-click` + `OurUI.invoke`) |
+| JS emit / runtime shim | Draft (Phase F/G — fetch RPC) |
 | `@server` / `on_click` | Draft |
-| Runtime (real RPC) | Experimental |
+| `ourui serve` + RPC | Draft |
+| Runtime (production) | Experimental |
 | LSP / HMR | Experimental |
 
 Update this table when phases land and when RFCs promote artifacts to Stable/Frozen.

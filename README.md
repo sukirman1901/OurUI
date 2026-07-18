@@ -12,11 +12,13 @@ source .venv/bin/activate
 pip install -e packages/ourui pytest
 ourui dump examples/example.py
 ourui emit examples/example.py
+ourui serve examples/example.py
 pytest tests/p0
 ```
 
-- `dump` — JSON: Semantic Graph, Dependency Graph, IIR, LTR, RTR (+ handlers)  
-- `emit` — HTML + CSS + JS shim (`on_click` → `OurUI.invoke`)
+- `dump` — JSON artifacts (SG, DG, IIR, LTR, RTR, handlers)  
+- `emit` — HTML + CSS + JS shim  
+- `serve` — preview + `POST /__ourui/call/<handler>` for `@server`
 
 ## Core documents
 

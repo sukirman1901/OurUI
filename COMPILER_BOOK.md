@@ -104,8 +104,11 @@ The emitter reads **only** RTR (`HostNode` tree + handlers). It maps `role` → 
 pip install -e packages/ourui
 ourui dump examples/example.py
 ourui emit examples/example.py
+ourui serve examples/example.py   # http://127.0.0.1:8765/
 pytest tests/p0
 ```
+
+`serve` recompiles on each GET and executes `@server` handlers on `POST /__ourui/call/<name>`.
 
 ## 12. Changing LOCKED architecture
 

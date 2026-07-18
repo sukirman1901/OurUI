@@ -1,18 +1,25 @@
 # Runtime
 
-**Status:** Draft shim (Phase F); real RPC Experimental.
+**Status:** Draft (Phase G — `ourui serve` + RPC).
 
-## Phase F shim
+## Dev server
 
-Emitted JS (`packages/ourui/ourui/emit/js.py`):
+```bash
+ourui serve examples/example.py
+# http://127.0.0.1:8765/
+```
 
-- Binds `click` on `[data-ourui-on-click]`
-- Calls `OurUI.invoke(handlerName)`
-- Dispatches `ourui:call` CustomEvent
-- Logs server vs client stubs (`console.info`)
+| Route | Behavior |
+|---|---|
+| `GET /` | Recompile source → emit HTML (RTR → HTML/CSS/JS) |
+| `POST /__ourui/call/<handler>` | Load authoring module; call named `@server` / handler; JSON `{ok, result}` |
 
-Handlers come from RTR (`@server` / plain `def` + `on_click=`). No Python AST in the browser (I1).
+## JS shim
 
-## Next
+Server-kind handlers `fetch` `POST /__ourui/call/<name>`. Client-kind handlers stay local. Events: `ourui:call`, `ourui:result`.
 
-Replace stub with HTTP/WebSocket call to a real OurUI server runtime.
+Implementation: `packages/ourui/ourui/runtime/`, `packages/ourui/ourui/emit/js.py`.
+
+## Invariants
+
+Browser still never receives Python AST (I1). Emitter still consumes HostNode only (I2). Handler execution happens on the **dev server**, not in the browser.

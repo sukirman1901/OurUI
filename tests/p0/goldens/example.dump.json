@@ -24,7 +24,7 @@
         "kind": "server",
         "name": "get_started",
         "span": {
-          "end_col": 15,
+          "end_col": 51,
           "end_line": 6,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 0,
@@ -221,7 +221,7 @@
         "kind": "server",
         "name": "get_started",
         "span": {
-          "end_col": 15,
+          "end_col": 51,
           "end_line": 6,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 0,
@@ -427,7 +427,7 @@
         "kind": "server",
         "name": "get_started",
         "span": {
-          "end_col": 15,
+          "end_col": 51,
           "end_line": 6,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 0,
@@ -882,7 +882,7 @@
         "kind": "server",
         "name": "get_started",
         "span": {
-          "end_col": 15,
+          "end_col": 51,
           "end_line": 6,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 0,

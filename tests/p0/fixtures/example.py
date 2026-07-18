@@ -2,8 +2,8 @@ from ourui import server, ui
 
 
 @server
-def get_started() -> None:
-    return None
+def get_started() -> dict[str, str]:
+    return {"message": "Welcome from OurUI server"}
 
 
 page = ui.Page(
