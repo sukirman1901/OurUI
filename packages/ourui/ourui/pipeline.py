@@ -5,7 +5,7 @@ from typing import Any
 
 from ourui.analysis import build_semantic_graph
 from ourui.emit import emit_bundle, emit_html_document
-from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_rtr
+from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_presentation_graph, lower_to_rtr
 from ourui.serialize import dumps_deterministic
 
 
@@ -29,6 +29,7 @@ def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, A
         default_route = "/" if "/" in sg.routes else sorted(sg.routes)[0]
         sg.roots = [sg.routes[default_route]]
     iir = lower_to_iir(sg)
+    presentation_graph = lower_to_presentation_graph(iir)
     ltr = lower_to_ltr(iir)
     rtr = lower_to_rtr(ltr)
     return {
@@ -36,6 +37,7 @@ def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, A
         "semantic_graph": sg,
         "dependency_graph": dg,
         "iir": iir,
+        "presentation_graph": presentation_graph,
         "ltr": ltr,
         "rtr": rtr,
     }
@@ -45,11 +47,12 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
     path = Path(path)
     artifacts = compile_to_rtr(path)
     return {
-        "version": 10,
+        "version": 11,
         "source": artifacts["source"],
         "semantic_graph": artifacts["semantic_graph"].to_dict(),
         "dependency_graph": artifacts["dependency_graph"].to_dict(),
         "iir": artifacts["iir"].to_dict(),
+        "presentation_graph": artifacts["presentation_graph"].to_dict(),
         "ltr": artifacts["ltr"].to_dict(),
         "rtr": artifacts["rtr"].to_dict(),
         "emit": {
@@ -59,6 +62,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "state": True,
             "components": True,
             "tokens": True,
+            "presentation_graph": True,
         },
     }
 

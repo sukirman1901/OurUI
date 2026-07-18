@@ -33,6 +33,7 @@
     "css": true,
     "html": true,
     "js": true,
+    "presentation_graph": true,
     "state": true,
     "tokens": true
   },
@@ -703,6 +704,148 @@
         }
       }
     }
+  },
+  "presentation_graph": {
+    "nodes": {
+      "n0001": {
+        "children": [
+          "n0002",
+          "n0005",
+          "n0008"
+        ],
+        "id": "n0001",
+        "kind": "Page",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "page"
+      },
+      "n0002": {
+        "children": [
+          "n0003"
+        ],
+        "id": "n0002",
+        "kind": "Hero",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "hero",
+        "title": "Welcome"
+      },
+      "n0003": {
+        "children": [],
+        "id": "n0003",
+        "kind": "Button",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "button",
+        "text": "Get Started",
+        "tone": "primary"
+      },
+      "n0005": {
+        "children": [
+          "n0006",
+          "n0007"
+        ],
+        "id": "n0005",
+        "kind": "Section",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "section",
+        "title": "Features"
+      },
+      "n0006": {
+        "children": [],
+        "id": "n0006",
+        "kind": "Card",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:FeatureCard",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "card",
+        "text": "Analysis"
+      },
+      "n0007": {
+        "children": [],
+        "id": "n0007",
+        "kind": "Card",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:FeatureCard",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "card",
+        "text": "Realtime"
+      },
+      "n0008": {
+        "children": [
+          "n0009",
+          "n0010"
+        ],
+        "id": "n0008",
+        "kind": "Section",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "section",
+        "title": "Counter"
+      },
+      "n0009": {
+        "children": [],
+        "id": "n0009",
+        "kind": "Text",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "text",
+        "text": 0
+      },
+      "n0010": {
+        "children": [],
+        "id": "n0010",
+        "kind": "Button",
+        "provenance": [
+          "parse:ui_call",
+          "analyze:semantic_graph",
+          "expand:CounterPanel",
+          "lowering:intent",
+          "lowering:presentation"
+        ],
+        "role": "button",
+        "text": "+1",
+        "tone": "primary"
+      }
+    },
+    "roots": [
+      "n0001"
+    ]
   },
   "rtr": {
     "handlers": {
@@ -1809,5 +1952,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 10
+  "version": 11
 }

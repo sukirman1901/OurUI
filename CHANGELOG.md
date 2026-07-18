@@ -4,6 +4,20 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.2.0] — 2026-07-18
+
+### Added
+
+- **Presentation Graph** in `ourui dump` (RFC-001 Option A — Presentation Lowering from IIR)
+- Dump schema **version 11**
+- RFC ladder docs: RFC-001 Accepted, RFC-002/003 stubs, architecture sketch
+- Spike notes for production options A/B/C
+
+### Notes
+
+- HTML/CSS emit remains provisional (Theme + base CSS); Design System resolve + host CSS AST are RFC-002/003
+- Chrome freeze (e.g. `ui.Nav`) continues until Design System / Host RFCs progress
+
 ## [0.1.2] — 2026-07-18
 
 ### Added

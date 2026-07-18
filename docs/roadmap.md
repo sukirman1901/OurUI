@@ -20,7 +20,8 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/` and hav
 | **Q** | User documentation (`docs/user/`) | Done |
 | **R** | Package release `0.1.0` / `0.1.1` | Done |
 | **S1** | `ui.Link` + `ui.Shell` / `layout=` (dump schema 10, `0.1.2`) | Done |
-| **Presentation R&D** | [RFC-001](rfcs/RFC-001-presentation-system.md) Draft → spike → Accepted | Next |
-| **0.2** | First Presentation Graph implementation (after RFC-001 Accepted) | Planned |
+| **Presentation R&D** | [RFC-001](rfcs/RFC-001-presentation-system.md) Accepted; Graph in dump (schema 11, `0.2.0`) | Done |
+| **Design System R&D** | [RFC-002](rfcs/RFC-002-design-system.md) Stub → Draft | Next |
+| **Host Emit R&D** | [RFC-003](rfcs/RFC-003-host-emit.md) Stub | Planned |
 
 ADRs 005–007 record intent+emit+escape product notes; sequencing of Presentation / Design System / Host is owned by the RFC ladder (001 → 002 → 003), not by further S3a–S6 chrome slices.

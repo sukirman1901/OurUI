@@ -5,6 +5,7 @@ from typing import Any
 
 from ourui.analysis import SemanticGraph
 from ourui.lowering.layout import LTR, lower_to_ltr
+from ourui.lowering.presentation import PresentationGraph, lower_to_presentation_graph
 from ourui.lowering.render import RTR, lower_to_rtr
 from ourui.node import INTENT_KINDS, PRESENTATION_KINDS, Node
 
@@ -12,9 +13,11 @@ __all__ = [
     "IIR",
     "LTR",
     "RTR",
+    "PresentationGraph",
     "domain_for",
     "lower_to_iir",
     "lower_to_ltr",
+    "lower_to_presentation_graph",
     "lower_to_rtr",
 ]
 
