@@ -104,7 +104,7 @@ html {
 [data-role="page"]:has(> [data-role="nav"]:first-child) {
   padding-block-start: 0;
 }
-/* Chrome breakout on measured pages (product/ops) — avoid on marketing */
+/* Chrome breakout on measured pages — skipped when data-page-bleed=1 */
 [data-role="page"] > [data-role="nav"],
 [data-role="page"] > [data-role="footer"] {
   box-sizing: border-box;
@@ -114,8 +114,8 @@ html {
   align-self: stretch;
   flex-shrink: 0;
 }
-.ourui-root:not([data-recipe="marketing"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="nav"],
-.ourui-root:not([data-recipe="marketing"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="footer"] {
+.ourui-root:not([data-page-bleed="1"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="nav"],
+.ourui-root:not([data-page-bleed="1"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="footer"] {
   width: 100vw;
   max-width: 100vw;
   position: relative;
@@ -129,32 +129,29 @@ html {
 .ourui-root:has(.ourui-shell-split-2) [data-role="page"],
 .ourui-root:has(.ourui-shell-split-3) [data-role="page"],
 .ourui-root:has(.ourui-shell-split-sidebar) [data-role="page"],
-.ourui-root[data-recipe="marketing"] [data-role="page"] {
+.ourui-root[data-page-bleed="1"] [data-role="page"] {
   max-width: none;
   width: 100%;
   margin-inline: 0;
   padding-inline: 0;
 }
-.ourui-root[data-recipe="marketing"] [data-role="page"] {
+.ourui-root[data-page-bleed="1"] [data-role="page"] {
   padding-block: 0;
 }
-/* Marketing: full-bleed planes edge-to-edge */
-.ourui-root[data-recipe="marketing"] [data-role="nav"],
-.ourui-root[data-recipe="marketing"] [data-role="footer"],
-.ourui-root[data-recipe="marketing"] [data-role="hero"],
-.ourui-root[data-recipe="marketing"] [data-role="section"],
-.ourui-root[data-recipe="marketing"] [data-role="shell"] {
+/* Full-bleed page (Theme page max_width=none): horizontal inset from page measure */
+.ourui-root[data-page-bleed="1"] [data-role="nav"],
+.ourui-root[data-page-bleed="1"] [data-role="footer"],
+.ourui-root[data-page-bleed="1"] [data-role="hero"],
+.ourui-root[data-page-bleed="1"] [data-role="section"],
+.ourui-root[data-page-bleed="1"] [data-role="shell"] {
   box-sizing: border-box;
   width: 100%;
   max-width: none;
   margin-inline: 0;
-  padding-inline: var(--ourui-space-lg);
+  padding-inline: var(--ourui-page-pad-inline, var(--ourui-space-2xl));
 }
-.ourui-root[data-recipe="marketing"] [data-role="nav"] {
-  padding-inline: var(--ourui-space-md);
-}
-.ourui-root[data-recipe="marketing"] [data-role="hero"] [data-slot="subtitle"],
-.ourui-root[data-recipe="marketing"] [data-role="section"] > :is(p, span):not([data-slot="title"]) {
+.ourui-root[data-page-bleed="1"] [data-role="hero"] [data-slot="subtitle"],
+.ourui-root[data-page-bleed="1"] [data-role="section"] > :is(p, span):not([data-slot="title"]) {
   max-width: 42rem;
 }
 .ourui-col { display: flex; flex-direction: column; gap: var(--ourui-space-md); }
@@ -216,28 +213,28 @@ html {
   .ourui-shell-split-3,
   .ourui-shell-split-sidebar { grid-template-columns: 1fr; }
 }
-.ourui-gap-none { gap: 0 !important; }
-.ourui-gap-xs { gap: var(--ourui-space-xs) !important; }
-.ourui-gap-sm { gap: var(--ourui-space-sm) !important; }
-.ourui-gap-md { gap: var(--ourui-space-md) !important; }
-.ourui-gap-lg { gap: var(--ourui-space-lg) !important; }
-.ourui-gap-xl { gap: var(--ourui-space-xl) !important; }
-.ourui-gap-2xl { gap: var(--ourui-space-2xl) !important; }
-.ourui-pad-none { padding: 0 !important; }
-.ourui-pad-xs { padding: var(--ourui-space-xs) !important; }
-.ourui-pad-sm { padding: var(--ourui-space-sm) !important; }
-.ourui-pad-md { padding: var(--ourui-space-md) !important; }
-.ourui-pad-lg { padding: var(--ourui-space-lg) !important; }
-.ourui-pad-xl { padding: var(--ourui-space-xl) !important; }
-.ourui-pad-2xl { padding: var(--ourui-space-2xl) !important; }
-.ourui-align-start { align-items: flex-start !important; }
-.ourui-align-center { align-items: center !important; }
-.ourui-align-end { align-items: flex-end !important; }
-.ourui-align-stretch { align-items: stretch !important; }
-.ourui-justify-start { justify-content: flex-start !important; }
-.ourui-justify-center { justify-content: center !important; }
-.ourui-justify-end { justify-content: flex-end !important; }
-.ourui-justify-between { justify-content: space-between !important; }
+.ourui-gap-none { gap: 0; }
+.ourui-gap-xs { gap: var(--ourui-space-xs); }
+.ourui-gap-sm { gap: var(--ourui-space-sm); }
+.ourui-gap-md { gap: var(--ourui-space-md); }
+.ourui-gap-lg { gap: var(--ourui-space-lg); }
+.ourui-gap-xl { gap: var(--ourui-space-xl); }
+.ourui-gap-2xl { gap: var(--ourui-space-2xl); }
+.ourui-pad-none { padding: 0; }
+.ourui-pad-xs { padding: var(--ourui-space-xs); }
+.ourui-pad-sm { padding: var(--ourui-space-sm); }
+.ourui-pad-md { padding: var(--ourui-space-md); }
+.ourui-pad-lg { padding: var(--ourui-space-lg); }
+.ourui-pad-xl { padding: var(--ourui-space-xl); }
+.ourui-pad-2xl { padding: var(--ourui-space-2xl); }
+.ourui-align-start { align-items: flex-start; }
+.ourui-align-center { align-items: center; }
+.ourui-align-end { align-items: flex-end; }
+.ourui-align-stretch { align-items: stretch; }
+.ourui-justify-start { justify-content: flex-start; }
+.ourui-justify-center { justify-content: center; }
+.ourui-justify-end { justify-content: flex-end; }
+.ourui-justify-between { justify-content: space-between; }
 .ourui-card {
   padding: var(--ourui-space-md);
   border: 1px solid var(--ourui-border);
@@ -290,8 +287,8 @@ html {
   margin: 0 0 var(--ourui-space-md);
   text-wrap: balance;
 }
-.ourui-root[data-recipe="marketing"] [data-role="hero"] [data-slot="title"],
-.ourui-root[data-recipe="marketing"] [data-role="hero"] > :is(h1, span)[data-slot="title"] {
+.ourui-root[data-page-bleed="1"] [data-role="hero"] [data-slot="title"],
+.ourui-root[data-page-bleed="1"] [data-role="hero"] > :is(h1, span)[data-slot="title"] {
   font-size: clamp(2rem, 4.5vw, 3.5rem);
 }
 a.ourui-link {
@@ -385,6 +382,9 @@ button.ourui-copy-button {
 /* Chrome utilities: theme + menu — ghost, not primary fill */
 button.ourui-theme-toggle,
 button.ourui-nav-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: var(--ourui-space-sm);
   min-width: 2.75rem;
   min-height: 2.75rem;
@@ -399,6 +399,13 @@ button.ourui-nav-menu-btn {
   box-shadow: none;
   transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
 }
+button.ourui-theme-toggle .ourui-theme-icon {
+  display: block;
+  flex-shrink: 0;
+}
+button.ourui-theme-toggle .ourui-theme-icon-moon { display: none; }
+html.dark button.ourui-theme-toggle .ourui-theme-icon-sun { display: none; }
+html.dark button.ourui-theme-toggle .ourui-theme-icon-moon { display: block; }
 button.ourui-control:hover:not(:disabled),
 button.ourui-copy-button:hover:not(:disabled) {
   opacity: 0.92;
@@ -544,7 +551,7 @@ select.ourui-select:focus {
   align-items: center;
   justify-content: center;
   padding: var(--ourui-space-lg);
-  background: color-mix(in srgb, #000 40%, transparent);
+  background: color-mix(in srgb, var(--ourui-fg) 40%, transparent);
 }
 .ourui-dialog[data-open="true"] { display: flex; }
 .ourui-dialog-panel {
@@ -686,7 +693,7 @@ select.ourui-select:focus {
 .ourui-alert { background: var(--ourui-card); }
 .ourui-alert-info { border-color: var(--ourui-border); }
 .ourui-alert-success { border-color: var(--ourui-accent); }
-.ourui-alert-warning { border-color: color-mix(in srgb, #ca8a04 70%, var(--ourui-border)); }
+.ourui-alert-warning { border-color: color-mix(in srgb, var(--ourui-accent) 45%, var(--ourui-danger)); }
 .ourui-alert-danger { border-color: var(--ourui-danger); }
 select.ourui-select {
   display: block;
@@ -886,8 +893,8 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
   overflow: auto;
   padding: var(--ourui-space-md);
   border-radius: 0;
-  background: #ffffff;
-  color: var(--ourui-fg);
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.8125rem;
   box-shadow: none;
@@ -899,7 +906,8 @@ img.ourui-fit-fill { object-fit: fill; width: 100%; height: 100%; }
   tab-size: 2;
 }
 .dark .ourui-code {
-  background: #0c0c0e;
+  background: var(--ourui-bg);
+  color: var(--ourui-fg);
 }
 .ourui-playground-tabs a.ourui-link {
   text-decoration: none;
@@ -1376,6 +1384,23 @@ _ICON_PATHS: dict[str, str] = {
     "code": "M8 8l-4 4 4 4M16 8l4 4-4 4",
 }
 
+# Reicon filled SVGs (https://reicon.dev/icon/sun?weight=filled · moon-stars?weight=filled)
+_THEME_ICON_SUN = (
+    '<svg class="ourui-theme-icon ourui-theme-icon-sun" viewBox="0 0 24 24" width="20" height="20" '
+    'aria-hidden="true" data-reicon="sun" data-weight="filled">'
+    '<path d="M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z" fill="currentColor"/>'
+    '<path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C12.4142 1.25 12.75 1.58579 12.75 2V3C12.75 3.41421 12.4142 3.75 12 3.75C11.5858 3.75 11.25 3.41421 11.25 3V2C11.25 1.58579 11.5858 1.25 12 1.25ZM4.39861 4.39861C4.6915 4.10572 5.16638 4.10572 5.45927 4.39861L5.85211 4.79145C6.145 5.08434 6.145 5.55921 5.85211 5.85211C5.55921 6.145 5.08434 6.145 4.79145 5.85211L4.39861 5.45927C4.10572 5.16638 4.10572 4.6915 4.39861 4.39861ZM19.6011 4.39887C19.894 4.69176 19.894 5.16664 19.6011 5.45953L19.2083 5.85237C18.9154 6.14526 18.4405 6.14526 18.1476 5.85237C17.8547 5.55947 17.8547 5.0846 18.1476 4.79171L18.5405 4.39887C18.8334 4.10598 19.3082 4.10598 19.6011 4.39887ZM1.25 12C1.25 11.5858 1.58579 11.25 2 11.25H3C3.41421 11.25 3.75 11.5858 3.75 12C3.75 12.4142 3.41421 12.75 3 12.75H2C1.58579 12.75 1.25 12.4142 1.25 12ZM20.25 12C20.25 11.5858 20.5858 11.25 21 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H21C20.5858 12.75 20.25 12.4142 20.25 12ZM18.1476 18.1476C18.4405 17.8547 18.9154 17.8547 19.2083 18.1476L19.6011 18.5405C19.894 18.8334 19.894 19.3082 19.6011 19.6011C19.3082 19.894 18.8334 19.894 18.5405 19.6011L18.1476 19.2083C17.8547 18.9154 17.8547 18.4405 18.1476 18.1476ZM5.85211 18.1479C6.145 18.4408 6.145 18.9157 5.85211 19.2086L5.45927 19.6014C5.16638 19.8943 4.6915 19.8943 4.39861 19.6014C4.10572 19.3085 4.10572 18.8336 4.39861 18.5407L4.79145 18.1479C5.08434 17.855 5.55921 17.855 5.85211 18.1479ZM12 20.25C12.4142 20.25 12.75 20.5858 12.75 21V22C12.75 22.4142 12.4142 22.75 12 22.75C11.5858 22.75 11.25 22.4142 11.25 22V21C11.25 20.5858 11.5858 20.25 12 20.25Z" fill="currentColor"/>'
+    "</svg>"
+)
+_THEME_ICON_MOON = (
+    '<svg class="ourui-theme-icon ourui-theme-icon-moon" viewBox="0 0 24 24" width="20" height="20" '
+    'aria-hidden="true" data-reicon="moon-stars" data-weight="filled">'
+    '<path d="M19.9001 2.30719C19.7392 1.8976 19.1616 1.8976 19.0007 2.30719L18.5703 3.40247C18.5212 3.52752 18.4226 3.62651 18.298 3.67583L17.2067 4.1078C16.7986 4.26934 16.7986 4.849 17.2067 5.01054L18.298 5.44252C18.4226 5.49184 18.5212 5.59082 18.5703 5.71587L19.0007 6.81115C19.1616 7.22074 19.7392 7.22074 19.9001 6.81116L20.3305 5.71587C20.3796 5.59082 20.4782 5.49184 20.6028 5.44252L21.6941 5.01054C22.1022 4.849 22.1022 4.26934 21.6941 4.1078L20.6028 3.67583C20.4782 3.62651 20.3796 3.52752 20.3305 3.40247L19.9001 2.30719Z" fill="currentColor"/>'
+    '<path d="M16.0328 8.12967C15.8718 7.72009 15.2943 7.72009 15.1333 8.12967L14.9764 8.52902C14.9273 8.65407 14.8287 8.75305 14.7041 8.80237L14.3062 8.95987C13.8981 9.12141 13.8981 9.70107 14.3062 9.86261L14.7041 10.0201C14.8287 10.0694 14.9273 10.1684 14.9764 10.2935L15.1333 10.6928C15.2943 11.1024 15.8718 11.1024 16.0328 10.6928L16.1897 10.2935C16.2388 10.1684 16.3374 10.0694 16.462 10.0201L16.8599 9.86261C17.268 9.70107 17.268 9.12141 16.8599 8.95987L16.462 8.80237C16.3374 8.75305 16.2388 8.65407 16.1897 8.52902L16.0328 8.12967Z" fill="currentColor"/>'
+    '<path d="M12 22C17.5228 22 22 17.5228 22 12C22 11.5373 21.3065 11.4608 21.0672 11.8568C19.9289 13.7406 17.8615 15 15.5 15C11.9101 15 9 12.0899 9 8.5C9 6.13845 10.2594 4.07105 12.1432 2.93276C12.5392 2.69347 12.4627 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"/>'
+    "</svg>"
+)
+
 
 def _icon_svg(name: str) -> str:
     path = _ICON_PATHS.get(name, _ICON_PATHS["menu"])
@@ -1384,6 +1409,11 @@ def _icon_svg(name: str) -> str:
         f'<path d="{path}" fill="none" stroke="currentColor" stroke-width="1.75" '
         f'stroke-linecap="round" stroke-linejoin="round"/></svg>'
     )
+
+
+def _theme_toggle_icons() -> str:
+    """Sun (light) + moon-stars (dark) — Reicon filled, currentColor."""
+    return _THEME_ICON_SUN + _THEME_ICON_MOON
 
 
 def _collect_meta(nodes: dict[str, dict[str, Any]], roots: list[str] | None = None) -> dict[str, Any]:
@@ -1541,7 +1571,10 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
         return _wrap_field(pad, node_attrs.get("label"), [f"<input{attrs} />"])
 
     if role == "theme-toggle":
-        attrs = f'{class_attr}{data_role}{data_id} type="button" data-ourui-theme-toggle="1" aria-label="Toggle color theme"'
+        attrs = (
+            f'{class_attr}{data_role}{data_id} type="button" '
+            f'data-ourui-theme-toggle="1" aria-label="Toggle color theme" title="Toggle theme"'
+        )
         children = node.get("children", [])
         if children:
             lines = [f"{pad}<button{attrs}>"]
@@ -1550,8 +1583,8 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
                     lines.extend(_render_node(child_id, nodes, indent + 1))
             lines.append(f"{pad}</button>")
             return lines
-        label = html.escape(str(node_attrs.get("text") or "Theme"))
-        return [f"{pad}<button{attrs}>{label}</button>"]
+        # Icon-only chrome (Reicon sun / moon-stars filled) — ignore text labels
+        return [f"{pad}<button{attrs}>{_theme_toggle_icons()}</button>"]
 
     if role == "copy-button":
         label = html.escape(str(node_attrs.get("text") or "Copy"))
@@ -1969,6 +2002,23 @@ def _page_chrome_css(rd: dict[str, Any]) -> str:
     )
 
 
+def _sanitize_author_css(raw: str) -> str:
+    """Keep author CSS from breaking out of the emitted ``<style>`` block."""
+    # Neutralize style-tag close sequences (HTML parser is case-insensitive).
+    out = raw
+    for needle in ("</style", "</STYLE", "</Style"):
+        out = out.replace(needle, "<\\/style")
+    return out
+
+
+def _author_css_block(rd: dict[str, Any] | Any) -> str:
+    raw = rd.get("author_css") if isinstance(rd, dict) else getattr(rd, "author_css", None)
+    if not isinstance(raw, str) or not raw.strip():
+        return ""
+    body = _sanitize_author_css(raw.strip())
+    return "/* OurUI author CSS (Theme css=) */\n" + body + ("\n" if not body.endswith("\n") else "")
+
+
 def emit_css(*, resolved_design: Any, rtr_nodes: dict[str, Any] | None = None) -> str:
     """Emit host CSS from Resolved Design (Host Contract — required)."""
     rd = _as_resolved_design(resolved_design)
@@ -1982,6 +2032,7 @@ def emit_css(*, resolved_design: Any, rtr_nodes: dict[str, Any] | None = None) -
     utility_block = emit_utility_css()
     page_block = _page_chrome_css(rd)
     inline_block = collect_inline_literal_css(rtr_nodes or {})
+    author_block = _author_css_block(rd)
     return (
         token_block
         + scale_block
@@ -1991,6 +2042,7 @@ def emit_css(*, resolved_design: Any, rtr_nodes: dict[str, Any] | None = None) -
         + motion_host_css()
         + _emit_resolved_node_css(rd)
         + inline_block
+        + author_block
     )
 
 
@@ -2013,13 +2065,14 @@ def emit_html_document(
     rd = _as_resolved_design(resolved_design) or {}
     density = rd.get("density") or "comfortable"
     density_class = "ourui-density-compact" if density == "compact" else ""
-    recipe = rd.get("recipe")
+    page = rd.get("page") if isinstance(rd.get("page"), dict) else {}
+    page_bleed = str(page.get("max_width", "")).strip().lower() in {"none", "100%", "100vw"}
     root_classes = "ourui-root"
     if density_class:
         root_classes = f"{root_classes} {density_class}"
     root_attrs = f'class="{root_classes}"'
-    if isinstance(recipe, str) and recipe:
-        root_attrs += f' data-recipe="{html.escape(recipe, quote=True)}"'
+    if page_bleed:
+        root_attrs += ' data-page-bleed="1"'
     html_attrs = 'lang="en"'
     if density_class:
         html_attrs = f'lang="en" class="{density_class}"'

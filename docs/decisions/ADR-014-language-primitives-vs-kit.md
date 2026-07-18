@@ -1,4 +1,4 @@
-# ADR-014: Language primitives first — Kit stays out of language
+# ADR-014: Language primitives first — foundation before composed patterns
 
 - **Status:** Accepted
 - **Date:** 2026-07-18
@@ -6,29 +6,29 @@
 
 ## Context
 
-OurUI needs a clear product boundary. Teams often collapse three layers into one:
+Three layers get collapsed too easily:
 
 1. **Language** — intent props, analysis, IR, emit, host contract  
-2. **Design scales / host craft** — tokens, utilities, chrome defaults  
-3. **Component kit** — Card patterns, landing blocks, “shadcn-like” recipes  
+2. **Utilities / host craft** — scales, style intents, thin chrome defaults (**foundation**)  
+3. **Composed patterns** — full nav+menu sections, marketing stacks, marketplace components  
 
-Shipping (3) inside `ui.*` Stable would freeze opinionated product UI into the grammar, swell the surface, and make 1.x versioning painful. Delaying (1)–(2) for a kit would leave the language half-done.
+Shipping (3) into Stable `ui.*` freezes product UI into the grammar. Delaying (2) for (3) leaves craft half-done.
 
 ## Decision
 
-1. **OurUI is a language of intent primitives** (plus host that realizes them). Author writes `width=`, `gap=`, `color=`, `layout=`, `motion=` — not Tailwind class strings, not a component marketplace.
-2. **Scales and coverage stay Tailwind-class in depth** (ADR-013): complete A/B/C matrix, finite `.ourui-*` emit, `ui.Theme` overrides. This is what makes the language scalable *without* a kit.
-3. **OurUI Kit (shadcn / Svelte-UI analogue) is explicitly out of scope for the language package.** When it exists, it lives **outside** the Stable grammar — examples, a separate package, or app-level components that *call* OurUI primitives. Kit must not become new `ui.Foo` kinds by default.
-4. **Near-term focus (no kit):** host defaults, prop docs/LSP, promote high-use catalog **C → A** where intent props are the right fix; keep true escape rows as **C** (blend, mask, arbitrary bg-image).
+1. **OurUI is intent primitives + host** — author `width=`, `aspect=`, `gap=`, `color=`, `layout=`, `motion=` — not Tailwind class strings, not a component marketplace.
+2. **Craft depth = utility catalog** (ADR-013). `ui.Theme` is only a thin brand sheet.
+3. **Composed patterns stay out of Stable `ui.*` for now.** Compose in app code (or a future out-of-tree package) from primitives + utilities.
+4. **Near-term focus:** fill utility catalog, host defaults, prop docs/LSP; promote high-use **C → A**; keep true escapes as **C**.
 
 ## Non-goals (now)
 
-- Block registry / copy-paste component CLI inside `ourui`
-- Growing Stable `ui.*` with marketing section kits
+- Component registry / copy-paste CLI inside `ourui`
+- Growing Stable `ui.*` with section patterns
 - Replacing intent props with `class=` authoring
 
 ## Consequences
 
-- Docs and ADRs say “primitives first”; contributors reject “add this as ui.X” when X is a kit pattern.
-- Kit work starts only after language+host feels proper for composition.
+- Docs say “utilities first”; reject “add this as ui.X” when X is a composed pattern.
 - Escape (`Canvas`, `Frame`, catalog C) remains the valve for one-off craft.
+- `examples/landing` is dogfood composition, not a shipped product surface.

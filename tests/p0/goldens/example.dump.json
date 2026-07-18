@@ -1,10 +1,8 @@
 {
   "attestation": {
     "motion_catalog": "1.2.0",
-    "pack": "ourui-default",
-    "pack_version": "1.2.0",
     "schema": 30,
-    "sha256": "5a019ae9db9eb195cbb1fc192cc76a6d3c603d4cdb6843cf0e929802e89cf41b"
+    "sha256": "f0ee78363628178545aa76c654cf4a5510bbf8d29f1d716d25220cd14518a962"
   },
   "dependency_graph": {
     "edges": [
@@ -55,9 +53,7 @@
     "js": true,
     "list": true,
     "motion": true,
-    "packs": true,
     "presentation_graph": true,
-    "recipes": true,
     "resolved_design": true,
     "security_headers": true,
     "show": true,
@@ -1242,8 +1238,6 @@
         "tone": "primary"
       }
     },
-    "pack": "ourui-default",
-    "pack_version": "1.2.0",
     "page": {
       "gap": "space_lg",
       "max_width": "42rem",
@@ -2385,7 +2379,6 @@
         }
       }
     },
-    "pack": "ourui-default",
     "roots": [
       "n0001"
     ],
@@ -2485,11 +2478,10 @@
   "source": "tests/p0/fixtures/example.py",
   "style_catalog": {
     "by_status": {
-      "A": 95,
-      "B": 12,
-      "C": 3
+      "A": 121,
+      "B": 12
     },
-    "entries": 110,
+    "entries": 133,
     "items": [
       {
         "notes": "No class= API",
@@ -2498,14 +2490,14 @@
         "tw": "utility-classes-authoring"
       },
       {
-        "notes": "disabled/invalid/loading",
-        "ourui": "host-css+control-attrs",
-        "status": "AB",
+        "notes": "opacity/shadow/scale/decorate/ring/outline/bg; disabled/invalid still host",
+        "ourui": "hover=/focus= + dict variants",
+        "status": "A",
         "tw": "hover-focus-states"
       },
       {
-        "notes": "md/lg breakpoints",
-        "ourui": "hide_below/show_below",
+        "notes": "visibility + mobile-first pad/width/gap/text/grid_cols/direction/grow; pad={\"base\":\"4\",\"md\":\"8\"}",
+        "ourui": "hide_below/show_below + dict md/lg",
         "status": "A",
         "tw": "responsive"
       },
@@ -2516,20 +2508,20 @@
         "tw": "dark-mode"
       },
       {
-        "notes": "scales+packs",
+        "notes": "theme.py seed; density; page= measure",
         "ourui": "--ourui-*+Theme",
         "status": "AB",
         "tw": "theme-variables"
       },
       {
-        "notes": "token roles",
+        "notes": "token roles — not full TW palette utils",
         "ourui": "color=/Theme",
         "status": "A",
         "tw": "colors"
       },
       {
-        "notes": "allowlisted lengths",
-        "ourui": "Theme+literals",
+        "notes": "Theme(css=) author sheet; allowlisted length literals",
+        "ourui": "Theme+literals+css=",
         "status": "A",
         "tw": "custom-styles"
       },
@@ -2546,6 +2538,7 @@
         "tw": "preflight"
       },
       {
+        "notes": "auto|square|video|photo|16/9|…",
         "ourui": "aspect=",
         "status": "A",
         "tw": "aspect-ratio"
@@ -2911,8 +2904,9 @@
         "tw": "background-color"
       },
       {
-        "ourui": "Canvas/Image escape",
-        "status": "C",
+        "notes": "gradient dirs + theme stops; bg_image=none|safe url (per-node); Image/Canvas for rich media",
+        "ourui": "bg_gradient=/bg_image=",
+        "status": "A",
         "tw": "background-image"
       },
       {
@@ -2931,8 +2925,9 @@
         "tw": "border-width-color"
       },
       {
-        "ourui": "outline=/focus host",
-        "status": "AB",
+        "notes": "none|hidden|widths 0|1|2|4|8; theme roles; focus bag outline=",
+        "ourui": "outline=/outline_color=/outline_offset=",
+        "status": "A",
         "tw": "outline"
       },
       {
@@ -2951,13 +2946,15 @@
         "tw": "opacity"
       },
       {
-        "ourui": "escape",
-        "status": "C",
+        "notes": "TW mix-blend-mode + backdrop-blend-mode; full mode enum",
+        "ourui": "mix_blend=/backdrop_blend=",
+        "status": "A",
         "tw": "mix-blend"
       },
       {
-        "ourui": "escape",
-        "status": "C",
+        "notes": "none|fade-t/r/b/l|fade-x/y|radial presets; arbitrary → Theme(css=)",
+        "ourui": "mask=",
+        "status": "A",
         "tw": "mask"
       },
       {
@@ -2977,8 +2974,9 @@
         "tw": "other-filters"
       },
       {
+        "notes": "motion vocabulary ≠ CSS transition-* / duration-* / ease-* TOC",
         "ourui": "motion= ADR-012",
-        "status": "A",
+        "status": "AB",
         "tw": "transition-animation"
       },
       {
@@ -3038,8 +3036,9 @@
         "tw": "touch-action"
       },
       {
-        "ourui": "accent= / tokens",
-        "status": "AB",
+        "notes": "theme roles for form controls",
+        "ourui": "accent_color=/accent=",
+        "status": "A",
         "tw": "accent-color"
       },
       {
@@ -3056,9 +3055,147 @@
         "ourui": "forced_colors=",
         "status": "A",
         "tw": "forced-color-adjust"
+      },
+      {
+        "notes": "TW v4: box-shadow § Adding a ring; widths 0|1|2|4|8 + default ring≈3px",
+        "ourui": "ring=/ring_color=/ring_inset=",
+        "status": "A",
+        "tw": "ring"
+      },
+      {
+        "notes": "TW v4: border-width § Between children; x|y + widths 0|1|2|4|8",
+        "ourui": "divide=/divide_w=/divide_color=",
+        "status": "A",
+        "tw": "divide-x-y"
+      },
+      {
+        "notes": "TW v4: margin § Adding space between children; SPACE scale",
+        "ourui": "space_x=/space_y=",
+        "status": "A",
+        "tw": "space-x-y"
+      },
+      {
+        "notes": "TW v4: background-image; finite to-* dirs + theme role stops (not full palette)",
+        "ourui": "bg_gradient=/gradient_from=/gradient_to=",
+        "status": "A",
+        "tw": "bg-gradient"
+      },
+      {
+        "notes": "TW pages: scroll-margin + scroll-padding; SPACE scale",
+        "ourui": "scroll_m=/scroll_p= + sides",
+        "status": "A",
+        "tw": "scroll-margin-padding"
+      },
+      {
+        "notes": "TW caret-color; theme roles only",
+        "ourui": "caret=/caret_color=",
+        "status": "A",
+        "tw": "caret-color"
+      },
+      {
+        "notes": "theme roles; selection={bg,color} or selection_bg=/selection_color=; not Input placeholder= text",
+        "ourui": "placeholder_color=/selection=",
+        "status": "A",
+        "tw": "placeholder-selection"
+      },
+      {
+        "notes": "container=True|name; pad/direction/… dict keys @md|@lg|cq_md|cq_lg",
+        "ourui": "container=/@md|@lg dict",
+        "status": "A",
+        "tw": "container-queries"
+      },
+      {
+        "notes": "TW v4: display § Screen-reader only (sr-only)",
+        "ourui": "sr_only=",
+        "status": "A",
+        "tw": "sr-only"
+      },
+      {
+        "notes": "none|auto",
+        "ourui": "appearance=",
+        "status": "A",
+        "tw": "appearance"
+      },
+      {
+        "notes": "visible|hidden",
+        "ourui": "backface=",
+        "status": "A",
+        "tw": "backface-visibility"
+      },
+      {
+        "notes": "normal|light|dark|light-dark",
+        "ourui": "color_scheme=",
+        "status": "A",
+        "tw": "color-scheme"
+      },
+      {
+        "notes": "CSS content on ::before/::after; not Text content=; none|empty|quotes|short string",
+        "ourui": "before=/after=/before_content=/after_content=",
+        "status": "A",
+        "tw": "content"
+      },
+      {
+        "notes": "content|fixed",
+        "ourui": "field_sizing=",
+        "status": "A",
+        "tw": "field-sizing"
+      },
+      {
+        "notes": "normal|liga|no-liga|dlig|hist|calt|ss01-04|cv01-04|smcp; arbitrary → Theme(css=)",
+        "ourui": "font_feature=",
+        "status": "A",
+        "tw": "font-feature-settings"
+      },
+      {
+        "notes": "ultra-condensed…ultra-expanded named widths",
+        "ourui": "font_stretch=",
+        "status": "A",
+        "tw": "font-stretch"
+      },
+      {
+        "notes": "normal|ordinal|slashed-zero|lining|oldstyle|proportional|tabular|fractions",
+        "ourui": "font_numeric=",
+        "status": "A",
+        "tw": "font-variant-numeric"
+      },
+      {
+        "notes": "auto|theme roles (thumb + muted track)",
+        "ourui": "scrollbar_color=",
+        "status": "A",
+        "tw": "scrollbar-color"
+      },
+      {
+        "notes": "auto|stable|stable-both",
+        "ourui": "scrollbar_gutter=",
+        "status": "A",
+        "tw": "scrollbar-gutter"
+      },
+      {
+        "notes": "auto|thin|none",
+        "ourui": "scrollbar_width=",
+        "status": "A",
+        "tw": "scrollbar-width"
+      },
+      {
+        "notes": "0|2|4|8",
+        "ourui": "tab_size=",
+        "status": "A",
+        "tw": "tab-size"
+      },
+      {
+        "notes": "SPACE scale",
+        "ourui": "text_indent=",
+        "status": "A",
+        "tw": "text-indent"
+      },
+      {
+        "notes": "0|50|75|90|95|100|105|110|125|150",
+        "ourui": "zoom=",
+        "status": "A",
+        "tw": "zoom"
       }
     ],
-    "version": "1.0.0"
+    "version": "1.11.0"
   },
   "version": 30
 }

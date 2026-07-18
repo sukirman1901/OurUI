@@ -2,15 +2,18 @@
 
 Contributor guide: **how compilation works**. This is not a normative specification. Normative rules live in [INVARIANTS.md](INVARIANTS.md), [ARCHITECTURE.md](ARCHITECTURE.md), and `spec/`.
 
+**Product reminder:** foundation = **utility-depth compile** (e.g. `aspect=` → CSS `aspect-ratio`). `ui.Theme` is a thin brand sheet. See [VISION.md](VISION.md).
+
 Style inspiration: Rustc Dev Guide, LLVM programmer guides.
 
 ## 0. Read first
 
 1. [README.md](README.md) — slogan and dump CLI  
-2. [INVARIANTS.md](INVARIANTS.md) — hard rules  
-3. [ARCHITECTURE.md](ARCHITECTURE.md) — Compilation Architecture  
+2. [VISION.md](VISION.md) — utilities first; Theme is thin  
+3. [INVARIANTS.md](INVARIANTS.md) — hard rules  
+4. [ARCHITECTURE.md](ARCHITECTURE.md) — Compilation Architecture  
 
-## 1. Compilation Flow (through `1.9.x`)
+## 1. Compilation Flow (through `1.11.0`)
 
 ```text
 Python source
@@ -18,7 +21,7 @@ Python source
   → Analyze (Semantic Graph + DependencyGraph view)
   → Intent Lowering (IIR)
   → Presentation Graph + Design System → Resolved Design
-      (tokens + optional scale overrides from ui.Theme)
+      (theme roles + optional scale overrides from ui.Theme)
   → Layout Lowering (LTR)
   → Render Lowering (RTR / HostNode)
   → Serialize JSON (`ourui dump`, schema 30 additive; 25 Frozen baseline)
@@ -26,7 +29,7 @@ Python source
       style intent utilities + motion host CSS)
 ```
 
-Later: routing refinements. LSP ships as `ourui lsp` (completions include style intent values).
+Later: routing refinements. LSP ships as `ourui lsp` (completions include style intent values). Main unfinished work: **fill the utility catalog** (ADR-013).
 
 ## 2. How the parser works (P0)
 

@@ -4,11 +4,58 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.11.0] — 2026-07-19
+
+### Added — Style Intent Catalog L3 (ADR-013)
+
+- **Ring:** `ring=` / `ring_color=` / `ring_inset=` (TW v4 box-shadow § ring)
+- **Batch utilities:** `scroll_m/p=` (+ sides), `divide=` / `divide_w=` / `divide_color=`, `space_x/y=`, `sr_only=`, `caret=` / `caret_color=`, `bg_gradient=` + `gradient_from/to=`
+- **Responsive depth:** mobile-first dict overrides — `pad={"base":"4","md":"8"}`, `width={"md":"lg"}`, `grid_cols=` / `direction=` / `grow=` / `text=` (type scale)
+- **Author CSS escape:** `ui.Theme(css=…)` — app stylesheet after host utilities (no package edit)
+- **Long-tail props:** `appearance=`, `color_scheme=`, `field_sizing=`, `scrollbar_width/gutter/color=`, `tab_size=`, `text_indent=`, `zoom=`, `backface=`
+- Style catalog matrix **1.11.0** (**0 C**)
+- **Hover / focus intents:** `opacity={"hover":"80"}`, `hover={"shadow":"md","bg":"muted"}`, `focus={"ring":"2"}` (focus-visible)
+- **Outline / accent / numeric:** `outline=` / `outline_color=` / `outline_offset=`, `accent_color=` / `accent=`, `font_numeric=`
+- **Placeholder / selection:** `placeholder_color=` (≠ Input `placeholder=` text), `selection=` / `selection_bg=` / `selection_color=`
+- **Font OT:** `font_stretch=`, `font_feature=` (named subset; arbitrary → `Theme(css=)`)
+- **Effects:** `mix_blend=` / `backdrop_blend=`, `mask=` (fade/radial presets), `bg_image=` (`none` or safe URL)
+- **Content / container:** `before=` / `after=` / `before_content=` / `after_content=`; `container=` + `@md`/`@lg` dict keys
+
+### Changed — Host chrome slim
+
+- Full-bleed inset uses page measure tokens (not hardcoded `48px`)
+- Code / dialog / warning chrome prefer `--ourui-*` (no magic hex)
+- Legacy layout `gap`/`pad`/`align`/`justify` classes drop `!important` (compose with style intents)
+
+### Docs
+
+- [tailwind-gap.md](docs/architecture/tailwind-gap.md), [style-intents.md](docs/user/reference/style-intents.md), [theme.md](docs/user/reference/theme.md) — L3 Done; catalog **0 C**
+
+## [1.10.0] — 2026-07-19
+
+### Removed
+
+- Named **packs** / **recipes** and the remaining `ourui-default` pack API (`design/packs.py`, `pack=` / `pack_version` on Resolved Design)
+- `examples/enterprise/` screen pack (auth gateway kept at `examples/gateway/`)
+
+### Changed
+
+- Theme seed is `ourui.theme` defaults only (`DEFAULT_LIGHT` / `DEFAULT_DARK`)
+- Full-bleed via `ui.Theme(page={"max_width": "none", …})` → host `data-page-bleed="1"`
+- `ourui check --profile enterprise` → `--profile a11y`
+- `pack=` / `recipe=` → `E_THEME` and fail compile/emit
+- Docs north-star: utilities (e.g. `aspect=`) → HTML/CSS/JS; blocks out of package
+
+### Added
+
+- `ui.Theme(page={...})` page measure overrides
+- Broader `aspect=` scale keys (Tailwind-class ratios: `16/9`, `3/2`, …)
+
 ## [1.9.1] — 2026-07-18
 
 ### Added
 
-- [ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md): language primitives first; kit stays out of `ui.*`
+- [ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md): language primitives first; blocks/kit stay out of `ui.*`
 - Promote high-use catalog C→A: `text_columns=`, `object_position=`, `grid_auto_cols/rows=`, `bg_size|position|repeat=`, `filter=` presets, `skew_x/y=`
 
 ## [1.9.0] — 2026-07-18
@@ -100,7 +147,7 @@ Dump schema **29** (additive): `emit.packs` / `recipes`; dump `recipe` / `page` 
 
 ### Added — Security hardening (P0–P2)
 
-- **P0:** Session cookie `Secure` via `OURUI_COOKIE_SECURE`; per-session CSRF on prod RPC; reject POST without existing session; FastAPI auth gateway example (`examples/enterprise/gateway/`)
+- **P0:** Session cookie `Secure` via `OURUI_COOKIE_SECURE`; per-session CSRF on prod RPC; reject POST without existing session; FastAPI auth gateway example (`examples/gateway/`)
 - **P1:** CSP nonce on prod emit; `OURUI_RPC_RATE_LIMIT`; safe prod 500s; security headers; enterprise `SEC001` for Frame/srcdoc
 - **P2:** Dump attestation `sha256`; threat-model guide; CI secret scan step
 
@@ -116,7 +163,7 @@ Dump schema **28** (additive): `emit.csrf` / `security_headers`; `attestation.sh
 
 - **E2:** Pack `version` / Resolved Design `pack_version`; `ui.Theme(density=…)`; `ourui check --profile enterprise` (+ `--strict`); ADR-011
 - **E3:** `deploy/Dockerfile`, Compose, K8s sample; `.github/workflows/ci-emit.yml`; expanded deploy guide
-- **E4:** Enterprise Kit under `examples/enterprise/` (CRUD, settings, audit, AI console + OIDC stub)
+- **E4:** Enterprise reference apps under `examples/enterprise/` (CRUD, settings, audit, AI console + OIDC stub) — **later removed from tree** (not a blocks product)
 - **E5:** CSP meta (`data-ourui-csp="1"`); dump `attestation`; trust guide; RFC-004 PDF host (Draft)
 
 Dump schema **27** (additive): `emit.density` / `csp` / `attestation`.
@@ -132,7 +179,7 @@ Dump schema **27** (additive): `emit.density` / `csp` / `attestation`.
 - `ui.Show(show=State|bool, …)` — Dialog-style visibility
 - `ui.When(show=, then=, else_=)` — both branches in DOM; host toggles
 - Dynamic `ui.List(items=State)` / `ui.Table(rows=State)` — `applyState` rebuilds DOM from JSON
-- ADR-010; reference `examples/enterprise/crud_app.py`
+- ADR-010; historical enterprise CRUD sample (removed from `examples/`)
 - Dump schema **26** (additive): `emit.show` / `when` / `dynamic_list`
 
 ### Notes

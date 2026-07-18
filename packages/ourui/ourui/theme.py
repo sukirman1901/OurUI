@@ -1,7 +1,7 @@
-"""OurUI design tokens — pack seed + CSS var helpers (not emit authority).
+"""OurUI design tokens — theme role defaults + CSS var helpers (not emit authority).
 
 Emit consumes Resolved Design (RFC-003). DEFAULT_* / default_tokens() seed
-`ourui.design.resolve` / `ui.Theme` analysis only.
+`ourui.design.resolve` / `ui.Theme` analysis only. No named packs/recipes.
 """
 
 from __future__ import annotations
@@ -167,7 +167,7 @@ def theme_kwargs_to_overrides(attrs: dict[str, Any]) -> tuple[dict[str, str], di
     """Split ui.Theme kwargs into light overrides and optional dark dict."""
     light: dict[str, str] = {}
     dark: dict[str, str] = {}
-    skip = {"name", "density", "pack", "recipe", "space", "sizes", "type"}
+    skip = {"name", "density", "space", "sizes", "type", "page", "css"}
     for key, value in attrs.items():
         if key == "dark" and isinstance(value, dict):
             for dk, dv in value.items():

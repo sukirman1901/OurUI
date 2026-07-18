@@ -2,6 +2,8 @@
 
 Put **identity in front of** `ourui serve --prod`. OurUI sessions (cookie + CSRF) still apply; the gateway only proves the caller is allowed to reach the host.
 
+This is **app-layer auth** — not part of Stable `ui.*`.
+
 ## Architecture
 
 ```text
@@ -13,14 +15,14 @@ Browser → FastAPI gateway (Bearer / OIDC) → ourui serve --prod
 ## Quick start
 
 ```bash
-# Terminal 1 — OurUI host
+# Terminal 1 — OurUI host (any app)
 pip install -e packages/ourui
-ourui serve examples/enterprise/crud_app.py --prod --port 8765
+ourui serve examples/tutorial/06_counter_app.py --prod --port 8765
 
 # Terminal 2 — gateway
 pip install fastapi uvicorn httpx
 OURUI_GATEWAY_TOKEN=dev-token OURUI_UPSTREAM=http://127.0.0.1:8765 \
-  uvicorn examples.enterprise.gateway.app:app --port 8080
+  uvicorn examples.gateway.app:app --port 8080
 
 # Call through gateway
 curl -H "Authorization: Bearer dev-token" http://127.0.0.1:8080/
@@ -28,7 +30,7 @@ curl -H "Authorization: Bearer dev-token" http://127.0.0.1:8080/
 
 ## Production checklist
 
-- [ ] Replace Bearer demo with OIDC / IdP session (see [`../templates/AUTH_OIDC.md`](../templates/AUTH_OIDC.md))
+- [ ] Replace Bearer demo with OIDC / IdP session
 - [ ] Terminate TLS at the edge; set `OURUI_COOKIE_SECURE=1` on the OurUI process
 - [ ] Do not strip `Cookie` or `X-OurUI-CSRF` when proxying RPC
 - [ ] Keep secrets in env / secret manager — never in Intent files

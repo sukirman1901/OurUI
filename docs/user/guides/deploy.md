@@ -36,7 +36,7 @@ Standalone Dockerfile sketch (same idea as `deploy/Dockerfile`):
 ```dockerfile
 FROM python:3.12-slim
 WORKDIR /app
-RUN pip install --no-cache-dir ourui>=1.9.1
+RUN pip install --no-cache-dir ourui>=1.11.0
 COPY app.py .
 EXPOSE 8765
 CMD ["ourui", "serve", "app.py", "--host", "0.0.0.0", "--port", "8765", "--prod"]
@@ -74,11 +74,11 @@ With `--prod`, `GET /__ourui/health` returns JSON status.
 | `OURUI_RPC_RATE_LIMIT` | `60` | Max RPC calls per minute per client key; `0` disables |
 | `OURUI_SESSION_DIR` | (see CLI) | File session store directory |
 
-See [Trust and compliance](trust-and-compliance.md) and [Threat model](threat-model.md). Auth belongs in front of the host — [enterprise gateway](../../../examples/enterprise/gateway/).
+See [Trust and compliance](trust-and-compliance.md) and [Threat model](threat-model.md). Auth belongs in front of the host — [gateway](../../../examples/gateway/).
 
 ## CI emit
 
-See [`.github/workflows/ci-emit.yml`](../../../.github/workflows/ci-emit.yml) — on PR/push: secret scan, install editable package, `pytest tests/p0`, `ourui check` on enterprise examples, and `ourui emit` for `crud_app`.
+See [`.github/workflows/ci-emit.yml`](../../../.github/workflows/ci-emit.yml) — on PR/push: secret scan, install editable package, `pytest tests/p0`, `ourui check` on tutorial samples, and `ourui emit` for `examples/tutorial/06_counter_app.py`.
 
 ## Trusted Publishing (PyPI)
 

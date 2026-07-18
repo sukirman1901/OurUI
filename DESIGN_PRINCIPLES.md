@@ -6,11 +6,24 @@
 
 This is the engineering philosophy of OurUI, not marketing copy.
 
+## Product focus (now)
+
+**Foundation first:** fill the **utility / style-intent catalog** (Tailwind-depth props → finite `.ourui-*` CSS). Example: `aspect="video"` → `aspect-ratio: 16 / 9`.
+
+| Layer | Role |
+|---|---|
+| **Style intents** | Craft depth — `aspect=`, `pad_x=`, `width=`, `grow=`, … ([ADR-013](docs/decisions/ADR-013-style-intent-catalog.md)) |
+| **`ui.Theme`** | Thin brand sheet — color/type/space roles, optional `density=`, optional `page=` measure. **Not** the utility catalog. |
+| **Thin `ui.*` kinds** | Emit mapping (`Page`, `Nav`, `Button`, …) — not a component marketplace |
+| **Composed UI** | Out of package for now — compose primitives + utilities in app code later |
+
+See [VISION.md](VISION.md).
+
 ## Core principles
 
 ### Everything is compiled
 
-Authoring Python is not executed as UI in the browser. It is analyzed and lowered through the OurIR stack.
+Authoring Python is not executed as UI in the browser. It is analyzed and lowered through the OurIR stack into HTML/CSS/JS (and later other hosts).
 
 ### Everything is explicit
 
@@ -26,7 +39,11 @@ Compilers can dump Semantic Graph, Analysis Views, Presentation Graph, Resolved 
 
 ### Host Contract
 
-Web emit requires **RTR + Resolved Design** (RFC-003). Design tokens and presentation intents flow through resolve — not ad-hoc CSS strings in authoring.
+Web emit requires **RTR + Resolved Design** (RFC-003). Theme roles and **style intents** (utility scales → finite `.ourui-*` classes) flow through resolve and emit — not ad-hoc CSS strings or Tailwind class authoring in Python.
+
+### Utilities are the craft story
+
+Craft depth is the **utility catalog**. Theme roles alone do not “solve craft.” Expanding Stable `ui.*` with composed section patterns is out of scope while the catalog is incomplete ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md)).
 
 ### Everything is traceable
 
@@ -40,14 +57,14 @@ Analysis Views answer questions such as: *who uses `Theme.primary`?* *who calls 
 
 | Actor | Writes |
 |---|---|
-| Developer | Intent (Python DSL) |
-| Compiler | Implementation (graphs, OurIR, emitters) |
+| Developer | Intent (Python props + thin `ui.*` kinds) |
+| Compiler | Implementation (graphs, OurIR, emitters, utility CSS) |
 | Host | Primitives (DOM, PDF objects, …) |
-
-Design tokens and style intents are **language primitives** — not a component marketplace. A future kit (if any) composes those primitives **outside** Stable `ui.*` ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md)).
 
 ## Related documents
 
 - Hard rules: [INVARIANTS.md](INVARIANTS.md)
 - Structure: [ARCHITECTURE.md](ARCHITECTURE.md)
 - Contributor narrative: [COMPILER_BOOK.md](COMPILER_BOOK.md)
+- Product north-star: [VISION.md](VISION.md)
+- Spec status: [SPEC_STATUS.md](SPEC_STATUS.md)

@@ -1,4 +1,4 @@
-"""RFC-002: Resolved Design in dump (PG + default pack)."""
+"""RFC-002: Resolved Design in dump (PG + theme tokens)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from ourui.design import default_pack, resolve_design
+from ourui.design import DEFAULT_PAGE, resolve_design
 from ourui.pipeline import compile_dump, compile_to_rtr
 from ourui.theme import DEFAULT_LIGHT
 
@@ -26,12 +26,14 @@ def test_dump_includes_resolved_design() -> None:
     assert "resolved_design" in doc
     assert doc["emit"]["resolved_design"] is True
     rd = doc["resolved_design"]
-    assert rd["pack"] == "ourui-default"
-    assert rd["pack_version"] == "1.2.0"
+    assert "pack" not in rd
+    assert "pack_version" not in rd
     assert rd["mode"] == "light"
     assert rd["density"] == "comfortable"
+    assert rd["page"]["max_width"] == DEFAULT_PAGE["max_width"]
     assert rd["nodes"]
     assert "primary" in rd["tokens"]["light"]
+    assert "pack" not in doc["attestation"]
 
 
 def test_button_primary_resolves_fill_fg() -> None:
@@ -41,7 +43,6 @@ def test_button_primary_resolves_fill_fg() -> None:
     assert buttons
     primary = [b for b in buttons if b.get("tone") == "primary"]
     assert primary
-    # example.py Theme overrides primary to teal for this fixture
     for b in primary:
         assert b["resolved"]["fill"] == "#1a5f4a"
         assert b["resolved"]["fg"] == "#f5faf8"
@@ -55,11 +56,10 @@ def test_theme_overrides_flow_into_resolved_design() -> None:
     assert button["resolved"]["fill"] == "#112233"
 
 
-def test_default_pack_seeded_from_theme() -> None:
-    pack = default_pack()
-    assert pack["id"] == "ourui-default"
-    assert pack["version"] == "1.2.0"
-    assert pack["modes"]["light"]["primary"] == DEFAULT_LIGHT["primary"]
+def test_theme_defaults_seed_tokens() -> None:
+    assert DEFAULT_LIGHT["primary"]
+    assert DEFAULT_LIGHT["bg"] == "#fafafa"
+    assert "Fraunces" not in DEFAULT_LIGHT["font_display"]
 
 
 def test_resolve_design_pure_without_pipeline() -> None:
@@ -94,10 +94,3 @@ def test_untoned_button_defaults_to_primary() -> None:
     rd = resolve_design(pg, mode="light")
     assert rd.nodes["n1"]["resolved"]["fill"] == DEFAULT_LIGHT["primary"]
     assert rd.nodes["n1"]["resolved"]["fg"] == DEFAULT_LIGHT["primary_fg"]
-
-
-def test_default_pack_includes_page_recipe() -> None:
-    pack = default_pack()
-    assert pack["page"]["max_width"] == "42rem"
-    assert DEFAULT_LIGHT["bg"] == "#fafafa"
-    assert "Fraunces" not in DEFAULT_LIGHT["font_display"]

@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-from ourui.diagnostics import collect_enterprise_diagnostics
+from ourui.diagnostics import collect_a11y_diagnostics
 from ourui.pipeline import DUMP_SCHEMA_VERSION, compile_dump, emit_html
 from ourui.runtime.security import (
     RateLimiter,
@@ -95,12 +95,12 @@ def test_emit_csrf_meta() -> None:
 
 
 def test_sec001_frame_srcdoc() -> None:
-    diags = collect_enterprise_diagnostics(FRAME)
+    diags = collect_a11y_diagnostics(FRAME)
     codes = {d.code for d in diags}
     assert "SEC001" in codes
 
 
 def test_gateway_readme_exists() -> None:
-    readme = ROOT / "examples" / "enterprise" / "gateway" / "README.md"
+    readme = ROOT / "examples" / "gateway" / "README.md"
     assert readme.is_file()
     assert "OURUI_GATEWAY_TOKEN" in readme.read_text(encoding="utf-8")

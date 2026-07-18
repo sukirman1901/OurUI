@@ -28,7 +28,6 @@ from ourui.node import (
     Node,
 )
 from ourui.parse import call_kind, literal_value, parse_file, span_for
-from ourui.design.packs import pack_token_seed
 from ourui.theme import apply_theme_overrides, default_tokens, theme_kwargs_to_overrides
 
 
@@ -44,9 +43,9 @@ class SemanticGraph:
     routes: dict[str, str] = field(default_factory=dict)
     tokens: dict[str, dict[str, str]] = field(default_factory=dict)
     density: str = "comfortable"
-    pack: str = "ourui-default"
-    recipe: str | None = None
+    page: dict[str, str] | None = None
     scale_overrides: dict[str, dict[str, str]] = field(default_factory=dict)
+    author_css: str | None = None
     diagnostics: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -61,16 +60,17 @@ class SemanticGraph:
             "components": {k: self.components[k] for k in sorted(self.components)},
             "diagnostics": list(self.diagnostics),
             "density": self.density,
-            "pack": self.pack,
             "tokens": {
                 "light": {k: self.tokens.get("light", {})[k] for k in sorted(self.tokens.get("light", {}))},
                 "dark": {k: self.tokens.get("dark", {})[k] for k in sorted(self.tokens.get("dark", {}))},
             },
         }
-        if self.recipe is not None:
-            out["recipe"] = self.recipe
+        if self.page:
+            out["page"] = dict(self.page)
         if self.scale_overrides:
             out["scale_overrides"] = {k: dict(v) for k, v in self.scale_overrides.items()}
+        if self.author_css:
+            out["author_css"] = self.author_css
         return out
 
 
@@ -233,48 +233,46 @@ class _GraphBuilder:
                 continue
             attrs[kw.arg] = literal_value(kw.value)
 
-        recipe = attrs.get("recipe")
-        pack = attrs.get("pack")
+        if isinstance(attrs.get("recipe"), str) and str(attrs.get("recipe")).strip():
+            self.add_diagnostic(
+                "E_THEME",
+                "recipe= was removed. Use Theme(density=, page={...}, color overrides) + style intents.",
+                at=call,
+            )
+        if isinstance(attrs.get("pack"), str) and str(attrs.get("pack")).strip():
+            self.add_diagnostic(
+                "E_THEME",
+                "pack= was removed. Use Theme(density=, page={...}, color overrides) + style intents.",
+                at=call,
+            )
+
+        self.graph.tokens = default_tokens()
+
         density_explicit = attrs.get("density")
-
-        if isinstance(recipe, str) and recipe.strip():
-            from ourui.design.packs import get_recipe
-
-            spec = get_recipe(recipe.strip())
-            if spec is None:
-                self.add_diagnostic("E_THEME", f"Unknown recipe={recipe!r}", at=call)
-            else:
-                self.graph.recipe = recipe.strip()
-                self.graph.pack = str(spec.get("pack") or "ourui-default")
-                if not (isinstance(density_explicit, str) and density_explicit in {"compact", "comfortable"}):
-                    dens = spec.get("density")
-                    if dens in {"compact", "comfortable"}:
-                        self.graph.density = dens
-                self.graph.tokens = pack_token_seed(self.graph.pack)
-        elif isinstance(pack, str) and pack.strip():
-            from ourui.design.packs import PACKS
-
-            pid = pack.strip()
-            if pid not in PACKS:
-                self.add_diagnostic("E_THEME", f"Unknown pack={pack!r}", at=call)
-            else:
-                self.graph.pack = pid
-                self.graph.recipe = None
-                self.graph.tokens = pack_token_seed(pid)
-
         if isinstance(density_explicit, str) and density_explicit in {"compact", "comfortable"}:
             self.graph.density = density_explicit
+
+        page_raw = attrs.get("page")
+        if isinstance(page_raw, dict) and page_raw:
+            self.graph.page = {str(k): str(v) for k, v in page_raw.items() if v is not None}
 
         light, dark = theme_kwargs_to_overrides(attrs)
         self.graph.tokens = apply_theme_overrides(self.graph.tokens, light=light, dark=dark)
 
-        # ADR-013 scale overrides: space= / sizes= / type= dicts
         for family in ("space", "sizes", "type"):
             raw = attrs.get(family)
             if isinstance(raw, dict) and raw:
                 self.graph.scale_overrides[family] = {
                     str(k): str(v) for k, v in raw.items() if v is not None
                 }
+
+        css_raw = attrs.get("css")
+        if isinstance(css_raw, dict) and "__ref__" in css_raw:
+            ref = str(css_raw["__ref__"])
+            if ref in self._string_constants:
+                css_raw = self._string_constants[ref]
+        if isinstance(css_raw, str) and css_raw.strip():
+            self.graph.author_css = css_raw
 
     def _maybe_state_ref(self, node: ast.AST) -> dict[str, str] | None:
         if isinstance(node, ast.Name) and node.id in self.graph.states:

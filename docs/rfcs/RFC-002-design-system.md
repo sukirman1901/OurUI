@@ -6,6 +6,8 @@
 **Track:** Design System R&D (Generation 2)  
 **Package:** `0.2.1`
 
+> **Historical banner:** This RFC established Resolved Design as a compile input. **Do not implement multi-pack catalogs.** Today: resolve seeds from `ourui.theme` only; craft depth is [ADR-013](../decisions/ADR-013-style-intent-catalog.md); Theme roles are a thin sheet ([ADR-004](../decisions/ADR-004-design-tokens.md)). Vocabulary below that says “pack” is frozen history from the spike era.
+
 ## Motivation
 
 Generation 1 proved a UI language can compile and run. Generation 2 must prove **high-quality presentation without host lock-in**.

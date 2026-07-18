@@ -41,13 +41,19 @@ def test_theme_toggle_is_ghost_not_primary_fill(tmp_path: Path) -> None:
         tmp_path,
         """
 from ourui import ui
-page = ui.Page(ui.Nav(actions=[ui.ThemeToggle("Theme")]), ui.Button("Go", color="primary"))
+page = ui.Page(ui.Nav(actions=[ui.ThemeToggle()]), ui.Button("Go", color="primary"))
 """,
     )
     assert 'class="ourui-theme-toggle"' in html
     assert "ourui-theme-toggle ourui-control" not in html
     assert "button.ourui-theme-toggle" in html
     assert "background: transparent;" in html
+    assert 'data-reicon="sun"' in html
+    assert 'data-reicon="moon-stars"' in html
+    assert 'data-weight="filled"' in html
+    assert ">Theme<" not in html
+    assert "aria-label=" in html
+    assert "html.dark button.ourui-theme-toggle .ourui-theme-icon-moon" in html
 
 
 def test_nav_links_quiet_chrome(tmp_path: Path) -> None:
@@ -89,11 +95,11 @@ def test_product_nav_breakout_and_flush(tmp_path: Path) -> None:
         tmp_path,
         """
 from ourui import ui
-theme = ui.Theme(recipe="product")
 page = ui.Page(ui.Nav(brand=ui.Link("App", href="/")), ui.Hero(title="Admin"))
 """,
     )
-    assert 'data-recipe="product"' in html
+    assert "data-recipe=" not in html
+    assert 'class="ourui-root" data-page-bleed="1"' not in html
     assert '[data-role="page"]:has(> [data-role="nav"]:first-child)' in html
     assert "padding-block-start: 0;" in html
     assert "margin-left: -50vw;" in html
@@ -123,3 +129,21 @@ page = ui.Page(ui.Table(columns=["a", "b"], rows=[{"a": "1", "b": "2"}]))
     )
     assert "overflow-x: auto;" in html
     assert ".ourui-table" in html
+
+
+def test_host_chrome_uses_tokens_not_magic_hex(tmp_path: Path) -> None:
+    html = _emit(
+        tmp_path,
+        """
+from ourui import ui
+theme = ui.Theme(page={"max_width": "none"})
+page = ui.Page(ui.Nav(brand=ui.Link("App", href="/")), ui.Code("x = 1"), ui.Dialog(title="D", children=[ui.Text("ok")]))
+""",
+    )
+    assert "padding-inline: var(--ourui-page-pad-inline, var(--ourui-space-2xl));" in html
+    assert "background: #ffffff;" not in html
+    assert "background: #0c0c0e;" not in html
+    assert ".ourui-code" in html
+    assert "background: var(--ourui-card);" in html
+    assert "color-mix(in srgb, var(--ourui-fg) 40%, transparent)" in html
+    assert "gap: 0 !important;" not in html

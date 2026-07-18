@@ -1,42 +1,42 @@
-"""Design System resolution: Presentation Graph + pack → Resolved Design (RFC-002)."""
+"""Presentation Graph + theme tokens → Resolved Design (RFC-002).
+
+No named packs/recipes — seed from ``ourui.theme`` defaults + Theme overrides.
+"""
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
 
-from ourui.design.packs import (
-    DEFAULT_PACK_ID,
-    PACK_VERSION,
-    get_pack,
-    materialize_pack,
-)
-from ourui.theme import DEFAULT_DARK, DEFAULT_LIGHT
+from ourui.theme import DEFAULT_DARK, DEFAULT_LIGHT, default_tokens
 
-PACK_ID = DEFAULT_PACK_ID
+# Page measure defaults (override via ui.Theme(page={...}))
+DEFAULT_PAGE: dict[str, str] = {
+    "max_width": "42rem",
+    "pad_block": "space_xl",
+    "pad_inline": "space_lg",
+    "gap": "space_lg",
+}
 
-
-def default_pack() -> dict[str, Any]:
-    """Seed Design System pack (ourui-default)."""
-    return get_pack(DEFAULT_PACK_ID)
+DENSITY_COMPACT: dict[str, str] = {
+    "space_sm": "0.375rem",
+    "space_md": "0.5rem",
+    "space_lg": "0.75rem",
+}
 
 
 @dataclass
 class ResolvedDesign:
-    pack: str
     mode: str
     nodes: dict[str, dict[str, Any]] = field(default_factory=dict)
     tokens: dict[str, dict[str, str]] = field(default_factory=dict)
-    pack_version: str = PACK_VERSION
     density: str | None = None
-    recipe: str | None = None
     page: dict[str, str] = field(default_factory=dict)
     scales: dict[str, dict[str, str]] = field(default_factory=dict)
+    author_css: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         out: dict[str, Any] = {
-            "pack": self.pack,
-            "pack_version": self.pack_version,
             "mode": self.mode,
             "nodes": {nid: self.nodes[nid] for nid in sorted(self.nodes)},
             "tokens": {
@@ -46,12 +46,12 @@ class ResolvedDesign:
         }
         if self.density is not None:
             out["density"] = self.density
-        if self.recipe is not None:
-            out["recipe"] = self.recipe
         if self.page:
             out["page"] = dict(self.page)
         if self.scales:
             out["scales"] = {k: dict(v) for k, v in self.scales.items()}
+        if self.author_css:
+            out["author_css"] = self.author_css
         return out
 
 
@@ -85,21 +85,15 @@ def _fallback_tone(role: str | None) -> str:
 def resolve_design(
     presentation_graph: Any,
     *,
-    pack: dict[str, Any] | None = None,
     mode: str = "light",
     token_overrides: dict[str, dict[str, str]] | None = None,
     density: str | None = None,
-    pack_id: str | None = None,
-    recipe_id: str | None = None,
     scale_overrides: dict[str, dict[str, str]] | None = None,
+    page_overrides: dict[str, str] | None = None,
+    author_css: str | None = None,
 ) -> ResolvedDesign:
-    """Pure resolution: PG + Design System pack → Resolved Design (no CSS)."""
-    if pack is None:
-        pack = materialize_pack(pack_id=pack_id, recipe_id=recipe_id)
-    modes = {
-        "light": dict(pack.get("modes", {}).get("light", DEFAULT_LIGHT)),
-        "dark": dict(pack.get("modes", {}).get("dark", DEFAULT_DARK)),
-    }
+    """Pure resolution: PG + theme tokens → Resolved Design (no CSS)."""
+    modes = default_tokens()
     if token_overrides:
         for m in ("light", "dark"):
             if m in token_overrides:
@@ -107,19 +101,15 @@ def resolve_design(
 
     mode_key = mode if mode in modes else "light"
     mode_tokens = modes[mode_key]
-    control = pack.get("control") or {}
-    pad_block = mode_tokens.get(control.get("pad_block", "space_sm"), mode_tokens.get("space_sm", ""))
-    pad_inline = mode_tokens.get(control.get("pad_inline", "space_md"), mode_tokens.get("space_md", ""))
-    radius = mode_tokens.get(control.get("radius", "radius"), mode_tokens.get("radius", ""))
+    pad_block = mode_tokens.get("space_sm", "")
+    pad_inline = mode_tokens.get("space_md", "")
+    radius = mode_tokens.get("radius", "")
 
-    density_meta = pack.get("density") or {}
-    density_default = str(density_meta.get("default") or "comfortable")
-    density_key = density if density in ("compact", "comfortable") else density_default
+    density_key = density if density in ("compact", "comfortable") else "comfortable"
 
-    page = {str(k): str(v) for k, v in (pack.get("page") or {}).items()}
-    recipe_name = pack.get("recipe")
-    if recipe_id and not recipe_name:
-        recipe_name = recipe_id
+    page = dict(DEFAULT_PAGE)
+    if page_overrides:
+        page.update({str(k): str(v) for k, v in page_overrides.items()})
 
     scales: dict[str, dict[str, str]] = {}
     if scale_overrides:
@@ -128,18 +118,18 @@ def resolve_design(
             if isinstance(raw, dict) and raw:
                 scales[family] = {str(k): str(v) for k, v in raw.items()}
 
+    css = author_css.strip() if isinstance(author_css, str) and author_css.strip() else None
+
     pg = presentation_graph.to_dict() if hasattr(presentation_graph, "to_dict") else dict(presentation_graph)
     nodes_in = pg.get("nodes") or {}
 
     out = ResolvedDesign(
-        pack=str(pack.get("id", PACK_ID)),
         mode=mode_key,
         tokens=modes,
-        pack_version=str(pack.get("version", PACK_VERSION)),
         density=density_key,
-        recipe=str(recipe_name) if recipe_name else None,
         page=page,
         scales=scales,
+        author_css=css,
     )
     for nid, node in nodes_in.items():
         tone = node.get("tone")

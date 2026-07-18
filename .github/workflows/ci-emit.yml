@@ -24,10 +24,10 @@ jobs:
           ./gitleaks detect --source . --no-banner --redact
       - name: Pytest P0
         run: pytest tests/p0 -q
-      - name: Enterprise check
+      - name: Check tutorial samples
         run: |
-          for f in examples/enterprise/*.py; do
-            ourui check "$f" --profile enterprise
+          for f in examples/tutorial/*.py; do
+            ourui check "$f"
           done
-      - name: Emit CRUD reference
-        run: ourui emit examples/enterprise/crud_app.py -o /tmp/crud_app.html
+      - name: Emit counter sample
+        run: ourui emit examples/tutorial/06_counter_app.py -o /tmp/counter.html

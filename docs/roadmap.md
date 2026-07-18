@@ -1,90 +1,43 @@
 # Roadmap
 
-Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capability generations are the north-star framing; lettered phases A–S / T→1.0 are historical; **E1–E5** is the post-1.0 **enterprise** arc.
+Product milestones (releases). Architecture RFCs live under `docs/rfcs/`.
 
-## Capability generations
+## Current focus
 
-| Generation | Proof | Status |
-|---|---|---|
-| **1 — Language infrastructure** | Intent → SG → IIR → LTR → RTR → running app | Done |
-| **2 — Semantic presentation** | Presentation Graph + Design System → Resolved Design | Done (`0.2.1`, dump schema 12) |
-| **3 — Host** | Host consumes `RTR + Resolved Design` via **Host Contract** | Done (`0.3.0`) |
+**Foundation L3 shipped** (`1.11.0`). Catalog **1.11.0** — **0 C**. Dogfood deferred.
 
-```text
-Gen 1–3 + Phase S + T–W complete at ourui 1.0.x (schema 25 Frozen baseline).
-Enterprise arc E1–E5 complete at ourui 1.5.0 (additive dump schema 27).
-Security hardening complete at ourui 1.6.0 (additive dump schema 28).
-Named packs/recipes at ourui 1.7.0 (schema 30 line continues).
-Motion vocabulary M1–M3 at ourui 1.8.x (additive dump schema 30).
-Style Intent Catalog + language-vs-kit boundary at ourui 1.9.x (ADR-013 / ADR-014).
-```
+| Layer | Status |
+|---|---|
+| Compiler spine | Shipped |
+| **Utility catalog** | **L3 Done** (catalog **1.11.0**, **0 C**) |
+| `ui.Theme` (thin roles + density + `page=` + `css=`) | Shipped — not craft depth |
+| Thin primitives + host emit | Shipped |
+| Examples (`tutorial/`, `landing/`) | Dogfood next |
 
-## Historical (done)
+See [VISION.md](../VISION.md) · [SPEC_STATUS.md](../SPEC_STATUS.md).
 
-| Phase | Deliverable | Status |
-|---|---|---|
-| **A–S / T–W / 1.0** | Language infra through Form/List/diagnostics + freeze | Done (`1.0.x`, schema **25**) |
-| **1.0.1** | Default visual quality (zinc/ink pack) | Done |
-| **1.7–1.8** | Packs/recipes, host chrome, motion catalog | Done |
-| **1.9.x** | Style intents (scales + props); kit explicitly out of language | Done (`1.9.1`) |
-
-## Enterprise arc (post-1.0)
-
-Enterprise = org-scale packs + complete product screens + operable deploy + governance — **not** auth/ORM inside `ui.*`. See ADRs; kit templates keep SSO/DB at app-layer.
-
-| Phase | Deliverable | Target | Schema | Status |
-|---|---|---|---|---|
-| **E1** | Screen completeness: `Show`/`When`, dynamic List/Table, form depth, CRUD reference | `1.1.0` | **26** | **Done** |
-| **E2** | Org design system: pack versioning, density, a11y in `ourui check` | `1.2`–`1.5` | **27** | **Done** |
-| **E3** | Operate: CI emit artifact, Docker/K8s gold path | `1.3`–`1.5` | **27** | **Done** |
-| **E4** | Enterprise Kit 1.0 (clone → brand → deploy ≤5 days) | `1.4`–`1.5` | **27** | **Done** |
-| **E5** | Trust: CSP defaults, SBOM, IR attestation; optional PDF host (RFC Draft) | `1.5.0` | **27** | **Done** |
-| **S1** | Host security: CSRF, session gate, CSP nonce, rate limit, attest `sha256`, gateway | `1.6.0` | **28** | **Done** |
-
-### E1 — Screen completeness (`1.1.0`)
-
-- `ui.Show(show=State, …)` — visibility twin of Dialog `open=`
-- `ui.When(show=, then=, else_=)` — both branches in DOM; host toggles
-- `ui.List(items=State)` / `ui.Table(rows=State)` — host rebuilds from JSON
-- Form depth: documented error/`disabled`/`loading` patterns
-- Reference: `examples/enterprise/crud_app.py`
-
-### E2 — Org design system (`1.5.0`)
-
-- Versioned named packs (`pack_version` on Resolved Design) + density recipes
-- `ui.Theme(density="compact"|"comfortable")` → `ourui-density-compact`
-- `ourui check --profile enterprise` (+ `--strict`); ADR-011
-
-### E3 — Operate (`1.5.0`)
-
-- CI workflow emit + Docker/Compose/K8s recipes under `deploy/`
-
-### E4 — Enterprise Kit (`1.5.0`)
-
-- Pack + Admin CRUD + Settings + Audit UI + AI console shells
-- Auth/DB as **templates** (FastAPI+OIDC stub), not language
-
-### E5 — Trust surface (`1.5.0`)
-
-- CSP-friendly emit defaults (`data-ourui-csp="1"`), SBOM note, dump attestation
-- Optional second host (PDF) via Host Contract — [RFC-004](rfcs/RFC-004-second-host-pdf.md) Draft (deferred)
-
-### S1 — Host security (`1.6.0`)
-
-- Prod CSRF + session gate (no create-on-POST); `OURUI_COOKIE_SECURE`; CSP nonce; `OURUI_RPC_RATE_LIMIT`
-- Safe prod errors; security headers; enterprise `SEC001` (Frame/srcdoc)
-- Dump `attestation.sha256`; threat-model guide; CI secret scan; FastAPI gateway example
-
-## Language primitives (post-enterprise)
+## Active — language utilities
 
 | Phase | Deliverable | Package | Status |
 |---|---|---|---|
-| **L1** | Style Intent Catalog — scales + intent props + emit utilities (ADR-013) | `1.9.0` | **Done** |
-| **L2** | Language vs kit boundary (ADR-014); promote high-use C→A | `1.9.1` | **Done** |
-| **L3** | Dogfood primitives + host defaults polish (no in-language kit) | next | Planned |
+| **L1** | Style Intent Catalog skeleton — scales + props + emit utilities | `1.9.0` | Done |
+| **L2** | Primitives boundary; promote high-use C→A | `1.9.1` | Done |
+| **L3** | Fill catalog depth — see [tailwind-gap.md](architecture/tailwind-gap.md) | `1.11.0` | **Done** |
 
-## Out of language scope (unchanged)
+## Shipped (summary)
 
-Redis share, auth, billing, ORM — app concerns. No React/Tailwind clone; no Monaco-in-language. **Component kit / block registry** stays outside Stable `ui.*` ([ADR-014](decisions/ADR-014-language-primitives-vs-kit.md)).
+| Milestone | What | Package |
+|---|---|---|
+| Gen 1–3 | Language → Resolved Design → Host Contract | `0.2`–`0.3` |
+| Phase S / T–W | Forms through Canvas + polish; language freeze | `0.4`–`1.0` (schema **25 Frozen**) |
+| Screen + runtime | Show/When, density, `ourui check --profile a11y`, trust/CSP | `1.1`–`1.5` |
+| Security | CSRF, session gate, CSP nonce, rate limit, attest `sha256` | `1.6.0` |
+| Motion | `motion=family.pattern` (146 Stable) | `1.8.x` |
+| Theme measure | `Theme(page=)`, broader `aspect=` | `1.10.0` |
+| **Style Intent L3** | ring/divide/space/scroll/gradient/sr/caret, responsive dicts, `Theme(css=)`, host-chrome slim, long-tail | `1.11.0` |
 
-See [VISION.md](../VISION.md) and [SPEC_STATUS.md](../SPEC_STATUS.md).
+Detail and older release notes: [CHANGELOG.md](../CHANGELOG.md).
+
+## Out of language scope
+
+No Redis, auth, billing, ORM — app concerns. No React clone. No Tailwind **class-string** authoring. No composed section marketplace inside Stable `ui.*` ([ADR-014](decisions/ADR-014-language-primitives-vs-kit.md)).

@@ -24,7 +24,7 @@ UI_COMPONENTS: dict[str, str] = {
     "Nav": "Chrome bar; placement= + tone=solid|glass; menu=drawer; brand/items/actions.",
     "Footer": "Page footer; brand=/links=/meta= slots.",
     "ThemeToggle": "Client control that toggles .dark on <html>.",
-    "Theme": "Design tokens: pack=, recipe=, density=, color overrides, space=/sizes=/type= scale dicts.",
+    "Theme": "Theme roles: density=, page={...}, css= author sheet, color overrides, space=/sizes=/type= scale dicts.",
     "Canvas": "WebGL escape; mode=gradient|dither|raymarch (Plasma.init).",
     "Frame": "Host escape iframe preview; bind=/srcdoc= HTML document string.",
     "Image": "Image; src=/alt=/fit=cover|contain.",
@@ -59,10 +59,21 @@ _UI_HOVER = re.compile(r"ui\.(\w+)")
 _COLOR_KW = re.compile(r"""(?:color|variant|bg)\s*=\s*["'](\w*)$""")
 _THEME_KW = re.compile(r"""(?:primary|primary_fg|bg|fg|muted|muted_fg|border|card|card_fg|accent|accent_fg|danger|danger_fg|radius|space_sm|space_md)\s*=\s*["']([^"']*)$""")
 _STYLE_KW = re.compile(
-    r"""(?P<prop>width|height|min_width|max_width|size|pad|pad_x|pad_y|gap|grow|shrink|basis|"""
+    r"""(?P<prop>width|height|min_width|max_width|size|pad|pad_x|pad_y|gap|space_x|space_y|"""
+    r"""scroll_m|scroll_p|scroll_mt|scroll_pt|grow|shrink|basis|"""
     r"""grid_cols|col_span|text|weight|leading|radius|opacity|blur|z|overflow|pos|"""
+    r"""ring|ring_color|divide|divide_w|divide_color|bg_gradient|gradient_from|gradient_to|"""
+    r"""caret|caret_color|sr_only|appearance|color_scheme|field_sizing|"""
+    r"""scrollbar_width|scrollbar_gutter|scrollbar_color|tab_size|text_indent|zoom|backface|"""
+    r"""outline|outline_color|outline_offset|accent|accent_color|font_numeric|"""
+    r"""font_stretch|font_feature|"""
+    r"""placeholder_color|selection_bg|selection_color|"""
+    r"""mix_blend|backdrop_blend|mask|bg_image|container|"""
+    r"""before_content|after_content|"""
     r"""hide_below|show_below)\s*=\s*["'](?P<val>[^"']*)$"""
 )
+_THEME_ROLES = ("primary", "accent", "muted", "danger", "border", "fg", "bg")
+_GRAD_DIRS = ("to-t", "to-tr", "to-r", "to-br", "to-b", "to-bl", "to-l", "to-tl")
 
 _SIZE_VALUES = (
     "auto",
@@ -93,7 +104,18 @@ _BREAK_VALUES = ("md", "lg")
 def _style_value_items(prop: str, prefix: str) -> list[dict[str, Any]]:
     if prop in {"width", "height", "min_width", "max_width", "size", "basis"}:
         values = _SIZE_VALUES
-    elif prop in {"pad", "pad_x", "pad_y", "gap"}:
+    elif prop in {
+        "pad",
+        "pad_x",
+        "pad_y",
+        "gap",
+        "space_x",
+        "space_y",
+        "scroll_m",
+        "scroll_p",
+        "scroll_mt",
+        "scroll_pt",
+    }:
         values = _SPACE_VALUES
     elif prop == "text":
         values = _TEXT_VALUES
@@ -119,9 +141,130 @@ def _style_value_items(prop: str, prefix: str) -> list[dict[str, Any]]:
         values = ("auto", "hidden", "clip", "scroll", "visible")
     elif prop == "pos":
         values = ("static", "relative", "absolute", "fixed", "sticky")
+    elif prop == "ring":
+        values = ("0", "1", "2", "4", "8", "ring")
+    elif prop in {
+        "ring_color",
+        "divide_color",
+        "caret",
+        "caret_color",
+        "gradient_from",
+        "gradient_to",
+        "outline_color",
+        "accent",
+        "accent_color",
+        "placeholder_color",
+        "selection_bg",
+        "selection_color",
+    }:
+        values = _THEME_ROLES
+    elif prop == "divide":
+        values = ("x", "y")
+    elif prop == "divide_w":
+        values = ("0", "1", "2", "4", "8")
+    elif prop == "outline":
+        values = ("none", "hidden", "0", "1", "2", "4", "8", "outline")
+    elif prop == "outline_offset":
+        values = ("0", "1", "2", "4", "8")
+    elif prop == "font_numeric":
+        values = (
+            "normal",
+            "ordinal",
+            "slashed-zero",
+            "lining",
+            "oldstyle",
+            "proportional",
+            "tabular",
+            "diagonal-fractions",
+            "stacked-fractions",
+        )
+    elif prop == "font_stretch":
+        values = (
+            "ultra-condensed",
+            "extra-condensed",
+            "condensed",
+            "semi-condensed",
+            "normal",
+            "semi-expanded",
+            "expanded",
+            "extra-expanded",
+            "ultra-expanded",
+        )
+    elif prop == "font_feature":
+        values = (
+            "normal",
+            "liga",
+            "no-liga",
+            "dlig",
+            "no-dlig",
+            "hist",
+            "calt",
+            "no-calt",
+            "ss01",
+            "ss02",
+            "ss03",
+            "ss04",
+            "cv01",
+            "cv02",
+            "cv03",
+            "cv04",
+            "smcp",
+        )
+    elif prop in {"mix_blend", "backdrop_blend"}:
+        values = (
+            "normal",
+            "multiply",
+            "screen",
+            "overlay",
+            "darken",
+            "lighten",
+            "color-dodge",
+            "color-burn",
+            "hard-light",
+            "soft-light",
+            "difference",
+            "exclusion",
+            "hue",
+            "saturation",
+            "color",
+            "luminosity",
+            "plus-darker",
+            "plus-lighter",
+        )
+    elif prop == "mask":
+        values = ("none", "fade-t", "fade-r", "fade-b", "fade-l", "fade-x", "fade-y", "radial")
+    elif prop == "bg_image":
+        values = ("none",)
+    elif prop == "container":
+        values = ("normal", "inline-size")
+    elif prop in {"before_content", "after_content"}:
+        values = ("none", "empty", "open-quote", "close-quote")
+    elif prop == "bg_gradient":
+        values = _GRAD_DIRS
+    elif prop == "sr_only":
+        values = ("true", "false")
+    elif prop == "appearance":
+        values = ("none", "auto")
+    elif prop == "color_scheme":
+        values = ("normal", "light", "dark", "light-dark")
+    elif prop == "field_sizing":
+        values = ("content", "fixed")
+    elif prop == "scrollbar_width":
+        values = ("auto", "thin", "none")
+    elif prop == "scrollbar_gutter":
+        values = ("auto", "stable", "stable-both")
+    elif prop == "scrollbar_color":
+        values = ("auto",) + _THEME_ROLES
+    elif prop == "tab_size":
+        values = ("0", "2", "4", "8")
+    elif prop == "text_indent":
+        values = _SPACE_VALUES
+    elif prop == "zoom":
+        values = ("0", "50", "75", "90", "95", "100", "105", "110", "125", "150")
+    elif prop == "backface":
+        values = ("visible", "hidden")
     else:
-        values = ()
-    items: list[dict[str, Any]] = []
+        values = ()    items: list[dict[str, Any]] = []
     for name in values:
         if str(name).startswith(prefix):
             items.append(

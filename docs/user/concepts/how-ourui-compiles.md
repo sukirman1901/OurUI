@@ -1,6 +1,8 @@
 # How OurUI compiles
 
-OurUI turns Python UI code into something a browser can run. You describe **intent** — pages, components, state, and server handlers — and the compiler produces **implementation**: HTML structure, CSS (including design tokens), and a small JavaScript shim for interactivity.
+OurUI turns Python UI code into something a browser can run. You describe **intent** — pages, thin components, state, server handlers, and **style utilities** (`aspect=`, `pad_x=`, …) — and the compiler produces **implementation**: HTML, CSS (theme roles + finite `.ourui-*` utilities), and a small JavaScript shim for interactivity.
+
+Same *compile idea* as Tailwind; authoring is Python props, not class strings.
 
 ## The pipeline (mental model)
 
@@ -12,7 +14,7 @@ Parse → Analyze → Lower → Emit
 |-------|---------------------------|
 | **Parse** | Your `.py` module is read as Python source. OurUI finds `ui.Page`, components, `State`, and `@server` handlers. |
 | **Analyze** | The compiler checks structure, routes, theme usage, and handler bindings. |
-| **Lower** | Intent becomes render-ready trees; a Presentation Graph + Design System yield **Resolved Design**. |
+| **Lower** | Intent becomes render-ready trees; Presentation Graph + theme defaults/overrides yield **Resolved Design** (roles + scales). |
 | **Emit** | The browser receives HTML, CSS, and JS. Emit **requires** Resolved Design (Host Contract). |
 
 You never write HTML, CSS, or JavaScript by hand for app logic. The CLI exposes each step:
@@ -25,11 +27,17 @@ ourui serve app.py   # full interactive server
 
 ## What you write vs what the browser gets
 
-**You write:** Python — `ui.Page`, `Hero`, `Nav`, `Canvas`, `State`, `@server`, `ui.Theme`, `route=`.
+**You write:** Python — `ui.Page`, layout kinds, `aspect=` / `gap=` / …, `State`, `@server`, `ui.Theme`, `route=`.
 
-**The browser gets:** A complete document with `--ourui-*` CSS variables (color, type, space, elevation), markup for your components, optional WebGL canvas, and a shim that calls your Python handlers over HTTP.
+**The browser gets:** A document with `--ourui-*` CSS variables, emitted utility classes for style intents, markup for your primitives, optional WebGL canvas, and a shim that calls your Python handlers over HTTP.
 
 Static `emit` is useful for previews; interactive apps need `ourui serve`.
+
+## Utilities vs theme
+
+- **Utilities** (foundation): e.g. aspect-ratio → `aspect=` — see [Style intents](../reference/style-intents.md).
+- **`ui.Theme`** (thin sheet): brand roles, density, page measure — see [Theme](../reference/theme.md).
+- **Thin `ui.*` kinds**: emit mapping (`Page`, `Nav`, `Button`, …) — not a component marketplace.
 
 ## Going deeper
 

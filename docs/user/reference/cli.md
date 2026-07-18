@@ -8,7 +8,7 @@ The `ourui` command compiles Python OurUI modules and runs the interactive serve
 |---------|---------|
 | `ourui dump <file>` | JSON artifacts |
 | `ourui emit <file>` | HTML document |
-| `ourui check <file> [--profile default\|enterprise] [--strict]` | Compile diagnostics |
+| `ourui check <file> [--profile default\|a11y] [--strict]` | Compile diagnostics |
 | `ourui serve <file> [--prod] [--workers N] [--session-dir DIR] [--host] [--port] [--title]` | HTTP server |
 | `ourui lsp` | Stdio language server |
 
@@ -89,17 +89,17 @@ Run compile diagnostics (path + span). Exit **1** on errors.
 
 ```bash
 ourui check app.py
-ourui check app.py --profile enterprise
-ourui check app.py --profile enterprise --strict
+ourui check app.py --profile a11y
+ourui check app.py --profile a11y --strict
 ```
 
 | Flag | Default | Description |
 |------|---------|-------------|
 | `source` | (required) | Path to a Python OurUI module |
-| `--profile` | `default` | `default` = compile diags; `enterprise` = + a11y/escape warnings |
-| `--strict` | off | Promote enterprise warnings to errors (exit 1) |
+| `--profile` | `default` | `default` = compile diags; `a11y` = + label/alt/escape warnings |
+| `--strict` | off | Promote a11y warnings to errors (exit 1) |
 
-Enterprise warnings (missing labels, missing `alt=`, empty buttons, Canvas/Frame budget) print with exit **0** unless `--strict`. See [Trust and compliance](../guides/trust-and-compliance.md) and [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).
+A11y profile warnings (missing labels, missing `alt=`, empty buttons, Canvas/Frame budget, Frame/srcdoc `SEC001`) print with exit **0** unless `--strict`. See [Trust and compliance](../guides/trust-and-compliance.md) and [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).
 
 ## `ourui lsp`
 

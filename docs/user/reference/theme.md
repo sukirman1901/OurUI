@@ -1,41 +1,53 @@
-# Theme and tokens
+# Theme (`ui.Theme`)
 
-OurUI emits semantic CSS variables under the `--ourui-*` namespace. Defaults (1.0.1+) are a **zinc / ink** product palette with IBM Plex Sans — not cream/serif brochure tokens. Override with `ui.Theme`, then reference token names on components. Emit consumes **Resolved Design** (Host Contract); theme overrides seed the Design System pack.
+**What it is:** a thin **brand sheet** — CSS variables for color, type, space, elevation, optional density, optional page measure.
+
+**What it is not:** the craft foundation. Layout/spacing/sizing craft is [Style intents](style-intents.md) (`aspect=`, `pad_x=`, `width=`, …).
+
+```text
+Craft depth  →  style intents  (ADR-013)     ← focus now
+Brand roles  →  ui.Theme       (this page)   ← supporting
+```
+
+Defaults come from `ourui.theme` (zinc/ink + IBM Plex Sans). Override with module-level `ui.Theme(...)`. Emit writes `--ourui-*` on `:root` / `.dark` from **Resolved Design** (Host Contract).
 
 ```python
 from ourui import ui
 
-# Optional — omit Theme to use ourui-default zinc/ink pack
-theme = ui.Theme(recipe="product")  # or pack="ourui-editorial" / recipe="ops"
-# theme = ui.Theme(primary="#18181b", primary_fg="#fafafa", accent="#2563eb")
+# Optional — omit Theme to use defaults
+theme = ui.Theme(
+    primary="#18181b",
+    primary_fg="#fafafa",
+    density="comfortable",           # or "compact"
+    page={"max_width": "42rem"},     # measure; "none" → full-bleed
+)
 
 page = ui.Page(
     ui.Hero(title="Themed"),
-    ui.Button("Primary"),  # untoned buttons resolve to primary
+    ui.Button("Primary"),            # untoned → primary
     ui.Button("Quiet", color="muted"),
-    ui.ThemeToggle("Theme"),
+    ui.ThemeToggle(),                # icon-only .dark toggle
 )
 ```
 
 Normative rules: [Language Spec — Design tokens](../../../LANGUAGE_SPEC.md#design-tokens).
 
-## `ui.Theme`
+## `ui.Theme` kwargs
 
-Assign at **module level**. The compiler merges overrides into Semantic Graph `tokens` and Resolved Design; emit writes `:root { … }` and `.dark { … }`.
+Assign at **module level**. Compiler merges into Semantic Graph `tokens` and Resolved Design.
 
 ```python
 theme = ui.Theme(
-    recipe="product",  # or pack="ourui-console", density="compact"
+    density="comfortable",
     primary="#18181b",
     primary_fg="#fafafa",
     accent="#2563eb",
-    density="comfortable",  # or "compact" (overrides recipe density)
     font_sans='"IBM Plex Sans", system-ui, sans-serif',
     space_lg="1.25rem",
-    # ADR-013 scale table overrides (optional):
-    sizes={"lg": "36rem"},
+    sizes={"lg": "36rem"},           # optional ADR-013 scale overrides
     space={"4": "1.25rem"},
     type={"display": "clamp(2rem, 5vw, 4rem)"},
+    page={"max_width": "42rem"},
     dark={"primary": "#fafafa", "primary_fg": "#09090b"},
 )
 ```
@@ -44,10 +56,19 @@ theme = ui.Theme(
 
 | Value | Effect |
 |-------|--------|
-| `comfortable` (default) | Pack space tokens as-is |
-| `compact` | Emit `ourui-density-compact` on `<html>` / `.ourui-root`; tighten `--ourui-space-sm/md/lg` |
+| `comfortable` (default) | Space tokens as-is |
+| `compact` | `ourui-density-compact` on `<html>` / `.ourui-root`; tighten `--ourui-space-sm/md/lg` |
 
-### Color
+### Page measure
+
+| Key | Effect |
+|-----|--------|
+| `max_width` | Page content max width; `"none"` → full-bleed (`data-page-bleed="1"`) |
+| `pad_block` / `pad_inline` | Page padding |
+
+See [Page measure](../concepts/page-measure.md).
+
+### Color roles
 
 | Kwarg | CSS variable | Typical use |
 |-------|--------------|-------------|
@@ -59,41 +80,57 @@ theme = ui.Theme(
 | `accent` / `accent_fg` | `--ourui-accent` / … | Highlights |
 | `danger` / `danger_fg` | `--ourui-danger` / … | Destructive |
 
-### Shape, space, type, elevation (Phase S3)
+### Shape, space, type, elevation
 
 | Family | Kwargs (examples) | CSS |
 |--------|-------------------|-----|
 | Shape | `radius` | `--ourui-radius` |
-| Space | `space_xs` … `space_2xl` | `--ourui-space-*` (legacy token keys) |
+| Space | `space_xs` … `space_2xl` | `--ourui-space-*` |
 | Type | `font_sans`, `font_display`, `text_xs` … `text_2xl`, `leading_*` | `--ourui-font-*`, `--ourui-text-*` |
-| Elevation | `elev_0` … `elev_3` | `--ourui-elev-*` (shadow presets) |
+| Elevation | `elev_0` … `elev_3` | `--ourui-elev-*` |
 
-### Scale tables (ADR-013)
+### Scale table overrides (ADR-013)
 
 | Kwarg | Effect |
 |-------|--------|
-| `space={...}` | Override `--ourui-space-*` scale keys (`4`, `sm`, …) used by `pad=` / `gap=` / … |
-| `sizes={...}` | Override `--ourui-size-*` (`lg`, `full`, …) used by `width=` / `height=` / … |
-| `type={...}` | Override `--ourui-text-*` size scale |
+| `space={...}` | Override `--ourui-space-*` keys used by `pad=` / `gap=` / … |
+| `sizes={...}` | Override size scale for `width=` / `height=` / … |
+| `type={...}` | Override type scale keys |
 
-Layout/type props themselves: [Style intents](style-intents.md).
+### Author CSS (`css=`) — app escape without editing the package
+
+Append raw CSS after host utilities (Tailwind’s “using custom CSS” analogue). Prefer Theme roles + style intents first; use `css=` for one-offs the catalog does not cover yet.
+
+```python
+CUSTOM = """
+.hero-glow {
+  box-shadow: 0 0 40px color-mix(in srgb, var(--ourui-accent) 35%, transparent);
+}
+"""
+
+theme = ui.Theme(
+    primary="#18181b",
+    css=CUSTOM,  # or css=\"\"\".hero-glow { … }\"\"\"
+)
+```
+
+Emitted inside the page `<style>` block after utilities / motion. Prefer `--ourui-*` vars so light/dark still track Theme. Not a substitute for intent props — promote repeated patterns into the style catalog when they stabilize.
 
 Underscores become hyphens: `primary_fg` → `--ourui-primary-fg`.
 
 ## Light and dark
 
-Top-level kwargs override **light**. Pass **`dark={...}`** for dark-mode overrides. Light applies on `:root`; dark under `.dark` on an ancestor (typically `<html>`).
+Top-level kwargs override **light**. Pass **`dark={...}`** for dark-mode overrides. Light applies on `:root`; dark under `.dark` (typically `<html>`).
 
 ### `ui.ThemeToggle`
 
-Client control that toggles the `.dark` class on `<html>` (persists via `localStorage`):
+Icon-only control that toggles `.dark` on `<html>` (persists via `localStorage`):
 
 ```python
-ui.ThemeToggle("Theme")
-ui.ThemeToggle(ui.Icon("moon"))
+ui.ThemeToggle()
 ```
 
-## Using tokens on components
+## Using roles on components
 
 ```python
 ui.Button("Save", color="primary")
@@ -108,12 +145,13 @@ Accepted color roles: `primary`, `muted`, `accent`, `danger`, `card`, `bg`, `fg`
 ```bash
 ourui serve examples/tutorial/05_theme.py
 ourui emit examples/tutorial/05_theme.py | grep ourui-primary
-ourui dump examples/tutorial/05_theme.py   # schema version 30; semantic_graph.tokens
+ourui dump examples/tutorial/05_theme.py   # schema 30; semantic_graph.tokens
 ```
 
 ## See also
 
-- [Tutorial 05 — Theme and tokens](../tutorial/05-theme-tokens.md)
-- [Style intents](style-intents.md)
+- [Tutorial 05 — Theme and style intents](../tutorial/05-theme-tokens.md)
+- [Page measure](../concepts/page-measure.md)
+- [Style intents](style-intents.md) — **craft foundation**
 - [UI components](ui-components.md)
 - [Debugging with dump](../guides/debugging-with-dump.md)

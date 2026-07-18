@@ -2,6 +2,17 @@
 
 This document describes the **Compilation Architecture** of OurUI. Diagrams of phase order are the **Compilation Flow**.
 
+## Product layering (read with VISION)
+
+| Layer | In package? | Role |
+|---|---|---|
+| **Utilities / style intents** | Yes | Craft foundation — Tailwind-depth props → `.ourui-*` |
+| **Compiler spine** | Yes | Parse → Analyze → Lower → Emit |
+| **`ui.Theme`** | Yes | Thin brand sheet (roles, density, `page=`) — not craft depth |
+| **Thin primitives** | Yes | `ui.Page`, `Nav`, `Button`, … for emit mapping |
+
+Resolved Design / Presentation Graph are **compile inputs** (theme roles + scales), not a component library.
+
 ## Technical slogan
 
 > Developer writes intent. Compiler writes implementation. Host receives primitives.
@@ -43,9 +54,9 @@ flowchart TD
 | **Analyze** | Import/symbol/type resolution, Semantic Graph, Analysis Views |
 | **Lower** | Intent → IIR; Layout → LTR; Render → RTR |
 | **Optimize** | Transforms (may re-Analyze) |
-| **Emit** | Host emitters |
+| **Emit** | Host emitters (+ style intent utility CSS) |
 
-**P0–E** implements Parse → Analyze → Intent / Layout / Render Lowering → JSON dump and HTML emit. Generations **1–3**, Phase **S1–S6**, **1.0** freeze, Enterprise **E1–E5**, host security (**1.6.0**), motion (**1.8.x**), and style intents (**1.9.x**) are complete. Host Contract: emit requires RTR + Resolved Design. See [docs/roadmap.md](docs/roadmap.md).
+**P0–E** implements Parse → Analyze → Intent / Layout / Render Lowering → JSON dump and HTML emit. The **utility catalog** (ADR-013) is early foundation and still incomplete — that is the main unfinished package work, not shipping blocks. See [docs/roadmap.md](docs/roadmap.md) and [VISION.md](VISION.md).
 
 ## Semantic Graph and Analysis Views
 
@@ -89,6 +100,7 @@ compiler/lowering/   # Intent / Layout / Render lowering
 compiler/optimize/
 compiler/emit/
 packages/ourui/      # Python implementation (P0+)
+  ourui/design/      # scales, style intents, resolve, theme seed
 ```
 
 ## Phase roadmap
@@ -98,6 +110,7 @@ packages/ourui/      # Python implementation (P0+)
 | **A–E** | Docs freeze → dump → LTR → RTR → HTML |
 | **F–R** | JS/`@server`/State/serve/LSP/tokens/package |
 | **S1–S6** | Link/Shell → forms → Nav → tokens → layout → motion → Canvas → polish (`0.4.0`) |
+| **1.9.x+** | Style intent catalog (utilities); blocks stay out of language |
 
 Do not invent new Stable vocabulary without ADR/RFC. See [VISION.md](VISION.md).
 

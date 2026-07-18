@@ -1,8 +1,12 @@
 """ADR-013 coverage matrix: every Tailwind TOC category → OurUI A/B/C.
 
 A = author intent prop(s)
-B = host-automatic / recipe / preflight
-C = escape / limited subset documented
+B = host-automatic / preflight
+C = escape / limited subset / not yet authored
+AC = author surface exists but incomplete vs Tailwind family depth
+AB = author + host share the family
+
+See docs/architecture/tailwind-gap.md for L3 priorities.
 """
 
 from __future__ import annotations
@@ -13,16 +17,31 @@ from typing import Any
 CATALOG: list[dict[str, str]] = [
     # Core
     {"tw": "utility-classes-authoring", "ourui": "intent-props", "status": "A", "notes": "No class= API"},
-    {"tw": "hover-focus-states", "ourui": "host-css+control-attrs", "status": "AB", "notes": "disabled/invalid/loading"},
-    {"tw": "responsive", "ourui": "hide_below/show_below", "status": "A", "notes": "md/lg breakpoints"},
+    {
+        "tw": "hover-focus-states",
+        "ourui": "hover=/focus= + dict variants",
+        "status": "A",
+        "notes": "opacity/shadow/scale/decorate/ring/outline/bg; disabled/invalid still host",
+    },
+    {
+        "tw": "responsive",
+        "ourui": "hide_below/show_below + dict md/lg",
+        "status": "A",
+        "notes": "visibility + mobile-first pad/width/gap/text/grid_cols/direction/grow; pad={\"base\":\"4\",\"md\":\"8\"}",
+    },
     {"tw": "dark-mode", "ourui": "ThemeToggle+.dark", "status": "AB", "notes": "existing"},
-    {"tw": "theme-variables", "ourui": "--ourui-*+Theme", "status": "AB", "notes": "scales+packs"},
-    {"tw": "colors", "ourui": "color=/Theme", "status": "A", "notes": "token roles"},
-    {"tw": "custom-styles", "ourui": "Theme+literals", "status": "A", "notes": "allowlisted lengths"},
+    {
+        "tw": "theme-variables",
+        "ourui": "--ourui-*+Theme",
+        "status": "AB",
+        "notes": "theme.py seed; density; page= measure",
+    },
+    {"tw": "colors", "ourui": "color=/Theme", "status": "A", "notes": "token roles — not full TW palette utils"},
+    {"tw": "custom-styles", "ourui": "Theme+literals+css=", "status": "A", "notes": "Theme(css=) author sheet; allowlisted length literals"},
     {"tw": "class-detection", "ourui": "n/a", "status": "B", "notes": "compiler AST not class scan"},
     {"tw": "preflight", "ourui": "host-preflight", "status": "B", "notes": "html/body reset"},
     # Layout
-    {"tw": "aspect-ratio", "ourui": "aspect=", "status": "A"},
+    {"tw": "aspect-ratio", "ourui": "aspect=", "status": "A", "notes": "auto|square|video|photo|16/9|…"},
     {"tw": "columns-multicol", "ourui": "text_columns=", "status": "A", "notes": "not Table columns="},
     {"tw": "break-after-before-inside", "ourui": "host-print", "status": "B", "notes": "print defaults"},
     {"tw": "box-decoration-break", "ourui": "host", "status": "B"},
@@ -98,21 +117,46 @@ CATALOG: list[dict[str, str]] = [
     {"tw": "word-break-hyphens", "ourui": "host", "status": "B"},
     # Backgrounds / borders / effects
     {"tw": "background-color", "ourui": "bg=/color tones", "status": "A"},
-    {"tw": "background-image", "ourui": "Canvas/Image escape", "status": "C"},
+    {
+        "tw": "background-image",
+        "ourui": "bg_gradient=/bg_image=",
+        "status": "A",
+        "notes": "gradient dirs + theme stops; bg_image=none|safe url (per-node); Image/Canvas for rich media",
+    },
     {"tw": "background-size-pos-repeat", "ourui": "bg_size/bg_position/bg_repeat=", "status": "A"},
     {"tw": "border-radius", "ourui": "radius=/Theme", "status": "A"},
     {"tw": "border-width-color", "ourui": "border=/border_w=", "status": "A"},
-    {"tw": "outline", "ourui": "outline=/focus host", "status": "AB"},
+    {
+        "tw": "outline",
+        "ourui": "outline=/outline_color=/outline_offset=",
+        "status": "A",
+        "notes": "none|hidden|widths 0|1|2|4|8; theme roles; focus bag outline=",
+    },
     {"tw": "box-shadow", "ourui": "shadow=/elev=", "status": "A"},
     {"tw": "text-shadow", "ourui": "host", "status": "B"},
     {"tw": "opacity", "ourui": "opacity=", "status": "A"},
-    {"tw": "mix-blend", "ourui": "escape", "status": "C"},
-    {"tw": "mask", "ourui": "escape", "status": "C"},
+    {
+        "tw": "mix-blend",
+        "ourui": "mix_blend=/backdrop_blend=",
+        "status": "A",
+        "notes": "TW mix-blend-mode + backdrop-blend-mode; full mode enum",
+    },
+    {
+        "tw": "mask",
+        "ourui": "mask=",
+        "status": "A",
+        "notes": "none|fade-t/r/b/l|fade-x/y|radial presets; arbitrary → Theme(css=)",
+    },
     # Filters / transforms / motion
     {"tw": "filter-blur", "ourui": "blur=", "status": "A"},
     {"tw": "backdrop-filter", "ourui": "backdrop_blur=", "status": "A"},
     {"tw": "other-filters", "ourui": "filter=", "status": "A", "notes": "grayscale|sepia|invert|…"},
-    {"tw": "transition-animation", "ourui": "motion= ADR-012", "status": "A"},
+    {
+        "tw": "transition-animation",
+        "ourui": "motion= ADR-012",
+        "status": "AB",
+        "notes": "motion vocabulary ≠ CSS transition-* / duration-* / ease-* TOC",
+    },
     {"tw": "transform-rotate-scale-translate", "ourui": "rotate=/scale=/translate_*=", "status": "A"},
     {"tw": "skew-perspective", "ourui": "skew_x=/skew_y=", "status": "A", "notes": "perspective stays escape"},
     # Tables / interactivity / SVG / a11y
@@ -125,10 +169,156 @@ CATALOG: list[dict[str, str]] = [
     {"tw": "scroll-behavior", "ourui": "scroll=", "status": "A"},
     {"tw": "scroll-snap", "ourui": "snap=", "status": "A"},
     {"tw": "touch-action", "ourui": "touch=", "status": "A"},
-    {"tw": "accent-color", "ourui": "accent= / tokens", "status": "AB"},
+    {
+        "tw": "accent-color",
+        "ourui": "accent_color=/accent=",
+        "status": "A",
+        "notes": "theme roles for form controls",
+    },
     {"tw": "will-change", "ourui": "host motion", "status": "B"},
     {"tw": "svg-fill-stroke", "ourui": "fill=/stroke=", "status": "A"},
     {"tw": "forced-color-adjust", "ourui": "forced_colors=", "status": "A"},
+    # Missing vs Tailwind v4 capability (docs-sourced) — props may still be absent (L3)
+    # See docs/architecture/tailwind-gap.md — ring/divide/space are v4 *sections*, not always standalone pages.
+    {
+        "tw": "ring",
+        "ourui": "ring=/ring_color=/ring_inset=",
+        "status": "A",
+        "notes": "TW v4: box-shadow § Adding a ring; widths 0|1|2|4|8 + default ring≈3px",
+    },
+    {
+        "tw": "divide-x-y",
+        "ourui": "divide=/divide_w=/divide_color=",
+        "status": "A",
+        "notes": "TW v4: border-width § Between children; x|y + widths 0|1|2|4|8",
+    },
+    {
+        "tw": "space-x-y",
+        "ourui": "space_x=/space_y=",
+        "status": "A",
+        "notes": "TW v4: margin § Adding space between children; SPACE scale",
+    },
+    {
+        "tw": "bg-gradient",
+        "ourui": "bg_gradient=/gradient_from=/gradient_to=",
+        "status": "A",
+        "notes": "TW v4: background-image; finite to-* dirs + theme role stops (not full palette)",
+    },
+    {
+        "tw": "scroll-margin-padding",
+        "ourui": "scroll_m=/scroll_p= + sides",
+        "status": "A",
+        "notes": "TW pages: scroll-margin + scroll-padding; SPACE scale",
+    },
+    {
+        "tw": "caret-color",
+        "ourui": "caret=/caret_color=",
+        "status": "A",
+        "notes": "TW caret-color; theme roles only",
+    },
+    {
+        "tw": "placeholder-selection",
+        "ourui": "placeholder_color=/selection=",
+        "status": "A",
+        "notes": "theme roles; selection={bg,color} or selection_bg=/selection_color=; not Input placeholder= text",
+    },
+    {
+        "tw": "container-queries",
+        "ourui": "container=/@md|@lg dict",
+        "status": "A",
+        "notes": "container=True|name; pad/direction/… dict keys @md|@lg|cq_md|cq_lg",
+    },
+    {
+        "tw": "sr-only",
+        "ourui": "sr_only=",
+        "status": "A",
+        "notes": "TW v4: display § Screen-reader only (sr-only)",
+    },
+    # Long-tail TW pages — high-ROI finite props (L3)
+    {
+        "tw": "appearance",
+        "ourui": "appearance=",
+        "status": "A",
+        "notes": "none|auto",
+    },
+    {
+        "tw": "backface-visibility",
+        "ourui": "backface=",
+        "status": "A",
+        "notes": "visible|hidden",
+    },
+    {
+        "tw": "color-scheme",
+        "ourui": "color_scheme=",
+        "status": "A",
+        "notes": "normal|light|dark|light-dark",
+    },
+    {
+        "tw": "content",
+        "ourui": "before=/after=/before_content=/after_content=",
+        "status": "A",
+        "notes": "CSS content on ::before/::after; not Text content=; none|empty|quotes|short string",
+    },
+    {
+        "tw": "field-sizing",
+        "ourui": "field_sizing=",
+        "status": "A",
+        "notes": "content|fixed",
+    },
+    {
+        "tw": "font-feature-settings",
+        "ourui": "font_feature=",
+        "status": "A",
+        "notes": "normal|liga|no-liga|dlig|hist|calt|ss01-04|cv01-04|smcp; arbitrary → Theme(css=)",
+    },
+    {
+        "tw": "font-stretch",
+        "ourui": "font_stretch=",
+        "status": "A",
+        "notes": "ultra-condensed…ultra-expanded named widths",
+    },
+    {
+        "tw": "font-variant-numeric",
+        "ourui": "font_numeric=",
+        "status": "A",
+        "notes": "normal|ordinal|slashed-zero|lining|oldstyle|proportional|tabular|fractions",
+    },
+    {
+        "tw": "scrollbar-color",
+        "ourui": "scrollbar_color=",
+        "status": "A",
+        "notes": "auto|theme roles (thumb + muted track)",
+    },
+    {
+        "tw": "scrollbar-gutter",
+        "ourui": "scrollbar_gutter=",
+        "status": "A",
+        "notes": "auto|stable|stable-both",
+    },
+    {
+        "tw": "scrollbar-width",
+        "ourui": "scrollbar_width=",
+        "status": "A",
+        "notes": "auto|thin|none",
+    },
+    {
+        "tw": "tab-size",
+        "ourui": "tab_size=",
+        "status": "A",
+        "notes": "0|2|4|8",
+    },
+    {
+        "tw": "text-indent",
+        "ourui": "text_indent=",
+        "status": "A",
+        "notes": "SPACE scale",
+    },
+    {
+        "tw": "zoom",
+        "ourui": "zoom=",
+        "status": "A",
+        "notes": "0|50|75|90|95|100|105|110|125|150",
+    },
 ]
 
 
@@ -138,7 +328,7 @@ def catalog_summary() -> dict[str, Any]:
         st = row["status"][0]  # A/B/C primary
         counts[st] = counts.get(st, 0) + 1
     return {
-        "version": "1.0.0",
+        "version": "1.11.0",
         "entries": len(CATALOG),
         "by_status": counts,
         "items": list(CATALOG),

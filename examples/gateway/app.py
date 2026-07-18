@@ -3,10 +3,10 @@
 Run (from repo root, with ourui editable + fastapi/uvicorn):
 
     pip install fastapi uvicorn httpx
-    ourui serve examples/enterprise/crud_app.py --prod --port 8765 &
-    uvicorn examples.enterprise.gateway.app:app --port 8080
+    ourui serve examples/tutorial/06_counter_app.py --prod --port 8765 &
+    uvicorn examples.gateway.app:app --port 8080
 
-Or: python -m examples.enterprise.gateway.app
+Or: python -m examples.gateway.app
 """
 
 from __future__ import annotations

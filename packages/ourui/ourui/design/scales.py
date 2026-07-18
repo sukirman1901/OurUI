@@ -161,6 +161,15 @@ RADIUS: dict[str, str] = {
     "full": "9999px",
 }
 
+# Ring width (px) — Tailwind v4 box-shadow ring section (ring / ring-<n>)
+RING: dict[str, str] = {
+    "0": "0px",
+    "1": "1px",
+    "2": "2px",
+    "4": "4px",
+    "8": "8px",
+}
+
 Z_INDEX: dict[str, str] = {
     "auto": "auto",
     "0": "0",
@@ -212,6 +221,16 @@ ASPECT: dict[str, str] = {
     "square": "1 / 1",
     "video": "16 / 9",
     "photo": "4 / 3",
+    # Tailwind-class ratios (author as aspect="16/9"; CSS ident → 16-9)
+    "2/3": "2 / 3",
+    "3/2": "3 / 2",
+    "3/4": "3 / 4",
+    "4/3": "4 / 3",
+    "4/5": "4 / 5",
+    "5/4": "5 / 4",
+    "9/16": "9 / 16",
+    "16/9": "16 / 9",
+    "21/9": "21 / 9",
 }
 
 

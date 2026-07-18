@@ -2,7 +2,7 @@
 
 from ourui import ui
 
-theme = ui.Theme(recipe="product")
+theme = ui.Theme()
 
 page = ui.Page(
     ui.Hero(

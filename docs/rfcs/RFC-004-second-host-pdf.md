@@ -2,11 +2,11 @@
 
 **Status:** Draft  
 **Depends on:** [RFC-003](RFC-003-host-emit.md) Accepted  
-**Track:** Enterprise E5 / Generation 3+  
+**Track:** Generation 3+ (second host)
 
 ## Motivation
 
-Some enterprise workflows need printable or archival PDF output from the same Intent → RTR + Resolved Design pipeline used for HTML.
+Some workflows need printable or archival PDF output from the same Intent → RTR + Resolved Design pipeline used for HTML.
 
 ## Center of this RFC
 
@@ -20,7 +20,7 @@ RTR  +  Resolved Design  →  PDF Host  →  PDF bytes
 
 ## Non-goals (this draft)
 
-- Implementing a PDF emitter in `ourui` 1.x (deferred past E5 / security track)
+- Implementing a PDF emitter in `ourui` 1.x (deferred)
 - Changing dump schema beyond additive attestation/CSP/security flags already shipped
 - Shipping browser print-to-PDF as the normative Host
 
@@ -32,4 +32,4 @@ RTR  +  Resolved Design  →  PDF Host  →  PDF bytes
 
 ## Status
 
-**Deferred implementation.** Any PDF host must honor RFC-003 Host Contract inputs only. Track under Enterprise E5 / future major when a concrete Host lands.
+**Deferred implementation.** Any PDF host must honor RFC-003 Host Contract inputs only. Resume when a concrete Host lands.

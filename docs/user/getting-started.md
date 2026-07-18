@@ -23,9 +23,9 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e packages/ourui
 ```
 
-Current Stable package: **1.9.1** ([PyPI](https://pypi.org/project/ourui/) or editable install from this repo). Dump schema **30** (additive); language/IR breaking changes remain Frozen at schema **25** until `2.0`.
+Current Stable package: **1.11.0** ([PyPI](https://pypi.org/project/ourui/) or editable install from this repo). Dump schema **30** (additive); language/IR breaking changes remain Frozen at schema **25** until `2.0`.
 
-Style layout/type props: [Style intents](reference/style-intents.md) (ADR-013). Component kits stay **out of** the language ([ADR-014](../decisions/ADR-014-language-primitives-vs-kit.md)).
+Style layout/type props: [Style intents](reference/style-intents.md) (foundation). Theme roles: [Theme](reference/theme.md) (thin sheet).
 
 ## Run the sample app
 
@@ -37,14 +37,14 @@ ourui serve examples/tutorial/06_counter_app.py
 
 Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/). You should see a welcome hero, feature cards, and a counter.
 
-## Run more samples
+## More samples
 
 ```bash
-ourui serve examples/enterprise/crud_app.py
-ourui serve examples/enterprise/settings_app.py --port 8766
+ourui serve examples/landing/app.py          # marketing dogfood (primitives + intents)
+ourui serve examples/tutorial/05_theme.py    # theme roles
 ```
 
-Enterprise kit and OIDC/gateway stubs live under [`examples/enterprise/`](../../examples/enterprise/).
+Auth in front of prod host (app-layer): [`examples/gateway/`](../../examples/gateway/).
 
 ## Optional: emit static HTML
 
@@ -58,7 +58,7 @@ Prints HTML (embedded CSS + JS shim) to stdout. Interactive `@server` actions re
 
 - OurUI installed
 - A dev server on port **8765** with hot reload
-- Access to Stable APIs through Phase **S6** (forms, Nav, tokens, layout, motion, Canvas, polish)
+- Access to Stable APIs through Phase **S6** (forms, Nav, theme roles, layout, motion, Canvas, polish) plus style intents (ADR-013) L3 (`1.11.0`) and `Theme(page=)` / `Theme(css=)`
 
 ## See also
 

@@ -38,10 +38,9 @@ def test_e1_emit_show_when_list_table() -> None:
     assert "Ada" in html
 
 
-def test_e1_crud_example_compiles() -> None:
-    path = ROOT / "examples" / "enterprise" / "crud_app.py"
-    doc = compile_dump(path)
+def test_e1_show_when_fixture_compiles() -> None:
+    doc = compile_dump(FIXTURE)
     assert doc["version"] == 30
-    html = emit_html(path, title="crud")
-    assert "Acme Admin" in html
+    html = emit_html(FIXTURE, title="e1")
+    assert 'data-role="show"' in html
     assert 'data-role="table"' in html

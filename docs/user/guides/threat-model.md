@@ -1,6 +1,6 @@
 # Threat model (OurUI host)
 
-Scope: the thin Host (`ourui serve`) and emitted documents. Auth, SSO, and data stores are **app-layer** (see [gateway](../../../examples/enterprise/gateway/README.md)).
+Scope: the thin Host (`ourui serve`) and emitted documents. Auth, SSO, and data stores are **app-layer** (see [gateway](../../../examples/gateway/README.md)).
 
 ## Assets
 
@@ -9,7 +9,7 @@ Scope: the thin Host (`ourui serve`) and emitted documents. Auth, SSO, and data 
 | Session cookie (`ourui_sid`) | HttpOnly, SameSite=Lax; `Secure` when `OURUI_COOKIE_SECURE=1` |
 | CSRF token | Per-session; required on prod RPC |
 | `@server` handlers | Run in-process with session State |
-| Dump / IR | Attestation includes schema, pack, `sha256` |
+| Dump / IR | Attestation includes schema, motion_catalog, `sha256` |
 
 ## Trust boundaries
 
@@ -27,7 +27,7 @@ Scope: the thin Host (`ourui serve`) and emitted documents. Auth, SSO, and data 
 | Error leakage | Prod RPC returns generic `internal server error` |
 | RPC abuse | `OURUI_RPC_RATE_LIMIT` (default 60/min/client key) |
 | Clickjacking | `X-Frame-Options: SAMEORIGIN` + related security headers |
-| Frame/srcdoc XSS | Enterprise `SEC001` warning; sanitize at app layer |
+| Frame/srcdoc XSS | `SEC001` under `--profile a11y`; sanitize at app layer |
 | Supply-chain drift | Dump `attestation.sha256` + pinned package version |
 
 ## Out of scope (by design)

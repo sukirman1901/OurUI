@@ -1,8 +1,15 @@
-# Tutorial 05 — Theme and tokens
+# Tutorial 05 — Theme and style intents
+
+> Filename kept for link stability.
 
 ## Goal
 
-Set brand colors (and type/space/elevation) once with **`ui.Theme`**, reference **`color="primary"`** on components, and optionally add **`ui.ThemeToggle`** for light/dark.
+Know the split:
+
+| Layer | API | Role |
+|---|---|---|
+| **Craft (foundation)** | Style intents (`aspect=`, `pad_x=`, …) | Tailwind-depth utilities |
+| **Brand (thin sheet)** | `ui.Theme(...)` | Color/type/space roles, density, page measure |
 
 ## Code
 
@@ -25,26 +32,29 @@ Run:
 ourui serve examples/tutorial/05_theme.py
 ```
 
-Inspect page source for `--ourui-primary` and related variables. For a denser branded screen, try `ourui serve examples/enterprise/settings_app.py`.
+Inspect page source for `--ourui-primary`. Style-intents gallery: `examples/landing/`.
 
 ## What you learned
 
 - Assign **`theme = ui.Theme(...)`** at module level. Overrides merge into Resolved Design; emit writes `:root` / `.dark` CSS vars.
-- Common color keys: `primary`, `primary_fg`, `bg`, `fg`, `muted`, `accent`, `danger`, plus `radius` and space/type/elevation keys (`space_*`, `font_*`, `text_*`, `elev_*`).
+- Common color keys: `primary`, `primary_fg`, `bg`, `fg`, `muted`, `accent`, `danger`, plus `radius` and space/type/elevation keys.
 - Pass **`color="primary"`** (or `muted`, `accent`, `danger`, …) on buttons and links.
-- **`dark={...}`** overrides the dark palette. **`ui.ThemeToggle`** flips `.dark` on `<html>`.
-- Dump schema **21** includes `semantic_graph.tokens` (still present; current dump schema is **30**).
+- **`dark={...}`** overrides the dark palette. **`ui.ThemeToggle`** flips `.dark` on `<html>` (icon-only).
+- Optional **`density=`** and **`page={...}`** — see [Page measure](../concepts/page-measure.md).
+- Layout utilities (`aspect=`, `width=`, `gap=`, …) are **style intents**, not Theme color roles — see [Style intents](../reference/style-intents.md).
 
-| Token kwarg | CSS variable | Typical use |
+| Theme kwarg | CSS variable | Typical use |
 |-------------|--------------|-------------|
 | `primary` | `--ourui-primary` | Primary buttons, links |
 | `primary_fg` | `--ourui-primary-fg` | Text on primary surfaces |
 | `bg` / `fg` | `--ourui-bg`, `--ourui-fg` | Page background and body text |
-| `space_md` | `--ourui-space-md` | Default gaps/padding |
-| `elev_1` | `--ourui-elev-1` | Light shadow (cards/nav) |
+| `space_md` | `--ourui-space-md` | Default gaps/padding (legacy keys) |
+| `elev_1` | `--ourui-elev-1` | Light shadow |
 | `font_display` | `--ourui-font-display` | Hero / section titles |
 
 ## Next
 
 - [Tutorial 06 — Serve: dev and prod](06-serve-dev-and-prod.md)
+- [Page measure](../concepts/page-measure.md)
 - [Theme reference](../reference/theme.md)
+- [Style intents](../reference/style-intents.md)

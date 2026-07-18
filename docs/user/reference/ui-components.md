@@ -40,7 +40,7 @@ page = ui.Page(
 | `ui.Select` | Presentation | Dropdown (`options=`) |
 | `ui.Toggle` | Presentation | Checkbox (boolean payload) |
 | `ui.Slider` | Presentation | Range (`min=` / `max=` / `step=`) |
-| `ui.ThemeToggle` | Presentation | Toggle `.dark` on `<html>` |
+| `ui.ThemeToggle` | Presentation | Icon-only toggle for `.dark` on `<html>` |
 | `ui.Canvas` | Presentation | WebGL escape (`mode=gradient\|dither\|raymarch`) |
 | `ui.Frame` | Presentation | Host escape iframe preview (`bind=` / `srcdoc=`) |
 | `ui.Image` | Presentation | `src=` / `alt=` / `fit=` |
@@ -246,13 +246,17 @@ ui.Slider(name="volume", min=0, max=100, step=5, label="Volume", bind=volume)
 
 ## `ui.Theme`
 
-Module-level design token overrides. Not a visual node — assign at module scope like `page`.
+Module-level **theme role** overrides (color, type, space, density, optional `page=`). Not a visual node — assign at module scope like `page`. Craft depth (`aspect=`, `pad_x=`, …) is [Style intents](style-intents.md), not Theme.
 
 ```python
-theme = ui.Theme(primary="#1a5f4a", primary_fg="#f5faf8")
+theme = ui.Theme(
+    primary="#1a5f4a",
+    primary_fg="#f5faf8",
+    page={"max_width": "none"},  # full-bleed; see page measure
+)
 ```
 
-See [Theme reference](theme.md) for all token keys and CSS variable mapping.
+See [Theme reference](theme.md) and [Page measure](../concepts/page-measure.md).
 
 ## `ui.Link`
 
@@ -300,12 +304,12 @@ Product chrome bar (Phase S3a + S6 drawer). Placement is an intent enum — not 
 
 ```python
 ui.Nav(
-    brand=ui.Link("Plasma", href="/"),
+    brand=ui.Link("OurUI", href="/"),
     items=[
         ui.Link("Features", href="#features"),
         ui.Link("FAQ", href="#faq"),
     ],
-    actions=[ui.Link("Open Studio", href="/app", color="primary")],
+    actions=[ui.ThemeToggle(), ui.Link("Open app", href="/app", color="primary")],
     placement="sticky-top",
     tone="glass",
 )
@@ -338,7 +342,7 @@ On `Shell` / `Section` / `Hero` (and most layout nodes):
 
 | Kind | Role |
 |------|------|
-| `ui.ThemeToggle` | Toggle `.dark` on `<html>` |
+| `ui.ThemeToggle` | Icon-only `.dark` toggle on `<html>` |
 | `ui.Footer` | `brand=` / `links=` / `meta=` |
 | `ui.Canvas` | WebGL escape; `mode=gradient\|dither\|raymarch` |
 | `ui.Frame` | iframe preview escape; `bind=` / `srcdoc=` HTML string |
@@ -353,7 +357,8 @@ On `Shell` / `Section` / `Hero` (and most layout nodes):
 
 The `ui` namespace accepts shorthand positional args:
 
-- First string on `Button`, `Text`, `Card`, `Link`, `CopyButton`, `Code`, `ThemeToggle`, `Menu` → `text`
+- First string on `Button`, `Text`, `Card`, `Link`, `CopyButton`, `Code`, `Menu` → `text`
+- `ThemeToggle` — icon-only host chrome; omit label (optional `text=` is unused visually)
 - First string on `Icon` → `name`; on `Image` → `src`
 - First string on `Input` / `Select` / `Toggle` / `Slider` → `name`
 - First string on other kinds → `title` when `title` is not set

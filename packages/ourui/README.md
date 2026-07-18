@@ -1,10 +1,12 @@
-# ourui 1.9.1
+# ourui 1.11.0
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-Dump schema **30** (additive). Style Intent Catalog (ADR-013) + language-vs-kit boundary (ADR-014). Named packs/recipes; host chrome; motion ADR-012.
+**Package goal:** Tailwind-depth **utilities** in Python (`aspect=`, `pad_x=`, `ring=`, …) → HTML/CSS/JS. **`ui.Theme`** = thin brand sheet (+ optional `css=` escape). Style Intent Catalog (ADR-013) **L3 shipped** — niche **C** remain.
+
+Dump schema **30** (additive). Theme defaults from `theme.py`. Thin primitives for emit — craft depth is the utility catalog.
 
 ## Install
 
@@ -25,9 +27,9 @@ pip install -e packages/ourui
 ```bash
 ourui dump path/to/app.py
 ourui emit path/to/app.py
-ourui check path/to/app.py --profile enterprise
+ourui check path/to/app.py
 ourui serve path/to/app.py
-ourui serve examples/enterprise/crud_app.py
+ourui serve examples/tutorial/06_counter_app.py
 ```
 
-See the repository root README and `docs/user/` for language docs.
+See the repository root README and `docs/user/` for language docs. Style utilities: `docs/user/reference/style-intents.md`.

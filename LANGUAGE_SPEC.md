@@ -1,6 +1,6 @@
 # Language Spec
 
-Normative surface for the current compiler (`ourui` **1.9.1**, dump schema **30** additive). Language/IR breaking changes remain **Frozen** at schema **25** for `1.x` — a major bump (`2.0`) + ADR/RFC is required to break them.
+Normative surface for the current compiler (`ourui` **1.11.0**, dump schema **30** additive). Language/IR breaking changes remain **Frozen** at schema **25** for `1.x` — a major bump (`2.0`) + ADR/RFC is required to break them.
 
 ## Status
 
@@ -18,25 +18,27 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 - Nested calls as children / nested props
 - String and numeric literals; simple dict/list literals for structured props
 - `State(...)`, `@server` handlers, function/class components
-- `ui.Theme(...)` for design token overrides
+- `ui.Theme(...)` for theme role / scale overrides
+- Style intent props on layout kinds (`aspect=`, `pad_x=`, `width=`, …) — see ADR-013
 
 ### Not in language scope
 
 - Full Python execution semantics for arbitrary side effects in UI construction
 - Client-only `State` (browser-local)
-- Component kit / block registry inside Stable `ui.*` ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md))
+- Composed section patterns inside Stable `ui.*` while the utility catalog is incomplete ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md))
 
-## Design tokens
+## Theme roles and style intents
 
-OurUI emits semantic CSS variables under the `--ourui-*` namespace. Emit consumes **Resolved Design** (Host Contract); `ui.Theme` / `DEFAULT_*` seed the Design System pack only.
+**Style intents** are the craft foundation (ADR-013). **`ui.Theme`** is a thin brand sheet (roles, density, `page=`). OurUI emits `--ourui-*` variables plus finite `.ourui-*` utilities. Emit consumes **Resolved Design** (Host Contract). User docs: [style intents](docs/user/reference/style-intents.md) · [theme](docs/user/reference/theme.md).
 
 ```python
 theme = ui.Theme(primary="#1a5f4a", primary_fg="#f5faf8", dark={"primary": "#2dd4a8"})
 ui.Button("Go", color="primary")
-ui.ThemeToggle("Theme")  # toggles .dark on <html>
+ui.ThemeToggle()  # icon-only; toggles .dark on <html>
+ui.Shell(…, aspect="video", width="full")
 ```
 
-Token families (override via `ui.Theme`):
+Theme role families (override via `ui.Theme`):
 
 | Family | Keys (examples) |
 |--------|-----------------|
@@ -86,9 +88,9 @@ Multiple pages via `route=` on `ui.Page`. Prefer `ui.Link(..., href=...)` for na
 | `Menu` | Presentation | Dropdown; `items=` |
 | `Form` / `Dialog` / `Toast` | Presentation | Phase T surfaces |
 | `List` / `Table` / `Empty` / `Spinner` / `Alert` | Presentation | Phase U; List/Table may bind `items=`/`rows=` State |
-| `Show` / `When` | Presentation | Enterprise E1 visibility |
-| `Frame` | Presentation | Host escape iframe (`srcdoc=` / `bind=`); enterprise `SEC001` |
-| `Theme` | Analysis | Token overrides; `density=comfortable\|compact` |
+| `Show` / `When` | Presentation | Conditional visibility |
+| `Frame` | Presentation | Host escape iframe (`srcdoc=` / `bind=`); `SEC001` under `--profile a11y` |
+| `Theme` | Analysis | Thin brand overrides; `density=`; optional `page=` measure |
 
 ### Layout intents (`layout=`)
 
@@ -108,7 +110,7 @@ Host CSS/JS + `prefers-reduced-motion`. Full catalog registered; M1 ships Stable
 ui.Nav(
     brand=ui.Link("OurUI", href="/"),
     items=[ui.Link("Features", href="#features")],
-    actions=[ui.ThemeToggle("Theme"), ui.Link("App", href="/app", color="primary")],
+    actions=[ui.ThemeToggle(), ui.Link("App", href="/app", color="primary")],
     placement="sticky-top",
     tone="glass",
     menu="drawer",
@@ -151,4 +153,4 @@ Spans are attached to nodes (I5).
 
 ## Evolution
 
-Extensions require updates here and, if they add vocabulary, an [RFC](RFC_PROCESS.md). Dump schema bumps with Stable surface changes. Additive schemas **26–28** (Enterprise + security) do not break the Frozen **25** baseline.
+Extensions require updates here and, if they add vocabulary, an [RFC](RFC_PROCESS.md). Dump schema bumps with Stable surface changes. Additive schemas **26–30** do not break the Frozen **25** baseline.

@@ -5,20 +5,18 @@
 ```text
 Compiler → Presentation Graph (RFC-001)
                 +
-         Design System pack (RFC-002)
-                ↓
-         Resolved Design
+         Theme defaults + overrides → Resolved Design (RFC-002)
                 ↓
          Host Contract (RFC-003)  — RTR + Resolved Design (required)
                 ↓
          Web / PDF / Native …
 ```
 
-**Generation 3 Done (`0.3.0`):** web emit is contract-primary.  
-**Phase S Done (`0.4.0`):** language surface through Canvas + polish (schema 21).  
-**1.0 + Enterprise + security + motion + style intents:** package **1.9.1**, dump schema **30** (additive; language/IR Frozen at **25**).  
-`_BASE_CSS` is host-private chrome (layout). Design values come from Resolved Design.  
-CSS AST (if any) remains an optional web-host detail (Step F).
+Theme seed: `ourui.theme` (`DEFAULT_LIGHT` / `DEFAULT_DARK`). Craft depth: style intents (ADR-013), not Theme alone.
+
+**Package `1.11.0`**, dump schema **30** (language/IR Frozen at **25**).  
+`_BASE_CSS` is host-private chrome. Design values come from Resolved Design.  
+CSS AST (if any) remains an optional web-host detail.
 
 See:
 

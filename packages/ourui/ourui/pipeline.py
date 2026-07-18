@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from ourui.analysis import build_semantic_graph
-from ourui.design import PACK_ID, PACK_VERSION, catalog_summary, resolve_design, style_catalog_summary
+from ourui.design import catalog_summary, resolve_design, style_catalog_summary
 from ourui.emit import emit_bundle, emit_html_document
 from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_presentation_graph, lower_to_rtr
 from ourui.serialize import dumps_deterministic
@@ -24,6 +24,15 @@ def _display_path(path: Path) -> str:
 def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, Any]:
     path = Path(path)
     sg, dg = build_semantic_graph(path)
+    errors = [
+        d
+        for d in getattr(sg, "diagnostics", []) or []
+        if str(d.get("code", "")).startswith("E")
+    ]
+    if errors:
+        d0 = errors[0]
+        loc = f"{d0.get('path', path)}:{d0.get('start_line', 1)}:{d0.get('start_col', 0)}"
+        raise ValueError(f"{d0.get('code')}: {loc}: {d0.get('message')}")
     if route is not None:
         root_id = sg.routes.get(route)
         if root_id is None:
@@ -38,9 +47,9 @@ def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, A
         presentation_graph,
         token_overrides=sg.tokens,
         density=getattr(sg, "density", None),
-        pack_id=getattr(sg, "pack", None),
-        recipe_id=getattr(sg, "recipe", None),
         scale_overrides=getattr(sg, "scale_overrides", None) or None,
+        page_overrides=getattr(sg, "page", None),
+        author_css=getattr(sg, "author_css", None),
     )
     ltr = lower_to_ltr(iir)
     rtr = lower_to_rtr(ltr)
@@ -76,8 +85,6 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
         "diagnostics": sg.get("diagnostics", []),
         "attestation": {
             "schema": DUMP_SCHEMA_VERSION,
-            "pack": str(rd_dict.get("pack", PACK_ID)),
-            "pack_version": str(rd_dict.get("pack_version", PACK_VERSION)),
             "motion_catalog": catalog_summary()["version"],
         },
         "emit": {
@@ -106,8 +113,6 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "attestation": True,
             "csrf": True,
             "security_headers": True,
-            "packs": True,
-            "recipes": True,
             "motion": True,
             "style_intents": True,
         },

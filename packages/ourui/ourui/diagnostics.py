@@ -1,4 +1,4 @@
-"""Structured compile diagnostics (Phase V) + enterprise a11y profile (E2)."""
+"""Structured compile diagnostics (Phase V) + optional a11y profile."""
 
 from __future__ import annotations
 
@@ -84,8 +84,8 @@ def _span_fields(node: Any, fallback_path: str) -> dict[str, Any]:
     }
 
 
-def collect_enterprise_diagnostics(path: str | Path) -> list[Diagnostic]:
-    """Enterprise a11y / escape-budget warnings (profile ``enterprise``)."""
+def collect_a11y_diagnostics(path: str | Path) -> list[Diagnostic]:
+    """A11y / escape-budget warnings (``ourui check --profile a11y``)."""
     from ourui.analysis import build_semantic_graph
 
     path = Path(path)
@@ -189,3 +189,6 @@ def collect_enterprise_diagnostics(path: str | Path) -> list[Diagnostic]:
         )
 
     return out
+
+
+collect_enterprise_diagnostics = collect_a11y_diagnostics

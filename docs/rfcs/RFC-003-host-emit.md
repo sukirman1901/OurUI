@@ -4,6 +4,8 @@
 **Depends on:** [RFC-001](RFC-001-presentation-system.md) Accepted; [RFC-002](RFC-002-design-system.md) Accepted  
 **Track:** Generation 3 — Host  
 
+> **Current note (2026-07, `1.10.0`):** Theme defaults live in `ourui.theme` (`default_tokens()`). Resolved Design remains required emit input. Craft depth is style intents (ADR-013), not Theme alone.
+
 ## Motivation
 
 Generation 1 proved a UI language can compile and run.  
@@ -48,7 +50,7 @@ CSS AST (if any) is an **implementation detail of the web host**.
 | Input | Role |
 |-------|------|
 | **RTR** | Structure, text, events, binds, host kinds / attributes |
-| **Resolved Design** | Per-node concrete values + mode/pack token maps |
+| **Resolved Design** | Per-node concrete values + light/dark token maps |
 
 Calling `emit_css` / `emit_html_document` / `emit_bundle` without `resolved_design` raises `TypeError`.
 
@@ -62,14 +64,14 @@ Calling `emit_css` / `emit_html_document` / `emit_bundle` without `resolved_desi
 
 ### Non-goals (deferred)
 
-- Material / Fluent packs  
+- Material / Fluent theme tables as emit authority  
 - Plasma visual parity  
 - New chrome (`ui.Nav`)  
 - CSS AST / package split `ourui-web` (optional later — Step F)
 
 ## Rules
 
-1. Emit **requires** Resolved Design; Theme/`DEFAULT_*` are **not** emit authority (they seed the Design System pack only).  
+1. Emit **requires** Resolved Design; Theme/`DEFAULT_*` seed resolve only — they are **not** emit authority.  
 2. Resolved Design stays host-neutral literals; Host may emit CSS variables.  
 3. Presentation Graph is not a Host emit input.  
 4. `_BASE_CSS` = host-private chrome (layout/structure).  
@@ -96,7 +98,7 @@ Calling `emit_css` / `emit_html_document` / `emit_bundle` without `resolved_desi
 
 - Pipeline always passes `resolved_design` into emit.  
 - Dump: `emit.host_contract` + `emit.host_contract_primary` (schema 12).  
-- `theme.py` remains pack seed for `ourui.design.resolve` / `default_pack`.  
+- `theme.py` seeds `ourui.design.resolve` (`default_tokens()` / light+dark maps).
 
 ## References
 
