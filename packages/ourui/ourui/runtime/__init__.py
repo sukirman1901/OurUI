@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from ourui.analysis import build_semantic_graph
 from ourui.pipeline import emit_html
 from ourui.runtime.hmr import HmrHub
 from ourui.runtime.invoke import _MODULE_CACHE, invoke_handler, load_source_module, snapshot_states
@@ -40,21 +41,30 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
             load_source_module(self.source, reload=True)
             self.hmr._loaded_generation = token  # noqa: SLF001 — serve-local marker
 
+    def _match_page_route(self, path: str) -> str | None:
+        sg, _ = build_semantic_graph(self.source)
+        if path == "/index.html":
+            path = "/"
+        if path in sg.routes:
+            return path
+        return None
+
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
-        if path in {"/", "/index.html"}:
-            self._reload_if_stale()
-            module = load_source_module(self.source)
-            state = snapshot_states(module)
-            html = emit_html(self.source, title=self.title, state_values=state, hmr=True)
-            self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
-            return
         if path == "/__ourui/hmr":
             self._sse_loop()
             return
         if path == "/__ourui/hmr/status":
             body = json.dumps(self.hmr.snapshot()) + "\n"
             self._send(200, body.encode("utf-8"), "application/json")
+            return
+        route = self._match_page_route(path)
+        if route is not None:
+            self._reload_if_stale()
+            module = load_source_module(self.source)
+            state = snapshot_states(module)
+            html = emit_html(self.source, title=self.title, route=route, state_values=state, hmr=True)
+            self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
             return
         self._send(404, b'{"error":"not found"}\n', "application/json")
 
@@ -130,6 +140,7 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
 
 def serve(source: Path, *, host: str = "127.0.0.1", port: int = 8765, title: str | None = None) -> None:
     source = source.resolve()
+    sg, _ = build_semantic_graph(source)
     hmr = HmrHub(source)
     load_source_module(source)
     hmr._loaded_generation = hmr.generation  # noqa: SLF001
@@ -140,7 +151,11 @@ def serve(source: Path, *, host: str = "127.0.0.1", port: int = 8765, title: str
     )
     httpd = ThreadingHTTPServer((host, port), handler)
     print(f"OurUI serve {source}")
-    print(f"  http://{host}:{port}/")
+    if sg.routes:
+        for route_path in sorted(sg.routes):
+            print(f"  http://{host}:{port}{route_path}")
+    else:
+        print(f"  http://{host}:{port}/")
     print("  POST /__ourui/call/<handler>")
     print("  GET  /__ourui/hmr  (SSE reload)")
     try:

@@ -21,7 +21,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_has_required_sections() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 7
+    assert doc["version"] == 8
     for key in ("semantic_graph", "dependency_graph", "iir", "ltr", "rtr", "emit"):
         assert key in doc
     assert doc["emit"]["js"] is True
@@ -33,6 +33,7 @@ def test_dump_has_required_sections() -> None:
     assert doc["iir"]["states"]["count"]["initial"] == 0
     assert "FeatureCard" in doc["semantic_graph"]["components"]
     assert "CounterPanel" in doc["semantic_graph"]["components"]
+    assert doc["semantic_graph"]["routes"] == {"/": "n0001"}
     assert doc["rtr"]["roots"]
     assert any(e["kind"] == "uses_theme" for e in doc["dependency_graph"]["edges"])
 

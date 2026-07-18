@@ -17,9 +17,17 @@ def _display_path(path: Path) -> str:
         return path.as_posix()
 
 
-def compile_to_rtr(path: str | Path) -> dict[str, Any]:
+def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, Any]:
     path = Path(path)
     sg, dg = build_semantic_graph(path)
+    if route is not None:
+        root_id = sg.routes.get(route)
+        if root_id is None:
+            raise KeyError(f"Unknown route: {route!r}")
+        sg.roots = [root_id]
+    elif sg.routes:
+        default_route = "/" if "/" in sg.routes else sorted(sg.routes)[0]
+        sg.roots = [sg.routes[default_route]]
     iir = lower_to_iir(sg)
     ltr = lower_to_ltr(iir)
     rtr = lower_to_rtr(ltr)
@@ -37,7 +45,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
     path = Path(path)
     artifacts = compile_to_rtr(path)
     return {
-        "version": 7,
+        "version": 8,
         "source": artifacts["source"],
         "semantic_graph": artifacts["semantic_graph"].to_dict(),
         "dependency_graph": artifacts["dependency_graph"].to_dict(),
@@ -62,11 +70,12 @@ def emit_html(
     path: str | Path,
     *,
     title: str | None = None,
+    route: str | None = None,
     state_values: dict[str, Any] | None = None,
     hmr: bool = False,
 ) -> str:
     """Compile source → RTR → HTML. Emitter consumes HostNode only."""
-    artifacts = compile_to_rtr(path)
+    artifacts = compile_to_rtr(path, route=route)
     doc_title = title or Path(path).stem
     return emit_html_document(
         artifacts["rtr"].to_dict(),

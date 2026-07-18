@@ -9,5 +9,5 @@
 | **H** | `State` bind + live updates | Done |
 | **I** | Components expand | Done |
 | **J** | HMR (SSE reload on file change) | Done |
+| **K** | Multi-page routing (`route=` on `ui.Page`) | Done |
 | **L** | Lightweight LSP (`ourui lsp`) | Done |
-| Later | Routing | Planned |

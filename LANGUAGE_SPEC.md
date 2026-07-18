@@ -23,8 +23,22 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 
 - Full Python execution semantics for arbitrary side effects in UI construction
 - Client-only `State` (browser-local)
-- Routing
 - Production multi-worker state store (dev `serve` uses in-process module cache)
+
+## Routing (Phase K)
+
+Multiple pages in one module via `route=` on `ui.Page`:
+
+```python
+home = ui.Page(route="/", ui.Hero(title="Home"))
+about = ui.Page(route="/about", ui.Section(title="About"))
+```
+
+- Analyze registers `routes: {"/": node_id, …}` in the Semantic Graph
+- A single `ui.Page` without `route=` defaults to `/`
+- Multiple pages require an explicit `route=` on each
+- `ourui serve` compiles the matching page per `GET` path; unknown paths → 404
+- Plain `<a href="/about">` works via full page loads (no SPA required)
 
 ## Built-in kinds
 

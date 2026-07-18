@@ -1737,6 +1737,9 @@
     "roots": [
       "n0001"
     ],
+    "routes": {
+      "/": "n0001"
+    },
     "states": {
       "count": {
         "initial": 0,
@@ -1752,5 +1755,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 7
+  "version": 8
 }

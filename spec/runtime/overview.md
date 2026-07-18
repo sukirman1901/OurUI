@@ -1,6 +1,6 @@
 # Runtime
 
-**Status:** Draft (Phase G–J).
+**Status:** Draft (Phase G–K).
 
 ## Dev server
 
@@ -11,10 +11,21 @@ ourui serve examples/example.py
 
 | Route | Behavior |
 |---|---|
-| `GET /` | Recompile → HTML with live `State` + HMR client |
+| `GET /` (or registered paths) | Recompile matching `ui.Page` → HTML with live `State` + HMR client |
+| `GET /about` … | Same for each `route=` registered at Analyze |
+| Unknown path | `404` JSON `{"error":"not found"}` |
 | `POST /__ourui/call/<handler>` | Run handler; JSON `{ok, result, state}` |
 | `GET /__ourui/hmr` | SSE stream; `event: reload` when source mtime changes |
 | `GET /__ourui/hmr/status` | `{generation, mtime_ns}` |
+
+### Multi-page routing (Phase K)
+
+```python
+home = ui.Page(route="/", ui.Hero(title="Home"))
+about = ui.Page(route="/about", ui.Section(title="About"))
+```
+
+Semantic Graph carries `routes: {"/": node_id, "/about": node_id}`. A single page without `route=` defaults to `/`. Plain anchor links trigger full page loads.
 
 Module cache keeps `State` values across requests. On HMR reload, the module is re-imported so code edits apply (in-memory State resets).
 

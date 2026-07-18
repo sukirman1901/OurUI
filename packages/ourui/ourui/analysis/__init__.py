@@ -22,11 +22,13 @@ class SemanticGraph:
     handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
     states: dict[str, dict[str, Any]] = field(default_factory=dict)
     components: dict[str, dict[str, Any]] = field(default_factory=dict)
+    routes: dict[str, str] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "nodes": {nid: n.to_dict() for nid, n in sorted(self.nodes.items())},
             "roots": list(self.roots),
+            "routes": {k: self.routes[k] for k in sorted(self.routes)},
             "edges": sorted(self.edges, key=lambda e: (e["from"], e["to"], e["kind"])),
             "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
             "states": {k: self.states[k] for k in sorted(self.states)},
@@ -67,6 +69,7 @@ class _GraphBuilder:
         self.graph = SemanticGraph()
         self.dep = DependencyGraph()
         self._theme_nodes: dict[str, str] = {}
+        self._page_route_by_node: dict[str, str] = {}
         self.components = components
         for name, cdef in components.items():
             self.graph.components[name] = {
@@ -190,6 +193,11 @@ class _GraphBuilder:
                     if cid:
                         child_ids.append(cid)
                 continue
+            if kw.arg == "route" and kind == "Page":
+                route_val = literal_value(kw.value)
+                if isinstance(route_val, str):
+                    self._page_route_by_node[nid] = route_val
+                continue
             if kw.arg == "on_click":
                 if isinstance(kw.value, ast.Name):
                     attrs["on_click"] = {"__handler__": kw.value.id}
@@ -230,6 +238,11 @@ class _GraphBuilder:
             self.graph.edges.append({"from": parent_id, "to": nid, "kind": "contains"})
         else:
             self.graph.roots.append(nid)
+            if kind == "Page" and nid in self._page_route_by_node:
+                route_path = self._page_route_by_node[nid]
+                if route_path in self.graph.routes:
+                    raise ValueError(f"Duplicate route: {route_path!r}")
+                self.graph.routes[route_path] = nid
 
         for key, value in attrs.items():
             if key in THEME_ATTR_KEYS and isinstance(value, str):
@@ -263,6 +276,18 @@ class _GraphBuilder:
                     self.build_call(stmt.value)
             elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
                 self.build_call(stmt.value)
+        self._finalize_routes()
+
+    def _finalize_routes(self) -> None:
+        page_roots = [nid for nid in self.graph.roots if self.graph.nodes[nid].kind == "Page"]
+        unrouted = [nid for nid in page_roots if nid not in self._page_route_by_node]
+        if len(page_roots) == 1 and not self.graph.routes:
+            self.graph.routes["/"] = page_roots[0]
+        elif unrouted:
+            raise ValueError(
+                "Multiple ui.Page definitions require route= on each page "
+                f"(missing route on {len(unrouted)} page(s))"
+            )
 
 
 def _display_path(path: Path) -> str:

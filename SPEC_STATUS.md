@@ -34,6 +34,7 @@ Status ladder:
 | `State` / binds | Draft (Phase H) |
 | Components (expand) | Draft (Phase I) |
 | HMR (`ourui serve`) | Draft (Phase J) |
+| Routing (`route=` on `ui.Page`) | Draft (Phase K) |
 | Runtime (production) | Experimental |
 | LSP | Draft (`ourui lsp` — completions + hover) |
 

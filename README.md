@@ -19,7 +19,7 @@ pytest tests/p0
 
 - `dump` — JSON artifacts (SG, DG, IIR, LTR, RTR, handlers)  
 - `emit` — HTML + CSS + JS shim  
-- `serve` — preview + RPC + HMR (SSE reload on save)  
+- `serve` — preview + RPC + HMR + multi-page routing (SSE reload on save)  
 - `lsp` — stdio Language Server (completions + hover for `ui.*`, `State`, `@server`)
 
 
