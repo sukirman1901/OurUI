@@ -60,8 +60,12 @@ ourui serve examples/tutorial/06_counter_app.py --prod
 | Behavior | `--prod` |
 |----------|----------|
 | Hot reload | **Off** — `/__ourui/hmr` returns 404 |
-| `State` | **Per-session** — isolated via `ourui_sid` cookie |
-| Error responses | Generic message only (no traceback in the HTTP response) |
+| `State` | **Per-session** — isolated via `ourui_sid` cookie (`HttpOnly; SameSite=Lax`; add `Secure` with `OURUI_COOKIE_SECURE=1`) |
+| CSRF | Required on RPC — page meta `ourui-csrf` + header `X-OurUI-CSRF` / body `_csrf` (host JS sends these automatically) |
+| Session gate | POST does **not** create sessions — open the page (GET) first |
+| Rate limit | `OURUI_RPC_RATE_LIMIT` (default 60/min; `0` disables) |
+| Error responses | Generic `internal server error` only (no traceback / exception text) |
+| CSP | Per-request script nonce (no `'unsafe-inline'` for scripts) |
 | Unknown routes | HTML `404` page |
 | Health check | **`GET /__ourui/health`** |
 

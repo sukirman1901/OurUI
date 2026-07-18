@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-07-18
-- **Package:** `ourui` 1.5.0 · dump schema **27** (additive)
+- **Package:** `ourui` 1.5.0 · dump schema **27** (additive; later **28** adds security flags / `attestation.sha256`)
 
 ## Context
 
@@ -17,7 +17,8 @@ Org-scale products need a stable default pack identity (`ourui-default` + versio
 ## Consequences
 
 - Dump schema **27** adds `emit.density` / `csp` / `attestation` and Resolved Design `pack_version` (+ optional `density`).
-- Auth/SSO remain outside `ui.*` (see Enterprise Kit templates).
+- Schema **28** (`1.6.0`) adds `emit.csrf` / `security_headers` and `attestation.sha256`; enterprise `SEC001` for Frame/srcdoc.
+- Auth/SSO remain outside `ui.*` (see Enterprise Kit templates + gateway).
 
 ## Alternatives rejected
 

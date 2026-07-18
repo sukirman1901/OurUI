@@ -22,7 +22,7 @@ Preview the top of the document:
 ourui dump app.py | head
 ```
 
-The JSON includes **`version`** (dump schema **21**), **`semantic_graph`**, **`dependency_graph`**, **`iir`**, **`presentation_graph`**, **`resolved_design`**, **`ltr`**, **`rtr`**, and an **`emit`** capability map. You rarely need every section — start with the semantic graph and `resolved_design.tokens`.
+The JSON includes **`version`** (dump schema **28**), **`semantic_graph`**, **`dependency_graph`**, **`iir`**, **`presentation_graph`**, **`resolved_design`**, **`ltr`**, **`rtr`**, **`attestation`** (schema/pack/`sha256`), and an **`emit`** capability map. You rarely need every section — start with the semantic graph and `resolved_design.tokens`.
 
 ## Check routes
 

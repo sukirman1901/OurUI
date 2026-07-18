@@ -33,7 +33,7 @@ Inspect page source for `--ourui-primary` and related variables. For the full to
 - Common color keys: `primary`, `primary_fg`, `bg`, `fg`, `muted`, `accent`, `danger`, plus `radius` and space/type/elevation keys (`space_*`, `font_*`, `text_*`, `elev_*`).
 - Pass **`color="primary"`** (or `muted`, `accent`, `danger`, …) on buttons and links.
 - **`dark={...}`** overrides the dark palette. **`ui.ThemeToggle`** flips `.dark` on `<html>`.
-- Dump schema **21** includes `semantic_graph.tokens`.
+- Dump schema **21** includes `semantic_graph.tokens` (still present; current dump schema is **28**).
 
 | Token kwarg | CSS variable | Typical use |
 |-------------|--------------|-------------|

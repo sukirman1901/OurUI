@@ -18,7 +18,7 @@ Open http://127.0.0.1:8766/
 | `/html` | Emitted HTML document |
 | `/js` | Host JS (`emit_js`) |
 | `/css` | Token/style CSS (`emit_css`) |
-| `/ast` | `dump_json` (schema v21) |
+| `/ast` | `dump_json` (schema v28) |
 | `/about` | About |
 
 ## How to use

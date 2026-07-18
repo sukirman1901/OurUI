@@ -64,6 +64,12 @@ Enterprise = org-scale packs + complete product screens + operable deploy + gove
 - CSP-friendly emit defaults (`data-ourui-csp="1"`), SBOM note, dump attestation
 - Optional second host (PDF) via Host Contract — [RFC-004](rfcs/RFC-004-second-host-pdf.md) Draft (deferred)
 
+### S1 — Host security (`1.6.0`)
+
+- Prod CSRF + session gate (no create-on-POST); `OURUI_COOKIE_SECURE`; CSP nonce; `OURUI_RPC_RATE_LIMIT`
+- Safe prod errors; security headers; enterprise `SEC001` (Frame/srcdoc)
+- Dump `attestation.sha256`; threat-model guide; CI secret scan; FastAPI gateway example
+
 ## Out of language scope (unchanged)
 
 Redis share, auth, billing, ORM — app concerns. No React/Tailwind clone; no Monaco-in-language.

@@ -23,7 +23,7 @@ A language platform where:
 
 > Developer writes intent. Compiler writes implementation. Host receives primitives.
 
-## Where we are (`1.0.0`)
+## Where we are (`1.6.0`)
 
 | Capability generation | Proof | Status |
 |---|---|---|
@@ -31,7 +31,7 @@ A language platform where:
 | **2 — Semantic presentation** | Presentation Graph + Design System → Resolved Design | Done |
 | **3 — Host Contract** | Emit requires `RTR + Resolved Design` | Done |
 
-**Phase S** complete through **S6**. **Phase T–W** complete. Dump schema **25** is **Frozen** for `1.0.x`.
+**Phase S** through **S6**, **Phase T–W**, Enterprise **E1–E5**, and host **security hardening** are shipped. Dump schema **25** remains **Frozen** for language/IR breaking changes in `1.x`; schemas **26–28** are additive. Current package: **1.6.0** (schema **28**).
 
 Host strategy (ADR-005): **intent + emit + escape** — not a React/Tailwind clone in Python.
 

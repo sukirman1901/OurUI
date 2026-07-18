@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
 
+from ourui import __version__
 from ourui.diagnostics import collect_diagnostics
 from ourui.lsp.completions import get_completions, get_hover
 from ourui.lsp import protocol
@@ -136,7 +137,7 @@ class LSPServer:
                     "completionProvider": {"triggerCharacters": ["."]},
                     "hoverProvider": True,
                 },
-                "serverInfo": {"name": "ourui-lsp", "version": "1.0.0"},
+                "serverInfo": {"name": "ourui-lsp", "version": __version__},
             },
         )
 

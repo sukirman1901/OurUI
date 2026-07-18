@@ -64,9 +64,11 @@ ourui serve app.py --prod --workers 4 --session-dir /var/lib/ourui/sessions
 | `--host` | `127.0.0.1` | Bind address |
 | `--port` | `8765` | Bind port |
 | `--title` | source stem | HTML document title |
-| `--prod` | off | Production mode: no HMR, session `State`, safe errors, `/__ourui/health` |
+| `--prod` | off | Production mode: no HMR, session `State`, CSRF, CSP nonce, safe errors, `/__ourui/health` |
 | `--workers` | `1` | Worker processes (**requires `--prod`** when `> 1`) |
 | `--session-dir` | none | Directory for file-backed sessions (or set **`OURUI_SESSION_DIR`**) |
+
+Env (prod): `OURUI_COOKIE_SECURE`, `OURUI_RPC_RATE_LIMIT`, `OURUI_SESSION_DIR` — see [Deploy](../guides/deploy.md).
 
 ### Dev vs production
 
@@ -74,7 +76,8 @@ ourui serve app.py --prod --workers 4 --session-dir /var/lib/ourui/sessions
 |----------|---------------|----------|
 | Hot reload (HMR) | On — `GET /__ourui/hmr` (SSE) | Off — returns 404 |
 | `State` | Process-global (shared across tabs) | Per-session via `ourui_sid` cookie |
-| Handler errors | Traceback in JSON response | Generic message only |
+| CSRF | Not required | Required (`X-OurUI-CSRF` / `_csrf`) |
+| Handler errors | Traceback in JSON response | Generic `internal server error` |
 | Unknown routes | JSON `404` | HTML `404` page |
 | Health check | — | `GET /__ourui/health` |
 

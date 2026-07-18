@@ -1,6 +1,6 @@
 # Deploying
 
-Run OurUI in production on a single machine with **`ourui serve --prod`**. P0 supports in-memory or **file-backed sessions** — there is **no Redis** integration yet.
+Run OurUI in production on a single machine with **`ourui serve --prod`**. Sessions are in-memory or **file-backed** — there is **no Redis** integration. For Docker/K8s recipes and Trusted Publishing, prefer the newer [Deploy](deploy.md) guide.
 
 ## Production command
 
@@ -12,22 +12,26 @@ ourui serve app.py --prod --host 0.0.0.0 --port 8765
 
 | Flag | Purpose |
 |------|---------|
-| **`--prod`** | Session-scoped `State`, no HMR, safe client errors, `GET /__ourui/health` |
+| **`--prod`** | Session-scoped `State`, no HMR, CSRF, safe client errors, `GET /__ourui/health` |
 | **`--host`** | Bind address (default `127.0.0.1`; use `0.0.0.0` to accept external traffic) |
 | **`--port`** | Listen port (default `8765`) |
 | **`--title`** | HTML document title (defaults to the source file stem) |
 | **`--workers N`** | Worker processes (**requires `--prod`** when `N > 1`) |
 | **`--session-dir DIR`** | Directory for file-backed session JSON |
 
-Full flag list: [Reference: CLI](../reference/cli.md) (when available).
+Full flag list: [Reference: CLI](../reference/cli.md).
 
 ## What `--prod` changes
 
 Compared to dev mode (no flags):
 
 - **Hot reload off** — `/__ourui/hmr` returns 404.
-- **`State` is per-session** — isolated via the `ourui_sid` cookie.
-- **Errors are safe** — RPC failures return a generic message; tracebacks are not sent to the browser (they still print on the server stderr).
+- **`State` is per-session** — isolated via the `ourui_sid` cookie (`HttpOnly; SameSite=Lax`; `Secure` when `OURUI_COOKIE_SECURE=1`).
+- **CSRF** — RPC requires the session CSRF token (host JS sends it automatically after GET).
+- **Session gate** — POST does not create sessions; load a page first.
+- **Rate limit** — `OURUI_RPC_RATE_LIMIT` (default 60/min).
+- **Errors are safe** — RPC failures return `internal server error`; tracebacks stay on stderr.
+- **CSP nonce** — scripts use a per-request nonce.
 - **Health endpoint** — `GET /__ourui/health` for load balancers and process managers.
 
 Example health check:

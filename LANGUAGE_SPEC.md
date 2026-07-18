@@ -1,6 +1,6 @@
 # Language Spec
 
-Normative surface for the current compiler (`ourui` **1.0.0**, dump schema **25** — **Frozen** for `1.0.x`). Breaking language/dump changes require `2.0` + ADR/RFC.
+Normative surface for the current compiler (`ourui` **1.6.0**, dump schema **28** additive). Language/IR breaking changes remain **Frozen** at schema **25** for `1.x` — a major bump (`2.0`) + ADR/RFC is required to break them.
 
 ## Status
 
@@ -47,7 +47,7 @@ Token families (override via `ui.Theme`):
 
 - HTML emit writes `:root { … }` and `.dark { … }`
 - `color=` / `variant=` / `bg=` matching roles add tone classes
-- Dump includes `semantic_graph.tokens` (schema **21**)
+- Dump includes `semantic_graph.tokens` (since schema **21**; current dump schema **28**)
 
 ## Routing
 
@@ -77,6 +77,11 @@ Multiple pages via `route=` on `ui.Page`. Prefer `ui.Link(..., href=...)` for na
 | `Code` | Presentation | Code block |
 | `CopyButton` | Presentation | Clipboard; `copy=` |
 | `Menu` | Presentation | Dropdown; `items=` |
+| `Form` / `Dialog` / `Toast` | Presentation | Phase T surfaces |
+| `List` / `Table` / `Empty` / `Spinner` / `Alert` | Presentation | Phase U; List/Table may bind `items=`/`rows=` State |
+| `Show` / `When` | Presentation | Enterprise E1 visibility |
+| `Frame` | Presentation | Host escape iframe (`srcdoc=` / `bind=`); enterprise `SEC001` |
+| `Theme` | Analysis | Token overrides; `density=comfortable\|compact` |
 
 ### Layout intents (`layout=`)
 
@@ -137,4 +142,4 @@ Spans are attached to nodes (I5).
 
 ## Evolution
 
-Extensions require updates here and, if they add vocabulary, an [RFC](RFC_PROCESS.md). Dump schema bumps with Stable surface changes.
+Extensions require updates here and, if they add vocabulary, an [RFC](RFC_PROCESS.md). Dump schema bumps with Stable surface changes. Additive schemas **26–28** (Enterprise + security) do not break the Frozen **25** baseline.

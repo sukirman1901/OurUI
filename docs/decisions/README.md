@@ -16,4 +16,4 @@ ADRs record local or historical choices. RFCs change LOCKED architecture or voca
 | [ADR-008](ADR-008-form-dialog-toast.md) | Form / Dialog / Toast (Phase T) |
 | [ADR-009](ADR-009-diagnostics-derived.md) | Diagnostics + Derived Draft (Phase V) |
 | [ADR-010](ADR-010-show-when-dynamic-list.md) | Show / When + dynamic List/Table (Enterprise E1) |
-| [ADR-011](ADR-011-pack-versioning-check-profile.md) | Pack versioning + check profiles (Enterprise E2) |
+| [ADR-011](ADR-011-pack-versioning-check-profile.md) | Pack versioning + check profiles (Enterprise E2; schema **28** notes) |

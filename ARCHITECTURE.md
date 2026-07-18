@@ -45,7 +45,7 @@ flowchart TD
 | **Optimize** | Transforms (may re-Analyze) |
 | **Emit** | Host emitters |
 
-**P0–E** implements Parse → Analyze → Intent / Layout / Render Lowering → JSON dump and HTML emit. Generations **1–3** and Phase **S1–S6** are complete at package **0.4.0** (Host Contract: emit requires RTR + Resolved Design). See [docs/roadmap.md](docs/roadmap.md).
+**P0–E** implements Parse → Analyze → Intent / Layout / Render Lowering → JSON dump and HTML emit. Generations **1–3**, Phase **S1–S6**, **1.0** freeze, Enterprise **E1–E5**, and host security (**1.6.0**) are complete. Host Contract: emit requires RTR + Resolved Design. See [docs/roadmap.md](docs/roadmap.md).
 
 ## Semantic Graph and Analysis Views
 

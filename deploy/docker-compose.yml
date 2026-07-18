@@ -7,6 +7,8 @@ services:
       - "8765:8765"
     environment:
       - OURUI_SESSION_DIR=/var/lib/ourui/sessions
+      # Behind HTTPS terminators, also set: OURUI_COOKIE_SECURE=1
+      # Optional: OURUI_RPC_RATE_LIMIT=60
     volumes:
       - ourui-sessions:/var/lib/ourui/sessions
 

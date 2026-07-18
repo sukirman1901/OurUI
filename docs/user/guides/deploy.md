@@ -66,6 +66,31 @@ Static HTML still needs a host that implements `POST /__ourui/call/<handler>` (t
 
 With `--prod`, `GET /__ourui/health` returns JSON status.
 
+## Production security env
+
+| Variable | Default | Effect |
+|----------|---------|--------|
+| `OURUI_COOKIE_SECURE` | off | Add `Secure` to `ourui_sid` (use behind HTTPS) |
+| `OURUI_RPC_RATE_LIMIT` | `60` | Max RPC calls per minute per client key; `0` disables |
+| `OURUI_SESSION_DIR` | (see CLI) | File session store directory |
+
+See [Trust and compliance](trust-and-compliance.md) and [Threat model](threat-model.md). Auth belongs in front of the host — [enterprise gateway](../../../examples/enterprise/gateway/).
+
 ## CI emit
 
-See [`.github/workflows/ci-emit.yml`](../../../.github/workflows/ci-emit.yml) — on PR/push: install editable package, `pytest tests/p0`, `ourui check` on enterprise examples, and `ourui emit` for `crud_app`.
+See [`.github/workflows/ci-emit.yml`](../../../.github/workflows/ci-emit.yml) — on PR/push: secret scan, install editable package, `pytest tests/p0`, `ourui check` on enterprise examples, and `ourui emit` for `crud_app`.
+
+## Trusted Publishing (PyPI)
+
+Release workflow: [`.github/workflows/publish-pypi.yml`](../../../.github/workflows/publish-pypi.yml) (triggered by GitHub Release).
+
+On [PyPI → ourui → Publishing](https://pypi.org/manage/project/ourui/settings/publishing/), add a Trusted Publisher:
+
+| Field | Value |
+|-------|--------|
+| Owner | `sukirman1901` |
+| Repository | `OurUI` |
+| Workflow | `publish-pypi.yml` |
+| Environment | *(leave blank)* |
+
+Until that is configured, upload from a trusted machine with an API token (`twine upload`).

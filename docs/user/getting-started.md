@@ -23,7 +23,7 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e packages/ourui
 ```
 
-Current Stable package: **1.0.0** ([PyPI](https://pypi.org/project/ourui/)). Dump schema **25** is Frozen for 1.0.x.
+Current Stable package: **1.6.0** ([PyPI](https://pypi.org/project/ourui/)). Dump schema **28** (additive); language/IR breaking changes remain Frozen at schema **25** until `2.0`.
 
 ## Run the sample app
 

@@ -20,8 +20,8 @@ RTR  +  Resolved Design  →  PDF Host  →  PDF bytes
 
 ## Non-goals (this draft)
 
-- Implementing a PDF emitter in `ourui` 1.5.x
-- Changing dump schema beyond additive attestation/CSP flags already in E5
+- Implementing a PDF emitter in `ourui` 1.x (deferred past E5 / security track)
+- Changing dump schema beyond additive attestation/CSP/security flags already shipped
 - Shipping browser print-to-PDF as the normative Host
 
 ## Open questions

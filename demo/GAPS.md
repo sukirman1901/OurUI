@@ -24,4 +24,4 @@
 
 ## Out of language scope
 
-Redis, auth, billing, tables — unchanged.
+Redis, billing, ORM — unchanged. Auth lives at the app layer ([gateway](../examples/enterprise/gateway/), OIDC stub).

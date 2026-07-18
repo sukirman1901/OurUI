@@ -12,7 +12,9 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: pypi
+    # No GitHub Environment claim — configure Trusted Publisher on PyPI as:
+    #   Owner: sukirman1901 · Repo: OurUI · Workflow: publish-pypi.yml
+    #   (leave Environment blank). See docs/user/guides/deploy.md.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

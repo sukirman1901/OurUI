@@ -17,7 +17,11 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 **Phase R–S1**: package + Link/Shell **Stable**.  
 **RFC-001–003**: Presentation Graph, Resolved Design, Host Contract **Stable** / Implemented.  
 **Phase S2–S6** (`v0.4.x`, dump schema **21**): form controls through Canvas + polish — **Stable**.  
-**Phase T–W → 1.0**: post–Phase S language arc — see [roadmap.md](docs/roadmap.md).
+**Phase T–W → 1.0**: language freeze — schema **25 Frozen**.  
+**Enterprise E1–E5**: screen completeness through trust — schemas **26–27**.  
+**Security (1.6.0)**: CSRF, session gate, CSP nonce, rate limit, attestation `sha256` — schema **28**.
+
+See [roadmap.md](docs/roadmap.md).
 
 ### Capability generations
 
@@ -54,7 +58,9 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | Dynamic `List`/`Table` (`items=`/`rows=` State) | Stable (Enterprise E1) |
 | Pack versioning + density | Stable (Enterprise E2) |
 | `ourui check --profile enterprise` | Stable (Enterprise E2) |
-| Dump `attestation` + emit CSP baseline | Stable (Enterprise E5) |
+| Dump `attestation` + emit CSP baseline | Stable (Enterprise E5; `sha256` in **1.6.0**) |
+| Prod CSRF / session gate / CSP nonce / rate limit | Stable (**1.6.0**) |
+| Auth gateway example | Stable (app-layer; `examples/enterprise/gateway/`) |
 | PDF second host (RFC-004) | Draft (deferred) |
 | `Derived` | Draft (Phase V) |
 | `ui.Input` / `Select` / `Toggle` / `Slider` / `textarea` | Stable (S2 + 0.4.1) |

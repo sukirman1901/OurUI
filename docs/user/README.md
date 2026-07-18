@@ -7,6 +7,7 @@ Learn how to build web apps in Python with OurUI. These pages cover the language
 - [Getting started](getting-started.md) — install, run your first app, open the Plasma demo
 - [Deploy](guides/deploy.md) — serve, Docker/Compose/K8s, CI emit
 - [Trust and compliance](guides/trust-and-compliance.md) — CSP, attestation, a11y check profile
+- [Threat model](guides/threat-model.md) — host threats and mitigations (prod serve)
 - [Design packs](concepts/design-packs.md) — `ourui-default` pack + density
 ## Tutorial
 
