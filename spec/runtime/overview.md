@@ -1,6 +1,6 @@
 # Runtime
 
-**Status:** Draft (Phase G–H).
+**Status:** Draft (Phase G–J).
 
 ## Dev server
 
@@ -11,16 +11,18 @@ ourui serve examples/example.py
 
 | Route | Behavior |
 |---|---|
-| `GET /` | Recompile → HTML with live `State` snapshot |
+| `GET /` | Recompile → HTML with live `State` + HMR client |
 | `POST /__ourui/call/<handler>` | Run handler; JSON `{ok, result, state}` |
+| `GET /__ourui/hmr` | SSE stream; `event: reload` when source mtime changes |
+| `GET /__ourui/hmr/status` | `{generation, mtime_ns}` |
 
-Module cache keeps `State` values across requests in one `serve` process.
+Module cache keeps `State` values across requests. On HMR reload, the module is re-imported so code edits apply (in-memory State resets).
 
 ## JS shim
 
 - Server handlers `fetch` RPC endpoint
 - `applyState(state)` updates `[data-ourui-bind="…"]`
-- Events: `ourui:call`, `ourui:result`
+- When served with `hmr=True`: `EventSource("/__ourui/hmr")` → `location.reload()` on `reload`
 
 ## Invariants
 

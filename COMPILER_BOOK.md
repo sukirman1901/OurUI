@@ -108,7 +108,7 @@ ourui serve examples/example.py   # http://127.0.0.1:8765/
 pytest tests/p0
 ```
 
-`serve` recompiles on each GET and executes `@server` handlers on `POST /__ourui/call/<name>`.
+`serve` recompiles on each GET, executes `@server` handlers on `POST /__ourui/call/<name>`, and pushes HMR reloads over `GET /__ourui/hmr` (SSE) when the source file changes.
 
 ## 12. Changing LOCKED architecture
 

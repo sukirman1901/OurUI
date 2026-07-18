@@ -63,6 +63,7 @@ def emit_html(
     *,
     title: str | None = None,
     state_values: dict[str, Any] | None = None,
+    hmr: bool = False,
 ) -> str:
     """Compile source → RTR → HTML. Emitter consumes HostNode only."""
     artifacts = compile_to_rtr(path)
@@ -71,6 +72,7 @@ def emit_html(
         artifacts["rtr"].to_dict(),
         title=doc_title,
         state_values=state_values,
+        hmr=hmr,
     )
 
 

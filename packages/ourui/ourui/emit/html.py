@@ -124,6 +124,7 @@ def emit_html_document(
     *,
     title: str = "OurUI",
     state_values: dict[str, Any] | None = None,
+    hmr: bool = False,
 ) -> str:
     """Emit a full HTML document from an RTR dict (HostNode tree only)."""
     rtr = apply_state_values(rtr, state_values)
@@ -134,7 +135,7 @@ def emit_html_document(
         body_lines.extend(_render_node(root, nodes, 2))
     body_lines.append("  </div>")
 
-    js = emit_js(rtr).rstrip("\n")
+    js = emit_js(rtr, hmr=hmr).rstrip("\n")
     parts = [
         "<!DOCTYPE html>",
         '<html lang="en">',

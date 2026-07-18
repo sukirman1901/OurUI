@@ -4,10 +4,11 @@ import json
 from typing import Any
 
 RPC_PATH = "/__ourui/call/"
+HMR_PATH = "/__ourui/hmr"
 
 
-def emit_js(rtr: dict[str, Any]) -> str:
-    """Runtime shim: RPC for @server + DOM bind updates for State."""
+def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
+    """Runtime shim: RPC for @server + DOM bind updates; optional HMR EventSource."""
     handlers = rtr.get("handlers", {})
     table = {
         name: {"kind": meta.get("kind", "client")}
@@ -15,6 +16,17 @@ def emit_js(rtr: dict[str, Any]) -> str:
     }
     table_json = json.dumps(table, separators=(",", ":"), sort_keys=True)
     rpc = json.dumps(RPC_PATH)
+    hmr_path = json.dumps(HMR_PATH)
+    hmr_block = ""
+    if hmr:
+        hmr_block = f"""
+  try {{
+    const es = new EventSource({hmr_path});
+    es.addEventListener("reload", () => location.reload());
+  }} catch (err) {{
+    console.warn("[ourui] HMR unavailable", err);
+  }}
+"""
     return f"""\
 (() => {{
   const handlers = {table_json};
@@ -56,6 +68,6 @@ def emit_js(rtr: dict[str, Any]) -> str:
     ev.preventDefault();
     invoke(el.getAttribute("data-ourui-on-click"));
   }});
-  window.OurUI = {{ invoke, handlers, applyState }};
+  window.OurUI = {{ invoke, handlers, applyState }};{hmr_block}
 }})();
 """

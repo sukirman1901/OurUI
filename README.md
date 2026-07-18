@@ -18,7 +18,7 @@ pytest tests/p0
 
 - `dump` — JSON artifacts (SG, DG, IIR, LTR, RTR, handlers)  
 - `emit` — HTML + CSS + JS shim  
-- `serve` — preview + `POST /__ourui/call/<handler>` + live `State` binds
+- `serve` — preview + RPC + HMR (SSE reload on save)
 
 
 ## Core documents
