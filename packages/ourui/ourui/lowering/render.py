@@ -70,36 +70,39 @@ def lower_to_rtr(ltr: Any) -> RTR:
         for tone_key in ("color", "variant", "bg"):
             if tone_key in attrs and not isinstance(attrs[tone_key], dict):
                 props[tone_key] = attrs[tone_key]
-        for key in ("href", "external", "shell_layout"):
+        for key in ("href", "external", "shell_layout", "name", "placeholder", "type", "label", "value"):
             if key in attrs:
                 props[key] = attrs[key]
         children = list(lnode.get("children", []))
 
-        # Promote textual props to Text HostNodes (still no HTML)
+        # Promote textual props to Text HostNodes (still no HTML) — not for Input value
         text_children: list[str] = []
         binds = attrs.get("binds") or {}
-        for prop_key in ("title", "subtitle", "text"):
-            if prop_key in attrs and not isinstance(attrs[prop_key], dict):
-                tid = _next_text_id(text_counter)
-                text_attrs: dict[str, Any] = {
-                    "content": "" if attrs[prop_key] is None else str(attrs[prop_key]),
-                    "slot": prop_key,
-                }
-                if prop_key in binds:
-                    text_attrs["bind"] = binds[prop_key]
-                text_node = Node(
-                    id=tid,
-                    kind="Text",
-                    span=_span_from_dict(lnode["span"]),
-                    attributes=text_attrs,
-                    metadata={"stage": "rtr", "host": True},
-                    children=[],
-                    provenance=[*lnode.get("provenance", []), "lowering:render", "expand:text"],
-                    revision=lnode.get("revision", 0),
-                    generation=lnode.get("generation", 0) + 1,
-                ).with_hash()
-                rtr.nodes[tid] = text_node.to_dict()
-                text_children.append(tid)
+        if from_intent != "Input":
+            for prop_key in ("title", "subtitle", "text"):
+                if prop_key in attrs and not isinstance(attrs[prop_key], dict):
+                    tid = _next_text_id(text_counter)
+                    text_attrs: dict[str, Any] = {
+                        "content": "" if attrs[prop_key] is None else str(attrs[prop_key]),
+                        "slot": prop_key,
+                    }
+                    if prop_key in binds:
+                        text_attrs["bind"] = binds[prop_key]
+                    text_node = Node(
+                        id=tid,
+                        kind="Text",
+                        span=_span_from_dict(lnode["span"]),
+                        attributes=text_attrs,
+                        metadata={"stage": "rtr", "host": True},
+                        children=[],
+                        provenance=[*lnode.get("provenance", []), "lowering:render", "expand:text"],
+                        revision=lnode.get("revision", 0),
+                        generation=lnode.get("generation", 0) + 1,
+                    ).with_hash()
+                    rtr.nodes[tid] = text_node.to_dict()
+                    text_children.append(tid)
+        elif "value" in binds:
+            props["bind"] = binds["value"]
 
         # Text nodes first (label), then structural children
         all_children = text_children + children
@@ -138,5 +141,6 @@ def _role_for(from_intent: str) -> str:
         "Text": "text",
         "Grid": "grid",
         "Link": "link",
+        "Input": "input",
     }
     return mapping.get(from_intent, from_intent.lower())

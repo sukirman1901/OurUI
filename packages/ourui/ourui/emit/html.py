@@ -17,6 +17,7 @@ _ROLE_TAG: dict[str, str] = {
     "grid": "div",
     "text": "span",
     "link": "a",
+    "input": "input",
 }
 
 _BASE_CSS = """\
@@ -99,10 +100,36 @@ button.ourui-tone-muted {
   background: var(--ourui-muted);
   color: var(--ourui-muted-fg);
 }
+.ourui-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ourui-space-sm);
+  max-width: 24rem;
+  width: 100%;
+}
+.ourui-field-label {
+  font-size: 0.875rem;
+  color: var(--ourui-muted-fg);
+}
+input.ourui-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  border: 1px solid var(--ourui-border);
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+  font: inherit;
+}
+input.ourui-input:focus {
+  outline: 2px solid var(--ourui-primary);
+  outline-offset: 1px;
+}
 """
 # Tone classes above use CSS vars seeded from Resolved Design (Host Contract).
 # Per-node rules from Resolved Design override for concrete fill/fg/radius/pad.
-
+# Input chrome (.ourui-input / .ourui-field) is host-private layout — not Design System.
 
 def _as_resolved_design(resolved_design: Any) -> dict[str, Any] | None:
     if resolved_design is None:
@@ -210,7 +237,14 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         tone = _tone_name(attrs)
         if tone:
             classes.append(f"ourui-tone-{tone}")
-    if node["kind"] == "Leaf" and "ourui-control" not in classes and "ourui-link" not in classes:
+    if role == "input":
+        classes.append("ourui-input")
+    if (
+        node["kind"] == "Leaf"
+        and "ourui-control" not in classes
+        and "ourui-link" not in classes
+        and "ourui-input" not in classes
+    ):
         classes.append("ourui-leaf")
     return classes
 
@@ -235,6 +269,28 @@ def _event_attrs(node: dict[str, Any]) -> str:
     return "".join(parts)
 
 
+def _input_attrs(attrs: dict[str, Any]) -> str:
+    parts: list[str] = []
+    name = attrs.get("name")
+    if isinstance(name, str) and name:
+        parts.append(f' name="{html.escape(name, quote=True)}"')
+        parts.append(f' data-ourui-field="{html.escape(name, quote=True)}"')
+    input_type = attrs.get("type") or "text"
+    if not isinstance(input_type, str) or not input_type:
+        input_type = "text"
+    parts.append(f' type="{html.escape(str(input_type), quote=True)}"')
+    placeholder = attrs.get("placeholder")
+    if isinstance(placeholder, str) and placeholder:
+        parts.append(f' placeholder="{html.escape(placeholder, quote=True)}"')
+    value = attrs.get("value")
+    if value is not None and not isinstance(value, dict):
+        parts.append(f' value="{html.escape(str(value), quote=True)}"')
+    bind = attrs.get("bind")
+    if isinstance(bind, str) and bind:
+        parts.append(f' data-ourui-bind="{html.escape(bind, quote=True)}"')
+    return "".join(parts)
+
+
 def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> list[str]:
     node = nodes[nid]
     pad = "  " * indent
@@ -256,9 +312,23 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     data_id = f' data-ourui-id="{html.escape(nid)}"'
     events = _event_attrs(node)
     link = _link_attrs(node.get("attributes", {})) if role == "link" else ""
+    field = _input_attrs(node.get("attributes", {})) if role == "input" else ""
 
     children = node.get("children", [])
-    attrs = f"{class_attr}{data_role}{data_id}{link}{events}"
+    attrs = f"{class_attr}{data_role}{data_id}{link}{field}{events}"
+
+    if role == "input":
+        label = node.get("attributes", {}).get("label")
+        input_line = f"{pad}<input{attrs} />"
+        if isinstance(label, str) and label:
+            lab = html.escape(label)
+            return [
+                f'{pad}<label class="ourui-field">',
+                f'{pad}  <span class="ourui-field-label">{lab}</span>',
+                f"{pad}  <input{attrs} />",
+                f"{pad}</label>",
+            ]
+        return [input_line]
 
     if not children:
         return [f"{pad}<{tag}{attrs}></{tag}>"]

@@ -66,6 +66,8 @@ class _UINamespace:
                 else:
                     if "text" not in props and isinstance(arg, str) and name in {"Button", "Text", "Card", "Link"}:
                         props["text"] = arg
+                    elif name == "Input" and "name" not in props and isinstance(arg, str):
+                        props["name"] = arg
                     elif "title" not in props and isinstance(arg, str):
                         props["title"] = arg
                     else:

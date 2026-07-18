@@ -35,9 +35,25 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     if (!state) return;
     Object.keys(state).forEach((name) => {{
       document.querySelectorAll('[data-ourui-bind="' + name + '"]').forEach((el) => {{
-        el.textContent = String(state[name]);
+        const tag = (el.tagName || "").toLowerCase();
+        const next = String(state[name]);
+        if (tag === "input" || tag === "textarea" || tag === "select") {{
+          el.value = next;
+        }} else {{
+          el.textContent = next;
+        }}
       }});
     }});
+  }}
+  function collectFields(scope) {{
+    const root = scope || document;
+    const payload = {{}};
+    root.querySelectorAll("[data-ourui-field]").forEach((el) => {{
+      const key = el.getAttribute("data-ourui-field");
+      if (!key) return;
+      payload[key] = el.value;
+    }});
+    return payload;
   }}
   async function invoke(name, payload) {{
     const meta = handlers[name] || {{ kind: "client" }};
@@ -66,8 +82,8 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     const el = ev.target && ev.target.closest && ev.target.closest("[data-ourui-on-click]");
     if (!el) return;
     ev.preventDefault();
-    invoke(el.getAttribute("data-ourui-on-click"));
+    invoke(el.getAttribute("data-ourui-on-click"), collectFields());
   }});
-  window.OurUI = {{ invoke, handlers, applyState }};{hmr_block}
+  window.OurUI = {{ invoke, handlers, applyState, collectFields }};{hmr_block}
 }})();
 """

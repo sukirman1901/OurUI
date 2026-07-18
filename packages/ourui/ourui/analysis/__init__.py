@@ -194,6 +194,8 @@ class _GraphBuilder:
             if isinstance(val, str):
                 if kind in {"Button", "Text", "Card", "Link"} and "text" not in attrs:
                     attrs["text"] = val
+                elif kind == "Input" and "name" not in attrs:
+                    attrs["name"] = val
                 elif "title" not in attrs:
                     attrs["title"] = val
                 else:
@@ -230,14 +232,23 @@ class _GraphBuilder:
                 else:
                     attrs["on_click"] = literal_value(kw.value)
                 continue
-            if kw.arg in {"text", "title", "subtitle", "bind"}:
+            if kw.arg in {"text", "title", "subtitle", "bind", "value"}:
                 state_ref = self._maybe_state_ref(kw.value)
                 if state_ref:
                     if kw.arg == "bind":
-                        attrs["text"] = state_ref
+                        attrs["value" if kind == "Input" else "text"] = state_ref
+                    elif kw.arg == "value":
+                        attrs["value"] = state_ref
                     else:
                         attrs[kw.arg] = state_ref
                     continue
+            if kw.arg == "type" and kind == "Input":
+                type_val = literal_value(kw.value)
+                if isinstance(type_val, str):
+                    from ourui.node import INPUT_TYPES
+
+                    attrs["type"] = type_val if type_val in INPUT_TYPES else "text"
+                continue
             if isinstance(kw.value, ast.Call):
                 cid = self.build_call(kw.value, parent_id=nid, expansion_trail=trail)
                 if cid:

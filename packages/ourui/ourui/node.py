@@ -61,10 +61,13 @@ class Node:
 
 
 INTENT_KINDS = frozenset({"Page", "Hero", "Section", "Shell"})
-PRESENTATION_KINDS = frozenset({"Button", "Text", "Card", "Grid", "Link"})
+PRESENTATION_KINDS = frozenset({"Button", "Text", "Card", "Grid", "Link", "Input"})
 KNOWN_KINDS = INTENT_KINDS | PRESENTATION_KINDS
 
 # Authoring layout= intents (emit as shell classes; not Tailwind utilities)
 SHELL_LAYOUT_INTENTS = frozenset({"stack", "row", "split-3", "grid"})
+
+# Input type= enum (S2)
+INPUT_TYPES = frozenset({"text", "email", "password", "number", "search", "url", "tel"})
 
 THEME_ATTR_KEYS = frozenset({"variant", "color", "bg", "theme"})

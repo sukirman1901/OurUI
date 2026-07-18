@@ -17,10 +17,25 @@ _PRESENTATION_KINDS = frozenset(
         "Card",
         "Grid",
         "Link",
+        "Input",
     }
 )
 
-_PASSTHROUGH = ("color", "variant", "bg", "href", "external", "layout", "text", "title")
+_PASSTHROUGH = (
+    "color",
+    "variant",
+    "bg",
+    "href",
+    "external",
+    "layout",
+    "text",
+    "title",
+    "name",
+    "placeholder",
+    "type",
+    "label",
+    "value",
+)
 
 
 @dataclass

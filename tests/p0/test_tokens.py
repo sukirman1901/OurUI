@@ -30,7 +30,7 @@ def test_default_tokens_emit_css() -> None:
 
 def test_dump_includes_tokens() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 12
+    assert doc["version"] == 13
     assert doc["emit"]["tokens"] is True
     tokens = doc["semantic_graph"]["tokens"]
     assert tokens["light"]["primary"] == "#1a5f4a"

@@ -16,6 +16,7 @@ _LAYOUT_KIND: dict[str, str] = {
     "Button": "Box",
     "Text": "Box",
     "Link": "Box",
+    "Input": "Box",
 }
 
 _AXIS: dict[str, str] = {
@@ -43,6 +44,11 @@ _PASSTHROUGH_PROPS = (
     "bg",
     "href",
     "external",
+    "name",
+    "placeholder",
+    "type",
+    "label",
+    "value",
 )
 
 

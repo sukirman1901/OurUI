@@ -33,6 +33,7 @@ page = ui.Page(
 | `ui.Card` | Presentation | Card container |
 | `ui.Grid` | Presentation | Responsive grid layout |
 | `ui.Link` | Presentation | In-app or external navigation (`href=`) |
+| `ui.Input` | Presentation | Form field (`name=` → `@server` payload on button click) |
 | `ui.Theme` | Tokens | Design token overrides (module-level) |
 
 ## `ui.Page`
@@ -157,6 +158,35 @@ ui.Grid(
 
 The emitter renders a CSS grid with `repeat(auto-fit, minmax(12rem, 1fr))`.
 
+## `ui.Input`
+
+Form field (Phase S2). On button click, JS collects all `[data-ourui-field]` values and posts them as the `@server` payload.
+
+```python
+email = State("")
+
+@server
+def save(**payload):
+    email.set(str(payload.get("email", "")))
+
+ui.Input(
+    name="email",
+    type="email",
+    placeholder="you@example.com",
+    label="Email",
+    bind=email,
+)
+ui.Button("Save", on_click=save)
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `name` | `str` | Field key in the RPC payload (required for form collection) |
+| `type` | `str` | `text` \| `email` \| `password` \| `number` \| `search` \| `url` \| `tel` |
+| `placeholder` | `str` | Placeholder text |
+| `label` | `str` | Optional visible label |
+| `bind` / `value` | `State` or `str` | Initial value; `bind=` syncs from server State after RPC |
+
 ## `ui.Theme`
 
 Module-level design token overrides. Not a visual node — assign at module scope like `page`.
@@ -211,6 +241,7 @@ ui.Shell(
 The `ui` namespace accepts shorthand positional args:
 
 - First string on `Button`, `Text`, `Card`, `Link` → `text`
+- First string on `Input` → `name`
 - First string on other kinds → `title` when `title` is not set
 - UI node positional args → appended to `children`
 

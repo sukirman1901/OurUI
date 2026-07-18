@@ -67,6 +67,7 @@ about = ui.Page(route="/about", ui.Section(title="About"))
 | `Card` | Presentation | Card concept |
 | `Grid` | Presentation | Grid concept (pre-layout) |
 | `Link` | Presentation | Navigation anchor; requires `href=` |
+| `Input` | Presentation | Form field; `name=` collected into `@server` payload on button click |
 
 ### Layout intents (`layout=`)
 
@@ -78,6 +79,19 @@ Emit maps them to host classes (e.g. `.ourui-shell-split-3`) — see ADR-005.
 ```python
 ui.Link("Studio", href="/app")
 ui.Link("Docs", href="https://example.com", color="primary")  # external → target=_blank
+```
+
+### Inputs (Phase S2)
+
+```python
+email = State("")
+
+@server
+def save(**payload):
+    email.set(str(payload.get("email", "")))
+
+ui.Input(name="email", type="email", placeholder="you@example.com", label="Email", bind=email)
+ui.Button("Save", on_click=save)  # JS posts collected [data-ourui-field] values
 ```
 
 ## Components (Phase I)

@@ -73,7 +73,7 @@ def lower_to_iir(graph: SemanticGraph) -> IIR:
             events["click"] = str(on_click["__handler__"])
 
         binds: dict[str, str] = {}
-        for key in ("text", "title", "subtitle"):
+        for key in ("text", "title", "subtitle", "value"):
             if key not in attrs:
                 continue
             display, bind = _resolve_attr(attrs[key], graph.states)

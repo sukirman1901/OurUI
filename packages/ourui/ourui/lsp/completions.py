@@ -12,6 +12,7 @@ UI_COMPONENTS: dict[str, str] = {
     "Hero": "Intent domain hero section.",
     "Section": "Intent domain content section.",
     "Button": "Presentation domain clickable control.",
+    "Input": "Form control; name= collected into @server payload on button click.",
     "Text": "Presentation domain text node.",
     "Card": "Presentation domain card container.",
     "Grid": "Layout grid container.",

@@ -4,6 +4,19 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.3.1] — 2026-07-18
+
+### Added
+
+- **`ui.Input`** (Phase S2) — form fields with `name=`, `type=`, `placeholder=`, `label=`, `bind=`
+- Button clicks collect `[data-ourui-field]` values into the `@server` RPC payload
+- Dump schema **version 13**
+
+### Notes
+
+- Host Contract unchanged: Input chrome is host-private CSS; structure via RTR
+- Remaining S2: Slider, Select, Toggle
+
 ## [0.3.0] — 2026-07-18
 
 ### Changed
