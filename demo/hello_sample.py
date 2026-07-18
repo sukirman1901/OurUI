@@ -13,11 +13,14 @@ def bump():
 
 
 page = ui.Page(
-    ui.Text("Hello "),
+    ui.Hero(
+        title="Hello",
+        subtitle="Say hi, then count clicks — emitted host UI, not markup soup.",
+        cta=ui.Button("Click me", on_click=bump),
+    ),
+    ui.Input(name="name", label="Your name", bind=name),
+    ui.Text("Greeting: Hello "),
     ui.Text(name),
-    ui.Text("!"),
-    ui.Input(name="name", bind=name),
-    ui.Button("clicks", on_click=bump),
-    ui.Text("clicks: "),
+    ui.Text(" — clicks: "),
     ui.Text(count),
 )

@@ -4,6 +4,18 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.0.1] — 2026-07-18
+
+### Changed — default visual quality
+
+- Retuned `ourui-default` tokens: zinc/ink product palette (no cream + Fraunces + teal brochure)
+- Untoned `ui.Button` resolves to **primary** (not muted gray chips)
+- Page chrome: inset + max-width; Shell layouts stay full-bleed
+- Host CSS recipes: button hover/focus, form fields, list/table separators, dialog elev
+- Fonts: IBM Plex Sans; upgraded `demo/hello_sample.py` first impression
+
+Dump schema remains **25 Frozen**.
+
 ## [1.0.0] — 2026-07-18
 
 ### Added — Phase T (Form & overlay)

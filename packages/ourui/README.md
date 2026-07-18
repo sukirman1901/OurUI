@@ -1,10 +1,10 @@
-# ourui 1.0.0
+# ourui 1.0.1
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-Dump schema **25** (Frozen for 1.0.x). Stable through Phase **S6** plus Phase **T–W**: Form/Dialog/Toast, List/Table/status, diagnostics/`ourui check`, Trusted Publishing recipe.
+Dump schema **25** (Frozen for 1.0.x). Default host look: zinc/ink product palette (1.0.1 visual quality pass).
 
 ## Install
 

@@ -39,9 +39,10 @@ def test_button_primary_resolves_fill_fg() -> None:
     assert buttons
     primary = [b for b in buttons if b.get("tone") == "primary"]
     assert primary
+    # example.py Theme overrides primary to teal for this fixture
     for b in primary:
-        assert b["resolved"]["fill"] == DEFAULT_LIGHT["primary"]
-        assert b["resolved"]["fg"] == DEFAULT_LIGHT["primary_fg"]
+        assert b["resolved"]["fill"] == "#1a5f4a"
+        assert b["resolved"]["fg"] == "#f5faf8"
         assert "resolve:design" in b["provenance"]
 
 
@@ -73,3 +74,27 @@ def test_resolve_design_pure_without_pipeline() -> None:
     }
     rd = resolve_design(pg, mode="light")
     assert rd.nodes["n1"]["resolved"]["fill"] == DEFAULT_LIGHT["primary"]
+
+
+def test_untoned_button_defaults_to_primary() -> None:
+    pg = {
+        "nodes": {
+            "n1": {
+                "id": "n1",
+                "kind": "Button",
+                "role": "button",
+                "provenance": ["lowering:presentation"],
+            }
+        },
+        "roots": ["n1"],
+    }
+    rd = resolve_design(pg, mode="light")
+    assert rd.nodes["n1"]["resolved"]["fill"] == DEFAULT_LIGHT["primary"]
+    assert rd.nodes["n1"]["resolved"]["fg"] == DEFAULT_LIGHT["primary_fg"]
+
+
+def test_default_pack_includes_page_recipe() -> None:
+    pack = default_pack()
+    assert pack["page"]["max_width"] == "42rem"
+    assert DEFAULT_LIGHT["bg"] == "#fafafa"
+    assert "Fraunces" not in DEFAULT_LIGHT["font_display"]

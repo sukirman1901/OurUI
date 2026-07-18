@@ -23,6 +23,13 @@ def default_pack() -> dict[str, Any]:
             "pad_inline": "space_md",
             "radius": "radius",
         },
+        # Page chrome recipes — host maps via tokens in _BASE_CSS.
+        "page": {
+            "max_width": "42rem",
+            "pad_block": "space_xl",
+            "pad_inline": "space_lg",
+            "gap": "space_lg",
+        },
     }
 
 
@@ -45,14 +52,16 @@ class ResolvedDesign:
         }
 
 
-def _tone_pair(tone: str | None, mode_tokens: dict[str, str]) -> dict[str, str]:
-    if not tone:
-        return {
-            "fill": mode_tokens.get("muted", ""),
-            "fg": mode_tokens.get("muted_fg", ""),
-        }
-    fill_key = tone
-    fg_key = f"{tone}_fg"
+def _tone_pair(
+    tone: str | None,
+    mode_tokens: dict[str, str],
+    *,
+    fallback: str = "muted",
+) -> dict[str, str]:
+    """Resolve fill/fg. Untoned buttons use primary (not muted gray chips)."""
+    effective = tone if tone else fallback
+    fill_key = effective
+    fg_key = f"{effective}_fg"
     if fill_key not in mode_tokens:
         fill_key = "primary"
         fg_key = "primary_fg"
@@ -60,6 +69,14 @@ def _tone_pair(tone: str | None, mode_tokens: dict[str, str]) -> dict[str, str]:
         "fill": mode_tokens.get(fill_key, mode_tokens.get("primary", "")),
         "fg": mode_tokens.get(fg_key, mode_tokens.get("primary_fg", "")),
     }
+
+
+def _fallback_tone(role: str | None) -> str:
+    if role == "button":
+        return "primary"
+    if role == "link":
+        return "primary"
+    return "muted"
 
 
 def resolve_design(
@@ -93,10 +110,11 @@ def resolve_design(
     out = ResolvedDesign(pack=str(pack.get("id", PACK_ID)), mode=mode_key, tokens=modes)
     for nid, node in nodes_in.items():
         tone = node.get("tone")
+        role = node.get("role")
         if isinstance(tone, str):
             pair = _tone_pair(tone, mode_tokens)
         else:
-            pair = _tone_pair(None, mode_tokens)
+            pair = _tone_pair(None, mode_tokens, fallback=_fallback_tone(role if isinstance(role, str) else None))
         resolved: dict[str, Any] = {
             "fill": pair["fill"],
             "fg": pair["fg"],

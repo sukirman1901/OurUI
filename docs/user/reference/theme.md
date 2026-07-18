@@ -1,15 +1,17 @@
 # Theme and tokens
 
-OurUI emits semantic CSS variables under the `--ourui-*` namespace. Override defaults once with `ui.Theme`, then reference token names on components. Emit consumes **Resolved Design** (Host Contract); theme overrides seed the Design System pack.
+OurUI emits semantic CSS variables under the `--ourui-*` namespace. Defaults (1.0.1+) are a **zinc / ink** product palette with IBM Plex Sans — not cream/serif brochure tokens. Override with `ui.Theme`, then reference token names on components. Emit consumes **Resolved Design** (Host Contract); theme overrides seed the Design System pack.
 
 ```python
 from ourui import ui
 
-theme = ui.Theme(primary="#1a5f4a", primary_fg="#f5faf8")
+# Optional — omit Theme to use ourui-default zinc/ink pack
+theme = ui.Theme(primary="#18181b", primary_fg="#fafafa", accent="#2563eb")
 
 page = ui.Page(
     ui.Hero(title="Themed"),
-    ui.Button("Primary", color="primary"),
+    ui.Button("Primary"),  # untoned buttons resolve to primary
+    ui.Button("Quiet", color="muted"),
     ui.ThemeToggle("Theme"),
 )
 ```
@@ -22,11 +24,12 @@ Assign at **module level**. The compiler merges overrides into Semantic Graph `t
 
 ```python
 theme = ui.Theme(
-    primary="#1a5f4a",
-    primary_fg="#f5faf8",
-    font_display='"Fraunces", Georgia, serif',
+    primary="#18181b",
+    primary_fg="#fafafa",
+    accent="#2563eb",
+    font_sans='"IBM Plex Sans", system-ui, sans-serif',
     space_lg="1.25rem",
-    dark={"primary": "#2dd4a8", "primary_fg": "#042f2e"},
+    dark={"primary": "#fafafa", "primary_fg": "#09090b"},
 )
 ```
 
