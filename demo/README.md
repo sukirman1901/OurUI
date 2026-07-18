@@ -36,6 +36,8 @@ Open http://127.0.0.1:8766/
 | `hello_sample.py` | Canonical hello seed |
 | `bake_artifacts.py` | Seeds `playground_artifacts.py` |
 | `playground_artifacts.py` | Generated initial strings |
+| `button.py` | Minimal `color="danger"` button sample |
+| `button-preview.png` | Screenshot of `button.py` emit |
 
 ## Gaps
 
