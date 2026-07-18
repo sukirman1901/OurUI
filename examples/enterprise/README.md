@@ -11,6 +11,7 @@ Clone-ready screens for org apps built with OurUI. **Auth and databases are temp
 | [`audit_app.py`](audit_app.py) | Audit-style Table from `State` |
 | [`ai_console_app.py`](ai_console_app.py) | Textarea + Code/Frame bind + `@server` echo |
 | [`templates/AUTH_OIDC.md`](templates/AUTH_OIDC.md) | Wire FastAPI + OIDC **outside** OurUI |
+| [`gateway/`](gateway/) | Bearer auth gateway in front of `ourui serve --prod` |
 
 ## Run locally
 

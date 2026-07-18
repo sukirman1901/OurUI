@@ -159,6 +159,22 @@ def collect_enterprise_diagnostics(path: str | Path) -> list[Diagnostic]:
         if kind in _ESCAPE_KINDS:
             escape_count += 1
 
+        if kind == "Frame":
+            has_srcdoc = "srcdoc" in attrs
+            bind = attrs.get("bind")
+            if has_srcdoc or bind is not None:
+                out.append(
+                    Diagnostic(
+                        code="SEC001",
+                        message=(
+                            "Frame with srcdoc/bind is an HTML escape hatch; "
+                            "sandbox and sanitize untrusted content at the app layer"
+                        ),
+                        severity="warning",
+                        **span,
+                    )
+                )
+
     if escape_count > _ESCAPE_BUDGET:
         out.append(
             Diagnostic(

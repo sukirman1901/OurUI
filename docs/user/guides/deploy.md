@@ -36,7 +36,7 @@ Standalone Dockerfile sketch (same idea as `deploy/Dockerfile`):
 ```dockerfile
 FROM python:3.12-slim
 WORKDIR /app
-RUN pip install --no-cache-dir ourui>=1.5.0
+RUN pip install --no-cache-dir ourui>=1.6.0
 COPY app.py .
 EXPOSE 8765
 CMD ["ourui", "serve", "app.py", "--host", "0.0.0.0", "--port", "8765", "--prod"]

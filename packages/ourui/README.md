@@ -1,10 +1,10 @@
-# ourui 1.5.0
+# ourui 1.6.0
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-Dump schema **27** (additive). Enterprise E1–E5: Show/When, density, check profiles, kit, CSP/attestation.
+Dump schema **28** (additive). Security hardening: CSRF, session gate, CSP nonce, rate limit, attestation `sha256`.
 
 ## Install
 

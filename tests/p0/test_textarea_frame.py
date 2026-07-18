@@ -33,4 +33,4 @@ def test_textarea_frame_in_dump() -> None:
     kinds = {n["kind"] for n in doc["semantic_graph"]["nodes"].values()}
     assert "Input" in kinds
     assert "Frame" in kinds
-    assert doc["version"] == 27
+    assert doc["version"] == 28

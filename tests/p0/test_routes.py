@@ -25,7 +25,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_registers_routes() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 27
+    assert doc["version"] == 28
     routes = doc["semantic_graph"]["routes"]
     assert routes["/"] == "n0001"
     assert routes["/about"] == "n0003"

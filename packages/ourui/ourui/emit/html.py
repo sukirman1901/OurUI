@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from ourui.emit.js import emit_js
+from ourui.runtime.security import csp_content as _csp_content_fn
 from ourui.theme import COLOR_TOKEN_NAMES, emit_tokens_css
 
 _PLASMA_ENGINE = (Path(__file__).resolve().parent.parent / "host" / "plasma" / "plasma-engine.js").read_text(
@@ -801,16 +802,6 @@ html.ourui-density-compact [data-role="page"],
   gap: var(--ourui-space-md);
 }
 """
-
-
-# Baseline CSP for emitted documents (E5). Inline host shim requires 'unsafe-inline'.
-# Prefer Content-Security-Policy-Report-Only on the host until you audit third-party fonts.
-_CSP_CONTENT = (
-    "default-src 'self'; "
-    "script-src 'self' 'unsafe-inline'; "
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-    "font-src 'self' https://fonts.gstatic.com"
-)
 
 
 def _as_resolved_design(resolved_design: Any) -> dict[str, Any] | None:
@@ -1753,6 +1744,8 @@ def emit_html_document(
     state_values: dict[str, Any] | None = None,
     hmr: bool = False,
     resolved_design: Any,
+    csrf_token: str | None = None,
+    csp_nonce: str | None = None,
 ) -> str:
     """Emit HTML from Host Contract inputs: RTR + Resolved Design (both required)."""
     rtr = apply_state_values(rtr, state_values)
@@ -1789,10 +1782,15 @@ def emit_html_document(
             head_extra.append(
                 f'  <meta property="{html.escape(prop, quote=True)}" content="{html.escape(str(val), quote=True)}" />'
             )
+    csp = _csp_content_fn(nonce=csp_nonce)
     head_extra.append(
-        f'  <meta http-equiv="Content-Security-Policy" content="{html.escape(_CSP_CONTENT, quote=True)}" '
+        f'  <meta http-equiv="Content-Security-Policy" content="{html.escape(csp, quote=True)}" '
         f'data-ourui-csp="1" />'
     )
+    if csrf_token:
+        head_extra.append(
+            f'  <meta name="ourui-csrf" content="{html.escape(csrf_token, quote=True)}" />'
+        )
     # Google Fonts for token fonts (display + sans)
     head_extra.append(
         '  <link rel="preconnect" href="https://fonts.googleapis.com" />'
@@ -1803,6 +1801,8 @@ def emit_html_document(
     head_extra.append(
         '  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />'
     )
+
+    nonce_attr = f' nonce="{html.escape(csp_nonce, quote=True)}"' if csp_nonce else ""
 
     parts = [
         "<!DOCTYPE html>",
@@ -1818,10 +1818,10 @@ def emit_html_document(
         "</head>",
         "<body>",
         *body_lines,
-        "  <script>",
+        f"  <script{nonce_attr}>",
         _PLASMA_ENGINE.rstrip("\n"),
         "  </script>",
-        "  <script>",
+        f"  <script{nonce_attr}>",
         js,
         "  </script>",
         "</body>",

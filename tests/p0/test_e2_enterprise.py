@@ -29,20 +29,22 @@ def test_default_pack_version_and_density() -> None:
     assert "space_sm" in pack["density"]["compact"]
 
 
-def test_dump_schema_27_attestation_and_pack_version() -> None:
+def test_dump_schema_28_attestation_and_pack_version() -> None:
     doc = compile_dump(ENTERPRISE / "crud_app.py")
-    assert doc["version"] == 27
+    assert doc["version"] == 28
     assert doc["emit"]["density"] is True
     assert doc["emit"]["csp"] is True
     assert doc["emit"]["attestation"] is True
+    assert doc["emit"]["csrf"] is True
     rd = doc["resolved_design"]
     assert rd["pack"] == "ourui-default"
     assert rd["pack_version"] == "1.0.0"
     assert rd["density"] == "comfortable"
     att = doc["attestation"]
-    assert att["schema"] == 27
+    assert att["schema"] == 28
     assert att["pack"] == "ourui-default"
     assert att["pack_version"] == "1.0.0"
+    assert isinstance(att.get("sha256"), str) and len(att["sha256"]) == 64
 
 
 def test_density_compact_emit_class(tmp_path: Path) -> None:
@@ -134,9 +136,9 @@ page = ui.Page(ui.Input(name="x"), ui.Button("Save", color="primary"))
     "name",
     ["crud_app.py", "settings_app.py", "audit_app.py", "ai_console_app.py"],
 )
-def test_enterprise_kit_apps_schema_27(name: str) -> None:
+def test_enterprise_kit_apps_schema_28(name: str) -> None:
     path = ENTERPRISE / name
     doc = compile_dump(path)
-    assert doc["version"] == 27
+    assert doc["version"] == 28
     html = emit_html(path, title=path.stem)
     assert "Acme" in html or "acme" in html.lower() or path.stem.replace("_", " ") in html.lower()

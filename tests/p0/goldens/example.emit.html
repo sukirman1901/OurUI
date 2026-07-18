@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>example</title>
-  <meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27; https://fonts.googleapis.com; font-src &#x27;self&#x27; https://fonts.gstatic.com" data-ourui-csp="1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27; https://fonts.googleapis.com; font-src &#x27;self&#x27; https://fonts.gstatic.com; frame-src &#x27;self&#x27; blob:; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;" data-ourui-csp="1" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1103,6 +1103,10 @@ html.ourui-density-compact [data-role="page"],
 (() => {
   const handlers = {"get_started":{"kind":"server"},"increment":{"kind":"server"}};
   const rpcBase = "/__ourui/call/";
+  function csrfToken() {
+    const m = document.querySelector('meta[name="ourui-csrf"]');
+    return m ? (m.getAttribute("content") || "") : "";
+  }
   function applyState(state) {
     if (!state) return;
     Object.keys(state).forEach((name) => {
@@ -1194,10 +1198,16 @@ html.ourui-density-compact [data-role="page"],
     const detail = { handler: name, kind: meta.kind };
     window.dispatchEvent(new CustomEvent("ourui:call", { detail }));
     if (meta.kind === "server") {
+      const body = Object.assign({}, payload || {});
+      const csrf = csrfToken();
+      if (csrf) body._csrf = csrf;
+      const headers = { "Content-Type": "application/json" };
+      if (csrf) headers["X-OurUI-CSRF"] = csrf;
       const res = await fetch(rpcBase + encodeURIComponent(name), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload || {}),
+        headers,
+        body: JSON.stringify(body),
+        credentials: "same-origin",
       });
       const data = await res.json();
       window.dispatchEvent(new CustomEvent("ourui:result", { detail: data }));
@@ -1297,7 +1307,7 @@ html.ourui-density-compact [data-role="page"],
     invoke(el.getAttribute("data-ourui-on-click"), collectFields());
   });
   initCanvases();
-  window.OurUI = { invoke, handlers, applyState, collectFields, toggleTheme, initCanvases };
+  window.OurUI = { invoke, handlers, applyState, collectFields, toggleTheme, initCanvases, csrfToken };
 })();
   </script>
 </body>

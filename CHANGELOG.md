@@ -4,6 +4,20 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.6.0] — 2026-07-18
+
+### Added — Security hardening (P0–P2)
+
+- **P0:** Session cookie `Secure` via `OURUI_COOKIE_SECURE`; per-session CSRF on prod RPC; reject POST without existing session; FastAPI auth gateway example (`examples/enterprise/gateway/`)
+- **P1:** CSP nonce on prod emit; `OURUI_RPC_RATE_LIMIT`; safe prod 500s; security headers; enterprise `SEC001` for Frame/srcdoc
+- **P2:** Dump attestation `sha256`; threat-model guide; CI secret scan step
+
+Dump schema **28** (additive): `emit.csrf` / `security_headers`; `attestation.sha256`.
+
+### Notes
+
+- Auth/SSO remain app-layer (gateway). Dev `ourui serve` (no `--prod`) stays CSRF-free for local DX.
+
 ## [1.5.0] — 2026-07-18
 
 ### Added — Enterprise E2–E5

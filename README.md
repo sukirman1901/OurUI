@@ -4,7 +4,7 @@
 
 OurUI is a Python-first **language platform** for semantic UI — not a React/Tailwind clone. You author intent in Python; the compiler lowers through **OurIR** (IIR → LTR → RTR) plus Presentation Graph → Resolved Design, then the web host emits HTML/CSS/JS under the **Host Contract**.
 
-Package **1.5.0** on [PyPI](https://pypi.org/project/ourui/) ([CHANGELOG.md](CHANGELOG.md)). Enterprise **E1–E5** shipped; dump schema **27**. Specs: [SPEC_STATUS.md](SPEC_STATUS.md) · Vision: [VISION.md](VISION.md) · Roadmap: [docs/roadmap.md](docs/roadmap.md).
+Package **1.6.0** ([CHANGELOG.md](CHANGELOG.md)). Enterprise **E1–E5** + security hardening; dump schema **28**. Specs: [SPEC_STATUS.md](SPEC_STATUS.md) · Vision: [VISION.md](VISION.md) · Roadmap: [docs/roadmap.md](docs/roadmap.md).
 
 ## Quick start
 

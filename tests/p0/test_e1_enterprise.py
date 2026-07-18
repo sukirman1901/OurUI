@@ -17,9 +17,9 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(ROOT)
 
 
-def test_e1_dump_schema_27() -> None:
+def test_e1_dump_schema_28() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 27
+    assert doc["version"] == 28
     assert doc["emit"]["show"] is True
     assert doc["emit"]["when"] is True
     assert doc["emit"]["dynamic_list"] is True
@@ -41,7 +41,7 @@ def test_e1_emit_show_when_list_table() -> None:
 def test_e1_crud_example_compiles() -> None:
     path = ROOT / "examples" / "enterprise" / "crud_app.py"
     doc = compile_dump(path)
-    assert doc["version"] == 27
+    assert doc["version"] == 28
     html = emit_html(path, title="crud")
     assert "Acme Admin" in html
     assert 'data-role="table"' in html

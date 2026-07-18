@@ -30,6 +30,7 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | Phase T–W → 1.0 freeze | Done (`1.0.0`, schema **25 Frozen**) |
 | Enterprise E1 screen completeness | Done (`1.1.0`, schema **26**) |
 | Enterprise E2–E5 (pack/density/check, operate, kit, trust) | Done (`1.5.0`, schema **27**) |
+| Security hardening (CSRF, session gate, nonce, attest hash) | Done (`1.6.0`, schema **28**) |
 
 | Area | Status |
 |---|---|
@@ -48,7 +49,7 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | `ourui serve` / State / `@server` / HMR / routing / LSP | Stable |
 | `ourui check` / structured diagnostics | Stable (Phase V) |
 | Runtime (prod + multi-worker file store) | Stable |
-| Package (`ourui` **1.5.0**) | Dump schema **27** (additive; 25 Frozen baseline at 1.0) |
+| Package (`ourui` **1.6.0**) | Dump schema **28** (additive; 25 Frozen baseline at 1.0) |
 | `ui.Show` / `ui.When` | Stable (Enterprise E1) |
 | Dynamic `List`/`Table` (`items=`/`rows=` State) | Stable (Enterprise E1) |
 | Pack versioning + density | Stable (Enterprise E2) |

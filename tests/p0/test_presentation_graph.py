@@ -19,7 +19,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_includes_presentation_graph() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 27
+    assert doc["version"] == 28
     assert "presentation_graph" in doc
     pg = doc["presentation_graph"]
     assert "nodes" in pg and "roots" in pg

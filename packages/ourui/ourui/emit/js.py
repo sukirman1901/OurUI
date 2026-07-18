@@ -31,6 +31,10 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
 (() => {{
   const handlers = {table_json};
   const rpcBase = {rpc};
+  function csrfToken() {{
+    const m = document.querySelector('meta[name="ourui-csrf"]');
+    return m ? (m.getAttribute("content") || "") : "";
+  }}
   function applyState(state) {{
     if (!state) return;
     Object.keys(state).forEach((name) => {{
@@ -122,10 +126,16 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     const detail = {{ handler: name, kind: meta.kind }};
     window.dispatchEvent(new CustomEvent("ourui:call", {{ detail }}));
     if (meta.kind === "server") {{
+      const body = Object.assign({{}}, payload || {{}});
+      const csrf = csrfToken();
+      if (csrf) body._csrf = csrf;
+      const headers = {{ "Content-Type": "application/json" }};
+      if (csrf) headers["X-OurUI-CSRF"] = csrf;
       const res = await fetch(rpcBase + encodeURIComponent(name), {{
         method: "POST",
-        headers: {{ "Content-Type": "application/json" }},
-        body: JSON.stringify(payload || {{}}),
+        headers,
+        body: JSON.stringify(body),
+        credentials: "same-origin",
       }});
       const data = await res.json();
       window.dispatchEvent(new CustomEvent("ourui:result", {{ detail: data }}));
@@ -225,6 +235,6 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     invoke(el.getAttribute("data-ourui-on-click"), collectFields());
   }});
   initCanvases();
-  window.OurUI = {{ invoke, handlers, applyState, collectFields, toggleTheme, initCanvases }};{hmr_block}
+  window.OurUI = {{ invoke, handlers, applyState, collectFields, toggleTheme, initCanvases, csrfToken }};{hmr_block}
 }})();
 """

@@ -13,6 +13,7 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capabi
 ```text
 Gen 1–3 + Phase S + T–W complete at ourui 1.0.x (schema 25 Frozen baseline).
 Enterprise arc E1–E5 complete at ourui 1.5.0 (additive dump schema 27).
+Security hardening complete at ourui 1.6.0 (additive dump schema 28).
 ```
 
 ## Historical (done)
@@ -33,6 +34,7 @@ Enterprise = org-scale packs + complete product screens + operable deploy + gove
 | **E3** | Operate: CI emit artifact, Docker/K8s gold path | `1.3`–`1.5` | **27** | **Done** |
 | **E4** | Enterprise Kit 1.0 (clone → brand → deploy ≤5 days) | `1.4`–`1.5` | **27** | **Done** |
 | **E5** | Trust: CSP defaults, SBOM, IR attestation; optional PDF host (RFC Draft) | `1.5.0` | **27** | **Done** |
+| **S1** | Host security: CSRF, session gate, CSP nonce, rate limit, attest `sha256`, gateway | `1.6.0` | **28** | **Done** |
 
 ### E1 — Screen completeness (`1.1.0`)
 

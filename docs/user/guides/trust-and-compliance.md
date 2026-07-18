@@ -1,32 +1,36 @@
 # Trust and compliance
 
-Enterprise E5 baseline for emitted documents and dump artifacts. OurUI is a **compiler + thin host** — auth, SSO, and data stores stay at the app layer.
+Enterprise trust baseline for emitted documents, dump artifacts, and production host hardening. OurUI is a **compiler + thin host** — auth, SSO, and data stores stay at the app layer ([gateway](../../../examples/enterprise/gateway/README.md), [threat model](threat-model.md)).
 
 ## Content Security Policy (CSP)
 
-HTML emit includes a baseline CSP meta tag with `data-ourui-csp="1"`:
+HTML emit includes a CSP meta tag with `data-ourui-csp="1"`.
 
-```text
-default-src 'self';
-script-src 'self' 'unsafe-inline';
-style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-font-src 'self' https://fonts.gstatic.com
-```
+**Static emit / dev:** `script-src` allows `'unsafe-inline'` (inline Host shim + Plasma).
 
-**Why `'unsafe-inline'`?** The Host Contract shim and Plasma engine ship as inline `<script>` / `<style>` blocks today. Treat this as a documented baseline, not a hardened production policy.
+**`ourui serve --prod`:** per-request nonce on `<script>` tags and matching `script-src 'nonce-…'` (no `'unsafe-inline'` for scripts).
 
-**Recommendation:** Prefer `Content-Security-Policy-Report-Only` (HTTP header) on your reverse proxy while you audit fonts and handlers, then tighten `script-src` once you move scripts to nonces or external bundles (future emit option).
+**Recommendation:** Prefer `Content-Security-Policy-Report-Only` on your reverse proxy while auditing third-party fonts, then rely on the nonce path in production.
+
+## Production host controls
+
+| Control | Behavior |
+|---------|----------|
+| Session cookie | `HttpOnly; SameSite=Lax`; add `Secure` with `OURUI_COOKIE_SECURE=1` |
+| CSRF | Meta `ourui-csrf` + header `X-OurUI-CSRF` / body `_csrf` required on prod RPC |
+| Session gate | Prod POST does not create sessions — GET first |
+| Rate limit | `OURUI_RPC_RATE_LIMIT` (default `60` / minute / client key; `0` disables) |
+| Errors | Prod RPC returns generic `internal server error` |
+| Headers | `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy` |
 
 ## SBOM / supply chain
 
-Record what you run:
-
 ```bash
-pip install ourui==1.5.0
+pip install ourui==1.6.0
 pip freeze | grep -i ourui
 ```
 
-For org SBOM pipelines, include the pinned `ourui` version and Python interpreter from your container image (`deploy/Dockerfile`). OurUI does not vendor a CycloneDX generator — use your standard `pip` / container SBOM tool.
+Include the pinned `ourui` version and Python interpreter from your container image (`deploy/Dockerfile`).
 
 ## Dump attestation
 
@@ -34,23 +38,24 @@ For org SBOM pipelines, include the pinned `ourui` version and Python interprete
 
 ```json
 "attestation": {
-  "schema": 27,
+  "schema": 28,
   "pack": "ourui-default",
-  "pack_version": "1.0.0"
+  "pack_version": "1.0.0",
+  "sha256": "<hex digest of dump without sha256 field>"
 }
 ```
 
-Use this to pin IR schema + design pack in CI gates. Optional content hashes of the dump (sans `attestation`) may be added later; schema + pack pin is enough for E5.
+Pin schema + pack + hash in CI gates.
 
-## Accessibility check profile
+## Accessibility / security check profile
 
 ```bash
 ourui check app.py --profile enterprise
 ourui check app.py --profile enterprise --strict
 ```
 
-Enterprise warnings (missing field labels, missing `alt=`, empty buttons, Canvas/Frame escape budget) print with exit **0** unless `--strict` promotes them to errors. See [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).
+Enterprise warnings include a11y codes, escape budget (`ESC001`), and Frame/srcdoc (`SEC001`). Exit **0** unless `--strict`.
 
 ## PDF host
 
-A second Host (PDF) is **Draft** only — [RFC-004](../../rfcs/RFC-004-second-host-pdf.md). Implementation deferred; any future PDF path must consume RTR + Resolved Design via the Host Contract (RFC-003).
+A second Host (PDF) is **Draft** only — [RFC-004](../../rfcs/RFC-004-second-host-pdf.md).

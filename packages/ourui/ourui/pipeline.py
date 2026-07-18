@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +10,7 @@ from ourui.emit import emit_bundle, emit_html_document
 from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_presentation_graph, lower_to_rtr
 from ourui.serialize import dumps_deterministic
 
-DUMP_SCHEMA_VERSION = 27
+DUMP_SCHEMA_VERSION = 28
 
 
 def _display_path(path: Path) -> str:
@@ -58,7 +59,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
     sg = artifacts["semantic_graph"].to_dict()
     rd = artifacts["resolved_design"]
     rd_dict = rd.to_dict() if hasattr(rd, "to_dict") else dict(rd)
-    return {
+    dump: dict[str, Any] = {
         "version": DUMP_SCHEMA_VERSION,
         "source": artifacts["source"],
         "semantic_graph": sg,
@@ -99,8 +100,13 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "density": True,
             "csp": True,
             "attestation": True,
+            "csrf": True,
+            "security_headers": True,
         },
     }
+    digest_body = dumps_deterministic(dump)
+    dump["attestation"]["sha256"] = hashlib.sha256(digest_body.encode("utf-8")).hexdigest()
+    return dump
 
 
 def dump_json(path: str | Path) -> str:
@@ -114,6 +120,8 @@ def emit_html(
     route: str | None = None,
     state_values: dict[str, Any] | None = None,
     hmr: bool = False,
+    csrf_token: str | None = None,
+    csp_nonce: str | None = None,
 ) -> str:
     """Compile source → RTR + Resolved Design → HTML (Host Contract)."""
     artifacts = compile_to_rtr(path, route=route)
@@ -124,6 +132,8 @@ def emit_html(
         state_values=state_values,
         hmr=hmr,
         resolved_design=artifacts["resolved_design"],
+        csrf_token=csrf_token,
+        csp_nonce=csp_nonce,
     )
 
 

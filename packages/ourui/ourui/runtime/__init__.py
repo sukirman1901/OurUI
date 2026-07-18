@@ -12,7 +12,6 @@ from typing import Any
 from urllib.parse import urlparse
 
 from ourui.analysis import build_semantic_graph
-from ourui.pipeline import emit_html
 from ourui.runtime.hmr import HmrHub
 from ourui.runtime.invoke import (
     _INVOKE_LOCK,
@@ -22,11 +21,24 @@ from ourui.runtime.invoke import (
     load_source_module,
     snapshot_states,
 )
+from ourui.runtime.security import (
+    CSRF_BODY_KEY,
+    CSRF_HEADER,
+    SECURITY_HEADERS,
+    RateLimiter,
+    extract_csrf_from_payload,
+    new_csp_nonce,
+    rpc_rate_limit,
+    validate_csrf,
+)
 from ourui.runtime.session import (
     SessionStoreProtocol,
+    ensure_csrf,
     make_session_store,
     parse_sid_cookie,
+    session_state,
     set_cookie_header,
+    with_state,
 )
 
 
@@ -38,9 +50,13 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
     sessions: SessionStoreProtocol | None = None
     workers: int = 1
     store_kind: str = "memory"
+    rate_limiter: RateLimiter | None = None
 
     def log_message(self, fmt: str, *args: Any) -> None:
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
+
+    def _security_headers(self) -> list[tuple[str, str]]:
+        return list(SECURITY_HEADERS)
 
     def _send(
         self,
@@ -54,6 +70,8 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        for key, value in self._security_headers():
+            self.send_header(key, value)
         if extra_headers:
             for key, value in extra_headers:
                 self.send_header(key, value)
@@ -65,12 +83,13 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
             return [("Set-Cookie", set_cookie_header(sid))]
         return []
 
-    def _session(self) -> tuple[str | None, dict[str, Any], bool]:
-        if not self.prod or self.sessions is None:
-            return None, {}, False
-        raw = parse_sid_cookie(self.headers.get("Cookie"))
-        sid, values, created = self.sessions.get_or_create(raw)
-        return sid, values, created
+    def _json_error(self, code: int, message: str) -> None:
+        body = json.dumps({"ok": False, "error": message}) + "\n"
+        self._send(code, body.encode("utf-8"), "application/json")
+
+    def _client_key(self, sid: str | None) -> str:
+        host = self.client_address[0] if self.client_address else "unknown"
+        return f"{host}:{sid or '-'}"
 
     def _reload_if_stale(self) -> None:
         """Drop cached module when HMR generation advances after a file edit."""
@@ -123,25 +142,30 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
             return
         route = self._match_page_route(path)
         if route is not None:
+            from ourui.pipeline import emit_html
+
             self._reload_if_stale()
-            sid, session_values, created = self._session()
-            if self.prod:
+            if self.prod and self.sessions is not None:
                 with _INVOKE_LOCK:
+                    cookie_raw = parse_sid_cookie(self.headers.get("Cookie"))
+                    sid, envelope, created = self.sessions.get_or_create(cookie_raw)
+                    envelope, csrf = ensure_csrf(envelope)
+                    state = session_state(envelope)
                     module = load_source_module(self.source)
-                    apply_states(module, session_values, path=self.source)
+                    apply_states(module, state, path=self.source)
                     state = snapshot_states(module)
-                    if sid is not None and self.sessions is not None:
-                        if created or not session_values:
-                            self.sessions.set(sid, state)
-                            state = self.sessions.get(sid)
+                    envelope = with_state(envelope, state)
+                    self.sessions.set(sid, envelope)
                 html = emit_html(
                     self.source,
                     title=self.title,
                     route=route,
                     state_values=state,
                     hmr=False,
+                    csrf_token=csrf,
+                    csp_nonce=new_csp_nonce(),
                 )
-                headers = self._cookie_headers(sid or "", created) if sid else []
+                headers = self._cookie_headers(sid, created)
                 self._send(200, html.encode("utf-8"), "text/html; charset=utf-8", extra_headers=headers)
                 return
             module = load_source_module(self.source)
@@ -166,6 +190,8 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
         self.send_header("Connection", "keep-alive")
+        for key, value in self._security_headers():
+            self.send_header(key, value)
         self.end_headers()
         gen = self.hmr.generation
         try:
@@ -204,21 +230,39 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             self._send(400, b'{"error":"invalid json"}\n', "application/json")
             return
+
         sid: str | None = None
         created = False
         try:
             if self.prod and self.sessions is not None:
+                cookie_raw = parse_sid_cookie(self.headers.get("Cookie"))
+                if not cookie_raw or not self.sessions.has(cookie_raw):
+                    self._json_error(401, "session required")
+                    return
+                if self.rate_limiter is not None and not self.rate_limiter.allow(
+                    self._client_key(cookie_raw)
+                ):
+                    self._json_error(429, "rate limit exceeded")
+                    return
                 with _INVOKE_LOCK:
-                    cookie_raw = parse_sid_cookie(self.headers.get("Cookie"))
-                    sid, session_values, created = self.sessions.get_or_create(cookie_raw)
+                    envelope = self.sessions.get(cookie_raw)
+                    envelope, csrf = ensure_csrf(envelope)
+                    provided = self.headers.get(CSRF_HEADER) or extract_csrf_from_payload(payload)
+                    if not validate_csrf(csrf, provided):
+                        self._json_error(403, "csrf validation failed")
+                        return
+                    handler_payload = {
+                        k: v for k, v in payload.items() if k != CSRF_BODY_KEY
+                    }
                     outcome = invoke_handler(
                         self.source,
                         name,
-                        payload,
-                        state_values=session_values,
+                        handler_payload,
+                        state_values=session_state(envelope),
                         use_lock=False,
                     )
-                    self.sessions.set(sid, outcome["state"])
+                    sid = cookie_raw
+                    self.sessions.set(sid, with_state(envelope, outcome["state"]))
             else:
                 outcome = invoke_handler(self.source, name, payload, use_lock=True)
             body = json.dumps(
@@ -242,9 +286,10 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
             self._send(404, (body + "\n").encode("utf-8"), "application/json")
         except Exception as exc:  # noqa: BLE001
             sys.stderr.write(traceback.format_exc() + "\n")
-            err: dict[str, Any] = {"ok": False, "error": str(exc)}
-            if not self.prod:
-                err["traceback"] = traceback.format_exc()
+            if self.prod:
+                err: dict[str, Any] = {"ok": False, "error": "internal server error"}
+            else:
+                err = {"ok": False, "error": str(exc), "traceback": traceback.format_exc()}
             self._send(500, (json.dumps(err) + "\n").encode("utf-8"), "application/json")
 
 
@@ -267,6 +312,7 @@ def _bind_handler(
     hmr: HmrHub | None,
     workers: int,
     store_kind: str,
+    rate_limiter: RateLimiter | None,
 ) -> type[OurUIRequestHandler]:
     return type(
         "BoundOurUIHandler",
@@ -279,6 +325,7 @@ def _bind_handler(
             "sessions": sessions,
             "workers": workers,
             "store_kind": store_kind,
+            "rate_limiter": rate_limiter,
         },
     )
 
@@ -290,8 +337,10 @@ def _worker_serve(
     sessions: SessionStoreProtocol,
     workers: int,
     store_kind: str,
+    rate_limit: int,
 ) -> None:
     load_source_module(source)
+    limiter = RateLimiter(limit=rate_limit) if rate_limit > 0 else None
     handler = _bind_handler(
         source,
         title,
@@ -300,6 +349,7 @@ def _worker_serve(
         hmr=None,
         workers=workers,
         store_kind=store_kind,
+        rate_limiter=limiter,
     )
     httpd = _SharedSocketHTTPServer(("127.0.0.1", 0), handler, bind_and_activate=False)
     httpd.socket = sock
@@ -357,6 +407,8 @@ def serve(
     hmr: HmrHub | None = None
     store_kind = "memory"
     resolved_session_dir: Path | None = None
+    rate_limiter: RateLimiter | None = None
+    rate_limit = rpc_rate_limit()
 
     if prod:
         sessions = make_session_store(workers=workers, session_dir=session_dir)
@@ -365,6 +417,8 @@ def serve(
         if isinstance(sessions, FileSessionStore):
             store_kind = "file"
             resolved_session_dir = sessions.directory
+        if rate_limit > 0:
+            rate_limiter = RateLimiter(limit=rate_limit)
         load_source_module(source)
     else:
         hmr = HmrHub(source)
@@ -390,6 +444,7 @@ def serve(
             hmr=hmr,
             workers=1,
             store_kind=store_kind,
+            rate_limiter=rate_limiter,
         )
         httpd = ThreadingHTTPServer((host, port), handler)
         try:
@@ -415,7 +470,15 @@ def serve(
         for _ in range(workers):
             proc = ctx.Process(
                 target=_worker_serve,
-                args=(sock, source, display_title, sessions, workers, store_kind),
+                args=(
+                    sock,
+                    source,
+                    display_title,
+                    sessions,
+                    workers,
+                    store_kind,
+                    rate_limit,
+                ),
                 daemon=False,
             )
             proc.start()

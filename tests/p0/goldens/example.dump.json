@@ -2,7 +2,8 @@
   "attestation": {
     "pack": "ourui-default",
     "pack_version": "1.0.0",
-    "schema": 27
+    "schema": 28,
+    "sha256": "7b7b130d3b0f15e533f35af97f4911556d9c8e5de6d230cbc989344691504a78"
   },
   "dependency_graph": {
     "edges": [
@@ -39,6 +40,7 @@
     "attestation": true,
     "components": true,
     "csp": true,
+    "csrf": true,
     "css": true,
     "density": true,
     "derived": true,
@@ -53,6 +55,7 @@
     "list": true,
     "presentation_graph": true,
     "resolved_design": true,
+    "security_headers": true,
     "show": true,
     "state": true,
     "table": true,
@@ -2288,5 +2291,5 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 27
+  "version": 28
 }

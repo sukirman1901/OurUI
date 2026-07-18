@@ -22,7 +22,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_includes_resolved_design() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 27
+    assert doc["version"] == 28
     assert "resolved_design" in doc
     assert doc["emit"]["resolved_design"] is True
     rd = doc["resolved_design"]
