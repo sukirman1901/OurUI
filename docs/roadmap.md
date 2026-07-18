@@ -16,3 +16,4 @@
 | **O** | Multi-worker + file session store (`--workers`, `--session-dir`) | Done |
 | **P** | Design tokens (`ui.Theme`, `--ourui-*` CSS vars) | Done |
 | **Q** | User documentation (`docs/user/`) | Done |
+| **R** | Package release `0.1.0` (`v0.1.0` / `compiler-p0r`) | Done |
