@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import multiprocessing as mp
+import os
+import socket
 import sys
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -19,7 +22,12 @@ from ourui.runtime.invoke import (
     load_source_module,
     snapshot_states,
 )
-from ourui.runtime.session import SessionStore, parse_sid_cookie, set_cookie_header
+from ourui.runtime.session import (
+    SessionStoreProtocol,
+    make_session_store,
+    parse_sid_cookie,
+    set_cookie_header,
+)
 
 
 class OurUIRequestHandler(BaseHTTPRequestHandler):
@@ -27,7 +35,9 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
     title: str
     hmr: HmrHub | None = None
     prod: bool = False
-    sessions: SessionStore | None = None
+    sessions: SessionStoreProtocol | None = None
+    workers: int = 1
+    store_kind: str = "memory"
 
     def log_message(self, fmt: str, *args: Any) -> None:
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
@@ -87,7 +97,15 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == "/__ourui/health":
             mode = "prod" if self.prod else "dev"
-            body = json.dumps({"ok": True, "mode": mode}) + "\n"
+            body = json.dumps(
+                {
+                    "ok": True,
+                    "mode": mode,
+                    "workers": self.workers,
+                    "store": self.store_kind,
+                    "pid": os.getpid(),
+                }
+            ) + "\n"
             self._send(200, body.encode("utf-8"), "application/json")
             return
         if path == "/__ourui/hmr":
@@ -113,7 +131,6 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
                     apply_states(module, session_values, path=self.source)
                     state = snapshot_states(module)
                     if sid is not None and self.sessions is not None:
-                        # Seed defaults into session on first visit
                         if created or not session_values:
                             self.sessions.set(sid, state)
                             state = self.sessions.get(sid)
@@ -191,11 +208,9 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
         created = False
         try:
             if self.prod and self.sessions is not None:
-                # Hold invoke lock across session read → handler → session write
-                # so concurrent requests cannot clobber the same sid.
                 with _INVOKE_LOCK:
-                    raw = parse_sid_cookie(self.headers.get("Cookie"))
-                    sid, session_values, created = self.sessions.get_or_create(raw)
+                    cookie_raw = parse_sid_cookie(self.headers.get("Cookie"))
+                    sid, session_values, created = self.sessions.get_or_create(cookie_raw)
                     outcome = invoke_handler(
                         self.source,
                         name,
@@ -233,40 +248,83 @@ class OurUIRequestHandler(BaseHTTPRequestHandler):
             self._send(500, (json.dumps(err) + "\n").encode("utf-8"), "application/json")
 
 
-def serve(
+class _SharedSocketHTTPServer(ThreadingHTTPServer):
+    """HTTP server that uses a pre-bound listening socket (multi-worker)."""
+
+    def server_bind(self) -> None:  # noqa: D102
+        pass
+
+    def server_activate(self) -> None:  # noqa: D102
+        pass
+
+
+def _bind_handler(
     source: Path,
+    title: str,
     *,
-    host: str = "127.0.0.1",
-    port: int = 8765,
-    title: str | None = None,
-    prod: bool = False,
-) -> None:
-    source = source.resolve()
-    sg, _ = build_semantic_graph(source)
-    hmr: HmrHub | None = None
-    sessions: SessionStore | None = None
-    if prod:
-        sessions = SessionStore()
-    else:
-        hmr = HmrHub(source)
-        load_source_module(source)
-        hmr._loaded_generation = hmr.generation  # noqa: SLF001
-    if prod:
-        load_source_module(source)
-    handler = type(
+    prod: bool,
+    sessions: SessionStoreProtocol | None,
+    hmr: HmrHub | None,
+    workers: int,
+    store_kind: str,
+) -> type[OurUIRequestHandler]:
+    return type(
         "BoundOurUIHandler",
         (OurUIRequestHandler,),
         {
             "source": source,
-            "title": title or source.stem,
+            "title": title,
             "hmr": hmr,
             "prod": prod,
             "sessions": sessions,
+            "workers": workers,
+            "store_kind": store_kind,
         },
     )
-    httpd = ThreadingHTTPServer((host, port), handler)
+
+
+def _worker_serve(
+    sock: socket.socket,
+    source: Path,
+    title: str,
+    sessions: SessionStoreProtocol,
+    workers: int,
+    store_kind: str,
+) -> None:
+    load_source_module(source)
+    handler = _bind_handler(
+        source,
+        title,
+        prod=True,
+        sessions=sessions,
+        hmr=None,
+        workers=workers,
+        store_kind=store_kind,
+    )
+    httpd = _SharedSocketHTTPServer(("127.0.0.1", 0), handler, bind_and_activate=False)
+    httpd.socket = sock
+    httpd.server_address = sock.getsockname()  # type: ignore[assignment]
+    try:
+        httpd.serve_forever()
+    finally:
+        httpd.server_close()
+
+
+def _print_banner(
+    source: Path,
+    host: str,
+    port: int,
+    *,
+    prod: bool,
+    workers: int,
+    store_kind: str,
+    session_dir: Path | None,
+) -> None:
+    sg, _ = build_semantic_graph(source)
     mode = "prod" if prod else "dev"
-    print(f"OurUI serve ({mode}) {source}")
+    print(f"OurUI serve ({mode}) workers={workers} store={store_kind} {source}")
+    if session_dir is not None:
+        print(f"  session-dir {session_dir}")
     if sg.routes:
         for route_path in sorted(sg.routes):
             print(f"  http://{host}:{port}{route_path}")
@@ -276,11 +334,99 @@ def serve(
     print("  GET  /__ourui/health")
     if not prod:
         print("  GET  /__ourui/hmr  (SSE reload)")
+
+
+def serve(
+    source: Path,
+    *,
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    title: str | None = None,
+    prod: bool = False,
+    workers: int = 1,
+    session_dir: Path | None = None,
+) -> None:
+    source = source.resolve()
+    if workers < 1:
+        raise ValueError("workers must be >= 1")
+    if workers > 1 and not prod:
+        raise ValueError("--workers > 1 requires --prod")
+
+    display_title = title or source.stem
+    sessions: SessionStoreProtocol | None = None
+    hmr: HmrHub | None = None
+    store_kind = "memory"
+    resolved_session_dir: Path | None = None
+
+    if prod:
+        sessions = make_session_store(workers=workers, session_dir=session_dir)
+        from ourui.runtime.session import FileSessionStore
+
+        if isinstance(sessions, FileSessionStore):
+            store_kind = "file"
+            resolved_session_dir = sessions.directory
+        load_source_module(source)
+    else:
+        hmr = HmrHub(source)
+        load_source_module(source)
+        hmr._loaded_generation = hmr.generation  # noqa: SLF001
+
+    _print_banner(
+        source,
+        host,
+        port,
+        prod=prod,
+        workers=workers,
+        store_kind=store_kind,
+        session_dir=resolved_session_dir,
+    )
+
+    if workers == 1:
+        handler = _bind_handler(
+            source,
+            display_title,
+            prod=prod,
+            sessions=sessions,
+            hmr=hmr,
+            workers=1,
+            store_kind=store_kind,
+        )
+        httpd = ThreadingHTTPServer((host, port), handler)
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\nStopped.")
+        finally:
+            if hmr is not None:
+                hmr.stop()
+            httpd.server_close()
+        return
+
+    assert sessions is not None
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind((host, port))
+    sock.listen(128)
+    sock.set_inheritable(True)
+
+    ctx = mp.get_context("fork")
+    procs: list[mp.Process] = []
     try:
-        httpd.serve_forever()
+        for _ in range(workers):
+            proc = ctx.Process(
+                target=_worker_serve,
+                args=(sock, source, display_title, sessions, workers, store_kind),
+                daemon=False,
+            )
+            proc.start()
+            procs.append(proc)
+        for proc in procs:
+            proc.join()
     except KeyboardInterrupt:
         print("\nStopped.")
+        for proc in procs:
+            proc.terminate()
+        for proc in procs:
+            proc.join(timeout=2.0)
     finally:
-        if hmr is not None:
-            hmr.stop()
-        httpd.server_close()
+        sock.close()

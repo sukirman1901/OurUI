@@ -12,7 +12,8 @@ Status ladder:
 ## Current status
 
 Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.  
-**Phase N** (`compiler-p0n`): single-process production serve is **Stable**; multi-worker remains **Experimental**.
+**Phase N** (`compiler-p0n`): single-process production serve is **Stable**.  
+**Phase O** (`compiler-p0o`): file-backed multi-worker serve is **Stable** (Unix `fcntl`).
 
 | Area | Status |
 |---|---|
@@ -40,6 +41,6 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | Routing (`route=` on `ui.Page`) | Stable |
 | LSP | Stable (`ourui lsp` — completions + hover) |
 | Runtime (single-process prod) | Stable (`ourui serve --prod`) |
-| Runtime (multi-worker) | Experimental |
+| Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
 
-Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see [ADR-001](docs/decisions/ADR-001-p0-spec-stable.md) and [ADR-002](docs/decisions/ADR-002-prod-session-runtime.md).
+Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see [ADR-001](docs/decisions/ADR-001-p0-spec-stable.md), [ADR-002](docs/decisions/ADR-002-prod-session-runtime.md), and [ADR-003](docs/decisions/ADR-003-file-multiworker-sessions.md).

@@ -41,6 +41,18 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Production mode: no HMR, session State, safe errors, /__ourui/health",
     )
+    serve_p.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Worker processes (requires --prod; uses file session store when >1)",
+    )
+    serve_p.add_argument(
+        "--session-dir",
+        type=Path,
+        default=None,
+        help="Directory for file-backed sessions (or set OURUI_SESSION_DIR)",
+    )
 
     sub.add_parser(
         "lsp",
@@ -75,7 +87,15 @@ def main(argv: list[str] | None = None) -> int:
         if not args.source.exists():
             print(f"error: file not found: {args.source}", file=sys.stderr)
             return 1
-        serve(args.source, host=args.host, port=args.port, title=args.title, prod=args.prod)
+        serve(
+            args.source,
+            host=args.host,
+            port=args.port,
+            title=args.title,
+            prod=args.prod,
+            workers=args.workers,
+            session_dir=args.session_dir,
+        )
         return 0
 
     if args.command == "lsp":

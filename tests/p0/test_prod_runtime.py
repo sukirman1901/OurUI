@@ -64,7 +64,10 @@ def test_health_prod() -> None:
         res = conn.getresponse()
         data = json.loads(res.read().decode("utf-8"))
         assert res.status == 200
-        assert data == {"ok": True, "mode": "prod"}
+        assert data["ok"] is True
+        assert data["mode"] == "prod"
+        assert data["store"] == "memory"
+        assert data["workers"] == 1
         conn.close()
     finally:
         httpd.shutdown()
