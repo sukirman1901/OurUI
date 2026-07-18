@@ -12,8 +12,8 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    # Preferred: GitHub Actions secret PYPI_API_TOKEN (PyPI → Account → API tokens).
-    # Fallback: Trusted Publisher on PyPI (Owner sukirman1901 · Repo OurUI · Workflow publish-pypi.yml · Environment blank).
+    # Prefer secret PYPI_API_TOKEN (PyPI → Account → API tokens).
+    # If unset, gh-action falls through to Trusted Publisher (OIDC) when configured.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,14 +23,9 @@ jobs:
         run: |
           python -m pip install -U pip build
           python -m build packages/ourui
-      - name: Publish to PyPI (API token)
-        if: ${{ secrets.PYPI_API_TOKEN != '' }}
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: packages/ourui/dist
+          user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-      - name: Publish to PyPI (Trusted Publisher)
-        if: ${{ secrets.PYPI_API_TOKEN == '' }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: packages/ourui/dist
