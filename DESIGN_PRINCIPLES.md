@@ -8,7 +8,7 @@ This is the engineering philosophy of OurUI, not marketing copy.
 
 ## Product focus (now)
 
-**Foundation first:** fill the **utility / style-intent catalog** (Tailwind-depth props → finite `.ourui-*` CSS). Example: `aspect="video"` → `aspect-ratio: 16 / 9`.
+**Foundation first:** fill the **utility / style-intent catalog** (intent props → finite `.ourui-*` CSS). Example: `aspect="video"` → `aspect-ratio: 16 / 9`.
 
 | Layer | Role |
 |---|---|

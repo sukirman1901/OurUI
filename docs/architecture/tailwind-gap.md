@@ -1,7 +1,7 @@
 # Tailwind gap analysis (OurUI foundation)
 
 **Status:** Living note (ADR-013) · Evidence-based against **Tailwind CSS v4 docs**  
-**Package:** OurUI **1.11.0** · Matrix: [`style_catalog.py`](../../packages/ourui/ourui/design/style_catalog.py) (catalog **1.11.0** — **0 C**)
+**Package:** OurUI **1.11.1** · Matrix: [`style_catalog.py`](../../packages/ourui/ourui/design/style_catalog.py) (catalog **1.11.0** — **0 C**)
 
 > **Honesty:** An earlier gap pass used memory + partial search and treated some v3 page names as current TOC. This document replaces that with a **docs-sourced** audit. Prefer this file over chat summaries.
 

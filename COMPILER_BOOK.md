@@ -13,7 +13,7 @@ Style inspiration: Rustc Dev Guide, LLVM programmer guides.
 3. [INVARIANTS.md](INVARIANTS.md) — hard rules  
 4. [ARCHITECTURE.md](ARCHITECTURE.md) — Compilation Architecture  
 
-## 1. Compilation Flow (through `1.11.0`)
+## 1. Compilation Flow (through `1.11.1`)
 
 ```text
 Python source

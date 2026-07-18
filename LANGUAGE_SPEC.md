@@ -1,6 +1,6 @@
 # Language Spec
 
-Normative surface for the current compiler (`ourui` **1.11.0**, dump schema **30** additive). Language/IR breaking changes remain **Frozen** at schema **25** for `1.x` — a major bump (`2.0`) + ADR/RFC is required to break them.
+Normative surface for the current compiler (`ourui` **1.11.1**, dump schema **30** additive). Language/IR breaking changes remain **Frozen** at schema **25** for `1.x` — a major bump (`2.0`) + ADR/RFC is required to break them.
 
 ## Status
 

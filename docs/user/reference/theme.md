@@ -99,7 +99,7 @@ See [Page measure](../concepts/page-measure.md).
 
 ### Author CSS (`css=`) — app escape without editing the package
 
-Append raw CSS after host utilities (Tailwind’s “using custom CSS” analogue). Prefer Theme roles + style intents first; use `css=` for one-offs the catalog does not cover yet.
+Append raw CSS after host utilities. Prefer Theme roles + style intents first; use `css=` for one-offs the catalog does not cover.
 
 ```python
 CUSTOM = """

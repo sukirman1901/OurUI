@@ -14,7 +14,7 @@ Compiler → Presentation Graph (RFC-001)
 
 Theme seed: `ourui.theme` (`DEFAULT_LIGHT` / `DEFAULT_DARK`). Craft depth: style intents (ADR-013), not Theme alone.
 
-**Package `1.11.0`**, dump schema **30** (language/IR Frozen at **25**).  
+**Package `1.11.1`**, dump schema **30** (language/IR Frozen at **25**).  
 `_BASE_CSS` is host-private chrome. Design values come from Resolved Design.  
 CSS AST (if any) remains an optional web-host detail.
 

@@ -1,10 +1,10 @@
-# ADR-013: Style Intent Catalog — Tailwind TOC → OurUI intents
+# ADR-013: Style Intent Catalog
 
-- **Status:** Accepted (implementation through `ourui` **1.11.0**; catalog **1.5.0** — L3 depth shipped; niche **C** remain)
+- **Status:** Accepted (implementation through `ourui` **1.11.1**; catalog **1.11.0** — **L3 complete**, **0 C**)
 - **Date:** 2026-07-18
 - **Relates:** [ADR-005](ADR-005-intent-emit-escape.md), [ADR-004](ADR-004-design-tokens.md), [ADR-012](ADR-012-motion-vocabulary.md), [ADR-014](ADR-014-language-primitives-vs-kit.md)
 
-> **Product note:** This ADR is the package foundation. Example: Tailwind `aspect-square` / `aspect-video` → OurUI `aspect=` → emit `.ourui-aspect-*`. `ui.Theme` is a thin brand sheet — not this catalog.
+> **Product note:** This ADR is the package foundation. Example: `aspect="video"` → emit `.ourui-aspect-video` (`aspect-ratio: 16 / 9`). `ui.Theme` is a thin brand sheet — not this catalog. Coverage audit notes live in [`tailwind-gap.md`](../architecture/tailwind-gap.md) (evidence vs an external TOC — not the authoring API).
 
 ## Context
 

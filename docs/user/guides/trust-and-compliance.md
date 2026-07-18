@@ -26,7 +26,7 @@ HTML emit includes a CSP meta tag with `data-ourui-csp="1"`.
 ## SBOM / supply chain
 
 ```bash
-pip install ourui==1.11.0
+pip install ourui==1.11.1
 pip freeze | grep -i ourui
 ```
 

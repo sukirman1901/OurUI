@@ -23,4 +23,4 @@ VISION originally required design tokens as first-class concepts. Emit used hard
 - Apps can theme brand roles without raw CSS while staying OurUI-native.
 - Hosts may set `class="dark"` on `<html>` to switch maps; `ui.ThemeToggle` is the client control.
 - Extending the key set should prefer ADR over silent dump changes.
-- Do not treat this sheet as a substitute for Tailwind-depth utilities (ADR-013).
+- Do not treat this sheet as a substitute for the style-intent catalog (ADR-013).

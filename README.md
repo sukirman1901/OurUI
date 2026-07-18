@@ -2,9 +2,9 @@
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-OurUI is a **Python utility → HTML/CSS/JS compiler**: Tailwind-*depth* scales and values, authored as intent props (`aspect="video"`, `pad_x="4"`, …), not class strings and not Vite/Node. Thin `ui.*` primitives map to the host; **`ui.Theme`** is a thin brand sheet — craft depth is the utility catalog.
+OurUI is a **Python intent → HTML/CSS/JS compiler**: you write props (`aspect="video"`, `pad_x="4"`, `ring="2"`, …); the compiler emits finite `.ourui-*` CSS and host HTML/JS — no class-string authoring, no Node/Vite toolchain. Thin `ui.*` primitives map to the host; **`ui.Theme`** is a thin brand sheet — craft depth is the style-intent catalog.
 
-Package **1.11.0** ([CHANGELOG.md](CHANGELOG.md)). Style Intent Catalog (ADR-013) **L3 shipped** — niche **C** remain (`content`, font OT, container-queries, …). Dump schema **30**. Specs: [SPEC_STATUS.md](SPEC_STATUS.md) · Vision: [VISION.md](VISION.md) · Roadmap: [docs/roadmap.md](docs/roadmap.md).
+Package **1.11.1** ([CHANGELOG.md](CHANGELOG.md)). Style Intent Catalog (ADR-013) **L3 complete**. Dump schema **30**. Specs: [SPEC_STATUS.md](SPEC_STATUS.md) · Vision: [VISION.md](VISION.md) · Roadmap: [docs/roadmap.md](docs/roadmap.md).
 
 ## Quick start
 

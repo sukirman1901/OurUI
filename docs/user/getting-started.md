@@ -23,7 +23,7 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e packages/ourui
 ```
 
-Current Stable package: **1.11.0** ([PyPI](https://pypi.org/project/ourui/) or editable install from this repo). Dump schema **30** (additive); language/IR breaking changes remain Frozen at schema **25** until `2.0`.
+Current Stable package: **1.11.1** ([PyPI](https://pypi.org/project/ourui/) or editable install from this repo). Dump schema **30** (additive); language/IR breaking changes remain Frozen at schema **25** until `2.0`.
 
 Style layout/type props: [Style intents](reference/style-intents.md) (foundation). Theme roles: [Theme](reference/theme.md) (thin sheet).
 
@@ -58,7 +58,7 @@ Prints HTML (embedded CSS + JS shim) to stdout. Interactive `@server` actions re
 
 - OurUI installed
 - A dev server on port **8765** with hot reload
-- Access to Stable APIs through Phase **S6** (forms, Nav, theme roles, layout, motion, Canvas, polish) plus style intents (ADR-013) L3 (`1.11.0`) and `Theme(page=)` / `Theme(css=)`
+- Access to Stable APIs through Phase **S6** (forms, Nav, theme roles, layout, motion, Canvas, polish) plus style intents (ADR-013) L3 (`1.11.1`) and `Theme(page=)` / `Theme(css=)`
 
 ## See also
 

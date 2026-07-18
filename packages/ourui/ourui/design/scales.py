@@ -1,7 +1,6 @@
-"""Tailwind-derived design scales for OurUI tokens (not utility class API).
+"""Design scales for OurUI tokens (intent props → ``--ourui-*``, not class-string API).
 
-Values adopted from Tailwind CSS default theme / container sizes.
-Authoring uses OurUI intent props; emit maps to --ourui-* and .ourui-* classes.
+Numeric space/size/type tables power finite ``.ourui-*`` utilities.
 """
 
 from __future__ import annotations

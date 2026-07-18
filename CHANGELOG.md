@@ -4,6 +4,13 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.11.1] — 2026-07-19
+
+### Changed — Public messaging
+
+- Package / PyPI README and root docs describe **OurUI intent props**, not a third-party CSS framework brand
+- Status honesty: Style Intent Catalog **L3 complete** (**0 C**) — removed stale “niche C remain” copy
+
 ## [1.11.0] — 2026-07-19
 
 ### Added — Style Intent Catalog L3 (ADR-013)

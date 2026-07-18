@@ -8,7 +8,7 @@ Know the split:
 
 | Layer | API | Role |
 |---|---|---|
-| **Craft (foundation)** | Style intents (`aspect=`, `pad_x=`, …) | Tailwind-depth utilities |
+| **Craft (foundation)** | Style intents (`aspect=`, `pad_x=`, …) | Finite `.ourui-*` utilities |
 | **Brand (thin sheet)** | `ui.Theme(...)` | Color/type/space roles, density, page measure |
 
 ## Code

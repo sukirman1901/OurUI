@@ -1,6 +1,6 @@
 # Style intents (ADR-013)
 
-OurUI’s package north-star is **utility-depth compile**: Tailwind TOC families become **intent props** and finite `.ourui-*` CSS — not class strings, not Vite. `ui.Theme` only overrides brand roles / scales; it is not this catalog.
+OurUI’s package north-star is **utility-depth compile**: style families become **intent props** and finite `.ourui-*` CSS — not class strings, not a Node toolchain. `ui.Theme` only overrides brand roles / scales; it is not this catalog.
 
 ## Teaching example — ring (box-shadow)
 
@@ -150,7 +150,7 @@ ui.Shell(ui.Image(src="/hero.jpg", alt="…"), aspect="video", width="full")
 
 Emit produces utilities like `.ourui-aspect-video { aspect-ratio: var(--ourui-aspect-video); }` — never `class="aspect-video"` in source.
 
-See [ADR-013](../../decisions/ADR-013-style-intent-catalog.md), the machine matrix in `ourui.design.style_catalog`, and [Tailwind gap](../../architecture/tailwind-gap.md). The catalog is **foundation — still incomplete**.
+See [ADR-013](../../decisions/ADR-013-style-intent-catalog.md) and the machine matrix in `ourui.design.style_catalog`. Catalog **L3 complete**.
 
 ## Authoring
 

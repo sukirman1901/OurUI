@@ -4,7 +4,7 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/`.
 
 ## Current focus
 
-**Foundation L3 shipped** (`1.11.0`). Catalog **1.11.0** — **0 C**. Dogfood deferred.
+**Foundation L3 complete** (`1.11.1`). Catalog **1.11.0** — **0 C**. Dogfood deferred.
 
 | Layer | Status |
 |---|---|

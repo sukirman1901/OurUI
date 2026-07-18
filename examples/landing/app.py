@@ -149,7 +149,7 @@ def features():
 def gallery():
     return ui.Section(
         title="Compose with style intents",
-        subtitle="Tailwind-depth scales, OurUI props — width=, pad_x=, grid_cols=, grow=.",
+        subtitle="Intent props → compiled CSS — width=, pad_x=, grid_cols=, grow=.",
         pad="xl",
         gap="6",
         motion="reveal.fade-up",

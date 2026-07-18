@@ -1,6 +1,6 @@
 # OurUI user documentation
 
-Learn how to build web apps in Python with OurUI. Stable surface: `ourui` **1.11.0**, dump schema **30**.
+Learn how to build web apps in Python with OurUI. Stable surface: `ourui` **1.11.1**, dump schema **30**.
 
 **Focus:** **utility → HTML/CSS/JS** compile (e.g. `aspect=`, `ring=`, `pad={"md":"8"}`). `ui.Theme` is a thin brand sheet (+ optional `css=`). See [VISION.md](../../VISION.md).
 

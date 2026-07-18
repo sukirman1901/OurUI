@@ -6,7 +6,7 @@ This document describes the **Compilation Architecture** of OurUI. Diagrams of p
 
 | Layer | In package? | Role |
 |---|---|---|
-| **Utilities / style intents** | Yes | Craft foundation — Tailwind-depth props → `.ourui-*` |
+| **Utilities / style intents** | Yes | Craft foundation — intent props → `.ourui-*` |
 | **Compiler spine** | Yes | Parse → Analyze → Lower → Emit |
 | **`ui.Theme`** | Yes | Thin brand sheet (roles, density, `page=`) — not craft depth |
 | **Thin primitives** | Yes | `ui.Page`, `Nav`, `Button`, … for emit mapping |

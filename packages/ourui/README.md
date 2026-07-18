@@ -1,10 +1,10 @@
-# ourui 1.11.0
+# ourui 1.11.1
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-**Package goal:** Tailwind-depth **utilities** in Python (`aspect=`, `pad_x=`, `ring=`, …) → HTML/CSS/JS. **`ui.Theme`** = thin brand sheet (+ optional `css=` escape). Style Intent Catalog (ADR-013) **L3 shipped** — niche **C** remain.
+**Package goal:** style **intent props** in Python (`aspect=`, `pad_x=`, `ring=`, …) → HTML/CSS/JS. **`ui.Theme`** = thin brand sheet (+ optional `css=` escape). Style Intent Catalog (ADR-013) **L3 complete**.
 
 Dump schema **30** (additive). Theme defaults from `theme.py`. Thin primitives for emit — craft depth is the utility catalog.
 

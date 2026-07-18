@@ -2,7 +2,7 @@
 
 OurUI turns Python UI code into something a browser can run. You describe **intent** — pages, thin components, state, server handlers, and **style utilities** (`aspect=`, `pad_x=`, …) — and the compiler produces **implementation**: HTML, CSS (theme roles + finite `.ourui-*` utilities), and a small JavaScript shim for interactivity.
 
-Same *compile idea* as Tailwind; authoring is Python props, not class strings.
+Authoring is Python props; the compiler owns the CSS — not class strings in source.
 
 ## The pipeline (mental model)
 

@@ -1,6 +1,6 @@
-"""OurUI style intent props → host CSS classes (Tailwind-scale values, OurUI names).
+"""OurUI style intent props → host CSS classes (scale tokens, OurUI names).
 
-Author writes width=\"lg\", not class=\"w-lg\". Emit owns .ourui-w-lg { width: var(--ourui-size-lg) }.
+Author writes width=\"lg\", not class strings. Emit owns .ourui-w-lg { width: var(--ourui-size-lg) }.
 """
 
 from __future__ import annotations
