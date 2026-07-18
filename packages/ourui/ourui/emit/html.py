@@ -4,7 +4,7 @@ import html
 from typing import Any
 
 from ourui.emit.js import emit_js
-from ourui.theme import COLOR_TOKEN_NAMES, default_tokens, emit_tokens_css
+from ourui.theme import COLOR_TOKEN_NAMES, emit_tokens_css
 
 # Semantic role → HTML tag (emitter-only decision)
 _ROLE_TAG: dict[str, str] = {
@@ -20,6 +20,8 @@ _ROLE_TAG: dict[str, str] = {
 }
 
 _BASE_CSS = """\
+/* Host-private chrome (layout / structure). Not Design System knowledge.
+   Tone colors come from Resolved Design (CSS vars + per-node rules). */
 .ourui-root {
   font-family: system-ui, sans-serif;
   line-height: 1.5;
@@ -286,18 +288,13 @@ def apply_state_values(rtr: dict[str, Any], state_values: dict[str, Any] | None)
     return out
 
 
-def emit_css(
-    tokens: dict[str, dict[str, str]] | None = None,
-    *,
-    resolved_design: Any = None,
-) -> str:
-    """Emit host CSS. Prefer Resolved Design tokens + per-node rules (Host Contract)."""
+def emit_css(*, resolved_design: Any) -> str:
+    """Emit host CSS from Resolved Design (Host Contract — required)."""
     rd = _as_resolved_design(resolved_design)
-    if rd is not None:
-        token_block = emit_tokens_css(_tokens_from_resolved(rd))
-        return token_block + _BASE_CSS + _emit_resolved_node_css(rd)
-    token_block = emit_tokens_css(tokens or default_tokens())
-    return token_block + _BASE_CSS
+    if rd is None:
+        raise TypeError("resolved_design is required (Host Contract: RTR + Resolved Design)")
+    token_block = emit_tokens_css(_tokens_from_resolved(rd))
+    return token_block + _BASE_CSS + _emit_resolved_node_css(rd)
 
 
 def emit_html_document(
@@ -306,10 +303,9 @@ def emit_html_document(
     title: str = "OurUI",
     state_values: dict[str, Any] | None = None,
     hmr: bool = False,
-    tokens: dict[str, dict[str, str]] | None = None,
-    resolved_design: Any = None,
+    resolved_design: Any,
 ) -> str:
-    """Emit HTML from Host Contract inputs: RTR + Resolved Design (+ optional tokens fallback)."""
+    """Emit HTML from Host Contract inputs: RTR + Resolved Design (both required)."""
     rtr = apply_state_values(rtr, state_values)
     nodes = rtr["nodes"]
     roots = rtr["roots"]
@@ -319,7 +315,7 @@ def emit_html_document(
     body_lines.append("  </div>")
 
     js = emit_js(rtr, hmr=hmr).rstrip("\n")
-    css = emit_css(tokens, resolved_design=resolved_design).rstrip("\n")
+    css = emit_css(resolved_design=resolved_design).rstrip("\n")
     parts = [
         "<!DOCTYPE html>",
         '<html lang="en">',
@@ -346,14 +342,13 @@ def emit_bundle(
     rtr: dict[str, Any],
     *,
     title: str = "OurUI",
-    tokens: dict[str, dict[str, str]] | None = None,
-    resolved_design: Any = None,
+    resolved_design: Any,
 ) -> dict[str, str]:
     """Serializable emit artifacts (I10): html + css + js."""
     return {
         "html": emit_html_document(
-            rtr, title=title, tokens=tokens, resolved_design=resolved_design
+            rtr, title=title, resolved_design=resolved_design
         ),
-        "css": emit_css(tokens, resolved_design=resolved_design),
+        "css": emit_css(resolved_design=resolved_design),
         "js": emit_js(rtr),
     }

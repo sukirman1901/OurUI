@@ -1,4 +1,8 @@
-"""OurUI design tokens — native registry (not a third-party theme clone)."""
+"""OurUI design tokens — pack seed + CSS var helpers (not emit authority).
+
+Emit consumes Resolved Design (RFC-003). DEFAULT_* / default_tokens() seed
+`ourui.design.resolve` / `ui.Theme` analysis only.
+"""
 
 from __future__ import annotations
 

@@ -53,6 +53,7 @@ def test_dump_version_notes_emit() -> None:
     assert doc["emit"]["js"] is True
     assert doc["emit"]["state"] is True
     assert doc["emit"]["host_contract"] is True
+    assert doc["emit"]["host_contract_primary"] is True
 
 
 def test_golden_html() -> None:

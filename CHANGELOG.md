@@ -4,6 +4,21 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.3.0] — 2026-07-18
+
+### Changed
+
+- **Host Contract primary** (RFC-003): `emit_css` / `emit_html_document` / `emit_bundle` **require** `resolved_design`
+- Removed emit fallback that invented tones via `default_tokens()` / Theme tables
+- `_BASE_CSS` documented as host-private chrome (layout only)
+- Dump flag `emit.host_contract_primary`
+
+### Notes
+
+- Generation 3 complete: web Host consumes `RTR + Resolved Design`
+- `theme.py` / `DEFAULT_*` remain Design System pack seeds only
+- Optional later: CSS AST / `ourui-web` split (RFC-003 Step F)
+
 ## [0.2.2] — 2026-07-18
 
 ### Added

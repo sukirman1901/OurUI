@@ -44,3 +44,8 @@ def test_theme_override_reaches_emit_via_resolved_design() -> None:
     html_out = emit_html(THEME, title="Themed")
     assert "background: #112233;" in html_out
     assert "--ourui-primary: #112233;" in html_out
+
+
+def test_emit_css_requires_resolved_design() -> None:
+    with pytest.raises(TypeError, match="resolved_design"):
+        emit_css()  # type: ignore[call-arg]

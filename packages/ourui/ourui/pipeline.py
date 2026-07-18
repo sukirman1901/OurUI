@@ -72,6 +72,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "presentation_graph": True,
             "resolved_design": True,
             "host_contract": True,
+            "host_contract_primary": True,
         },
     }
 
@@ -96,7 +97,6 @@ def emit_html(
         title=doc_title,
         state_values=state_values,
         hmr=hmr,
-        tokens=artifacts["semantic_graph"].tokens,
         resolved_design=artifacts["resolved_design"],
     )
 
@@ -107,6 +107,5 @@ def emit_all(path: str | Path, *, title: str | None = None) -> dict[str, str]:
     return emit_bundle(
         artifacts["rtr"].to_dict(),
         title=doc_title,
-        tokens=artifacts["semantic_graph"].tokens,
         resolved_design=artifacts["resolved_design"],
     )

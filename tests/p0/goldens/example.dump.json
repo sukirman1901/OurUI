@@ -32,6 +32,7 @@
     "components": true,
     "css": true,
     "host_contract": true,
+    "host_contract_primary": true,
     "html": true,
     "js": true,
     "presentation_graph": true,
