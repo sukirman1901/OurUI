@@ -4,7 +4,7 @@ Normative surface for the current compiler. Later phases extend this document vi
 
 ## Status
 
-See [SPEC_STATUS.md](SPEC_STATUS.md). Language surface: **Draft**.
+See [SPEC_STATUS.md](SPEC_STATUS.md). Language surface: **Stable** (P0 subset).
 
 ## Authoring model
 

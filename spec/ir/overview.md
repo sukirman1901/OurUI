@@ -1,5 +1,7 @@
 # OurIR overview
 
+**Status:** Stable (Phase M).
+
 **OurIR** is the IR Stack: **IIR → LTR → RTR**.
 
 | Stage | Produced by | Consumed by |

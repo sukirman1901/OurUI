@@ -11,6 +11,8 @@ Status ladder:
 
 ## Current status
 
+Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**. Production runtime hardening remains **Experimental**.
+
 | Area | Status |
 |---|---|
 | Vision | Stable |
@@ -18,24 +20,24 @@ Status ladder:
 | Invariants + LOCKED + vocabulary | Stable |
 | Compilation Architecture | Stable |
 | RFC Process | Stable |
-| Language Spec (P0 subset) | Draft |
-| Semantic Graph (P0) | Draft (implemented in `ourui dump`) |
-| DependencyGraph view (P0) | Draft (implemented in `ourui dump`) |
-| IIR (P0) | Draft (implemented in `ourui dump`) |
-| Node identity schema | Draft |
-| `ourui dump` CLI | Draft |
-| LTR | Draft (Phase C — Layout Lowering in `ourui dump`) |
-| RTR / HostNode | Draft (Phase D — Render Lowering in `ourui dump`) |
-| HTML emitter | Draft (`ourui emit`) |
-| CSS emit | Draft (inlined + bundle) |
-| JS emit / runtime shim | Draft (Phase F/G — fetch RPC) |
-| `@server` / `on_click` | Draft |
-| `ourui serve` + RPC | Draft |
-| `State` / binds | Draft (Phase H) |
-| Components (expand) | Draft (Phase I) |
-| HMR (`ourui serve`) | Draft (Phase J) |
-| Routing (`route=` on `ui.Page`) | Draft (Phase K) |
+| Language Spec (P0 subset) | Stable |
+| Semantic Graph (P0) | Stable (`ourui dump`) |
+| DependencyGraph view (P0) | Stable (`ourui dump`) |
+| IIR (P0) | Stable (`ourui dump`) |
+| Node identity schema | Stable |
+| `ourui dump` CLI | Stable |
+| LTR | Stable (Layout Lowering in `ourui dump`) |
+| RTR / HostNode | Stable (Render Lowering in `ourui dump`) |
+| HTML emitter | Stable (`ourui emit`) |
+| CSS emit | Stable (inlined + bundle) |
+| JS emit / runtime shim | Stable (fetch RPC) |
+| `@server` / `on_click` | Stable |
+| `ourui serve` + RPC | Stable |
+| `State` / binds | Stable |
+| Components (expand) | Stable |
+| HMR (`ourui serve`) | Stable |
+| Routing (`route=` on `ui.Page`) | Stable |
+| LSP | Stable (`ourui lsp` — completions + hover) |
 | Runtime (production) | Experimental |
-| LSP | Draft (`ourui lsp` — completions + hover) |
 
-Update this table when phases land and when RFCs promote artifacts to Stable/Frozen.
+Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see [ADR-001](docs/decisions/ADR-001-p0-spec-stable.md).

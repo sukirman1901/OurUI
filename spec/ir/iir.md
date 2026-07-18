@@ -1,5 +1,7 @@
 # IIR — Intent IR
 
+**Status:** Stable (Phase M — Intent Lowering in `ourui dump`).
+
 IIR is the first OurIR stage. It expresses developer intent without host semantics ([I4](../../INVARIANTS.md)).
 
 ## Domains

@@ -1,5 +1,7 @@
 # Analysis Views
 
+**Status:** Stable (Phase M — DependencyGraph in `ourui dump`).
+
 Analysis Views are **derived indexes** over the Semantic Graph ([I8](../../INVARIANTS.md)). They are not Compilation Flow stages.
 
 ## Interface

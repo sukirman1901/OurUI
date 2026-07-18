@@ -11,3 +11,4 @@
 | **J** | HMR (SSE reload on file change) | Done |
 | **K** | Multi-page routing (`route=` on `ui.Page`) | Done |
 | **L** | Lightweight LSP (`ourui lsp`) | Done |
+| **M** | Spec Stability Pass (P0 → Stable, tag `spec-p0-stable`) | Done |

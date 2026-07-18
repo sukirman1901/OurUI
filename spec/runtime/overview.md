@@ -1,6 +1,6 @@
 # Runtime
 
-**Status:** Draft (Phase G–K).
+**Status:** Stable (Phase M — serve/RPC/HMR/routing). Production multi-worker hardening remains Experimental.
 
 ## Dev server
 

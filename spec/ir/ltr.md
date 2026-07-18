@@ -1,6 +1,6 @@
 # LTR — Layout Object Tree
 
-**Status:** Draft (Phase C implemented in `ourui dump`).
+**Status:** Stable (Phase M — Layout Lowering in `ourui dump`).
 
 LTR is produced by **Layout Lowering**. It is a **Layout Object Tree**: layout boxes with axes and children. It must not contain Python language semantics or HTML tags.
 

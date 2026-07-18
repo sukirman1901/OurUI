@@ -1,5 +1,7 @@
 # Compilation Flow
 
+**Status:** Stable (aligned with Compilation Architecture).
+
 Public phase names (not numbered passes):
 
 ```text

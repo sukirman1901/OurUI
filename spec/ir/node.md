@@ -1,5 +1,7 @@
 # Node identity
 
+**Status:** Stable (Phase M).
+
 Normative fields for OurIR and analysis nodes:
 
 ```text

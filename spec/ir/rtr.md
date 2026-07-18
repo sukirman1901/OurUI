@@ -1,6 +1,6 @@
 # RTR — Host-independent Render Tree
 
-**Status:** Draft (Phase D implemented in `ourui dump`).
+**Status:** Stable (Phase M — Render Lowering in `ourui dump`).
 
 RTR is a tree of **HostNode** values. Emitters consume HostNode only ([I2](../../INVARIANTS.md)). RTR contains no Python language semantics ([I3](../../INVARIANTS.md)). HTML tags such as `button` appear only in emitters (Phase E).
 

@@ -1,6 +1,6 @@
 # HTML emitter
 
-**Status:** Draft (Phase E — `ourui emit`).
+**Status:** Stable (Phase M — `ourui emit`).
 
 Maps **HostNode** → HTML. Must not read Python AST or IIR ([I1](../../INVARIANTS.md), [I2](../../INVARIANTS.md)).
 
