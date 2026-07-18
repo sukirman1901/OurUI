@@ -34,6 +34,9 @@ page = ui.Page(
 | `ui.Grid` | Presentation | Responsive grid layout |
 | `ui.Link` | Presentation | In-app or external navigation (`href=`) |
 | `ui.Input` | Presentation | Form field (`name=` → `@server` payload on button click) |
+| `ui.Select` | Presentation | Dropdown (`options=`) |
+| `ui.Toggle` | Presentation | Checkbox (boolean payload) |
+| `ui.Slider` | Presentation | Range (`min=` / `max=` / `step=`) |
 | `ui.Theme` | Tokens | Design token overrides (module-level) |
 
 ## `ui.Page`
@@ -187,6 +190,37 @@ ui.Button("Save", on_click=save)
 | `label` | `str` | Optional visible label |
 | `bind` / `value` | `State` or `str` | Initial value; `bind=` syncs from server State after RPC |
 
+## `ui.Select`
+
+Dropdown form control.
+
+```python
+ui.Select(name="theme", options=["light", "dark"], label="Theme", bind=theme)
+```
+
+| Prop | Description |
+|------|-------------|
+| `name` | Payload key |
+| `options` | List of strings or `{value, label}` dicts |
+| `label` | Optional visible label |
+| `bind` / `value` | Selected value |
+
+## `ui.Toggle`
+
+Checkbox form control (payload boolean).
+
+```python
+ui.Toggle(name="enabled", label="Enabled", bind=enabled)
+```
+
+## `ui.Slider`
+
+Range form control.
+
+```python
+ui.Slider(name="volume", min=0, max=100, step=5, label="Volume", bind=volume)
+```
+
 ## `ui.Theme`
 
 Module-level design token overrides. Not a visual node — assign at module scope like `page`.
@@ -241,7 +275,7 @@ ui.Shell(
 The `ui` namespace accepts shorthand positional args:
 
 - First string on `Button`, `Text`, `Card`, `Link` → `text`
-- First string on `Input` → `name`
+- First string on `Input` / `Select` / `Toggle` / `Slider` → `name`
 - First string on other kinds → `title` when `title` is not set
 - UI node positional args → appended to `children`
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from ourui.node import Node, SourceSpan
+from ourui.node import FORM_CONTROL_KINDS, Node, SourceSpan
 
 # LTR layout kind → HostNode kind
 _HOST_KIND: dict[str, str] = {
@@ -70,15 +70,28 @@ def lower_to_rtr(ltr: Any) -> RTR:
         for tone_key in ("color", "variant", "bg"):
             if tone_key in attrs and not isinstance(attrs[tone_key], dict):
                 props[tone_key] = attrs[tone_key]
-        for key in ("href", "external", "shell_layout", "name", "placeholder", "type", "label", "value"):
+        for key in (
+            "href",
+            "external",
+            "shell_layout",
+            "name",
+            "placeholder",
+            "type",
+            "label",
+            "value",
+            "options",
+            "min",
+            "max",
+            "step",
+        ):
             if key in attrs:
                 props[key] = attrs[key]
         children = list(lnode.get("children", []))
 
-        # Promote textual props to Text HostNodes (still no HTML) — not for Input value
+        # Promote textual props to Text HostNodes — not for form controls
         text_children: list[str] = []
         binds = attrs.get("binds") or {}
-        if from_intent != "Input":
+        if from_intent not in FORM_CONTROL_KINDS:
             for prop_key in ("title", "subtitle", "text"):
                 if prop_key in attrs and not isinstance(attrs[prop_key], dict):
                     tid = _next_text_id(text_counter)
@@ -142,5 +155,8 @@ def _role_for(from_intent: str) -> str:
         "Grid": "grid",
         "Link": "link",
         "Input": "input",
+        "Select": "select",
+        "Toggle": "toggle",
+        "Slider": "slider",
     }
     return mapping.get(from_intent, from_intent.lower())

@@ -145,6 +145,35 @@ input.ourui-input:focus {
   outline: 2px solid var(--ourui-primary);
   outline-offset: 1px;
 }
+select.ourui-select {
+  display: block;
+  width: 100%;
+  max-width: 24rem;
+  box-sizing: border-box;
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  border: 1px solid var(--ourui-border);
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+  font: inherit;
+}
+.ourui-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ourui-space-sm);
+  max-width: 24rem;
+}
+input.ourui-toggle {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--ourui-primary);
+}
+input.ourui-slider {
+  display: block;
+  width: 100%;
+  max-width: 24rem;
+  accent-color: var(--ourui-primary);
+}
 [data-ourui-id="n0003"] {
   background: #1a5f4a;
   color: #f5faf8;
@@ -200,11 +229,13 @@ input.ourui-input:focus {
     Object.keys(state).forEach((name) => {
       document.querySelectorAll('[data-ourui-bind="' + name + '"]').forEach((el) => {
         const tag = (el.tagName || "").toLowerCase();
-        const next = String(state[name]);
-        if (tag === "input" || tag === "textarea" || tag === "select") {
-          el.value = next;
+        const next = state[name];
+        if (tag === "input" && el.type === "checkbox") {
+          el.checked = Boolean(next) && next !== "false" && next !== "0" && next !== "";
+        } else if (tag === "input" || tag === "textarea" || tag === "select") {
+          el.value = String(next);
         } else {
-          el.textContent = next;
+          el.textContent = String(next);
         }
       });
     });
@@ -215,7 +246,11 @@ input.ourui-input:focus {
     root.querySelectorAll("[data-ourui-field]").forEach((el) => {
       const key = el.getAttribute("data-ourui-field");
       if (!key) return;
-      payload[key] = el.value;
+      if (el.type === "checkbox") {
+        payload[key] = !!el.checked;
+      } else {
+        payload[key] = el.value;
+      }
     });
     return payload;
   }

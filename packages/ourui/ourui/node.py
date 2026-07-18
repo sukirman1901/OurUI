@@ -61,11 +61,16 @@ class Node:
 
 
 INTENT_KINDS = frozenset({"Page", "Hero", "Section", "Shell"})
-PRESENTATION_KINDS = frozenset({"Button", "Text", "Card", "Grid", "Link", "Input"})
+PRESENTATION_KINDS = frozenset(
+    {"Button", "Text", "Card", "Grid", "Link", "Input", "Select", "Toggle", "Slider"}
+)
 KNOWN_KINDS = INTENT_KINDS | PRESENTATION_KINDS
 
 # Authoring layout= intents (emit as shell classes; not Tailwind utilities)
 SHELL_LAYOUT_INTENTS = frozenset({"stack", "row", "split-3", "grid"})
+
+# Form controls (S2) — value/name on RTR attrs, not Text children
+FORM_CONTROL_KINDS = frozenset({"Input", "Select", "Toggle", "Slider"})
 
 # Input type= enum (S2)
 INPUT_TYPES = frozenset({"text", "email", "password", "number", "search", "url", "tel"})

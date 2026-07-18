@@ -18,6 +18,9 @@ _PRESENTATION_KINDS = frozenset(
         "Grid",
         "Link",
         "Input",
+        "Select",
+        "Toggle",
+        "Slider",
     }
 )
 
@@ -35,6 +38,10 @@ _PASSTHROUGH = (
     "type",
     "label",
     "value",
+    "options",
+    "min",
+    "max",
+    "step",
 )
 
 

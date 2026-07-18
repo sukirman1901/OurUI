@@ -18,6 +18,9 @@ _ROLE_TAG: dict[str, str] = {
     "text": "span",
     "link": "a",
     "input": "input",
+    "select": "select",
+    "toggle": "input",
+    "slider": "input",
 }
 
 _BASE_CSS = """\
@@ -126,10 +129,39 @@ input.ourui-input:focus {
   outline: 2px solid var(--ourui-primary);
   outline-offset: 1px;
 }
+select.ourui-select {
+  display: block;
+  width: 100%;
+  max-width: 24rem;
+  box-sizing: border-box;
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  border: 1px solid var(--ourui-border);
+  border-radius: var(--ourui-radius);
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+  font: inherit;
+}
+.ourui-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ourui-space-sm);
+  max-width: 24rem;
+}
+input.ourui-toggle {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--ourui-primary);
+}
+input.ourui-slider {
+  display: block;
+  width: 100%;
+  max-width: 24rem;
+  accent-color: var(--ourui-primary);
+}
 """
 # Tone classes above use CSS vars seeded from Resolved Design (Host Contract).
 # Per-node rules from Resolved Design override for concrete fill/fg/radius/pad.
-# Input chrome (.ourui-input / .ourui-field) is host-private layout — not Design System.
+# Form control chrome is host-private layout — not Design System.
 
 def _as_resolved_design(resolved_design: Any) -> dict[str, Any] | None:
     if resolved_design is None:
@@ -239,11 +271,20 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
             classes.append(f"ourui-tone-{tone}")
     if role == "input":
         classes.append("ourui-input")
+    if role == "select":
+        classes.append("ourui-select")
+    if role == "toggle":
+        classes.append("ourui-toggle")
+    if role == "slider":
+        classes.append("ourui-slider")
     if (
         node["kind"] == "Leaf"
         and "ourui-control" not in classes
         and "ourui-link" not in classes
         and "ourui-input" not in classes
+        and "ourui-select" not in classes
+        and "ourui-toggle" not in classes
+        and "ourui-slider" not in classes
     ):
         classes.append("ourui-leaf")
     return classes
@@ -269,12 +310,20 @@ def _event_attrs(node: dict[str, Any]) -> str:
     return "".join(parts)
 
 
-def _input_attrs(attrs: dict[str, Any]) -> str:
+def _field_name_attrs(attrs: dict[str, Any]) -> list[str]:
     parts: list[str] = []
     name = attrs.get("name")
     if isinstance(name, str) and name:
         parts.append(f' name="{html.escape(name, quote=True)}"')
         parts.append(f' data-ourui-field="{html.escape(name, quote=True)}"')
+    bind = attrs.get("bind")
+    if isinstance(bind, str) and bind:
+        parts.append(f' data-ourui-bind="{html.escape(bind, quote=True)}"')
+    return parts
+
+
+def _input_attrs(attrs: dict[str, Any]) -> str:
+    parts = _field_name_attrs(attrs)
     input_type = attrs.get("type") or "text"
     if not isinstance(input_type, str) or not input_type:
         input_type = "text"
@@ -285,10 +334,55 @@ def _input_attrs(attrs: dict[str, Any]) -> str:
     value = attrs.get("value")
     if value is not None and not isinstance(value, dict):
         parts.append(f' value="{html.escape(str(value), quote=True)}"')
-    bind = attrs.get("bind")
-    if isinstance(bind, str) and bind:
-        parts.append(f' data-ourui-bind="{html.escape(bind, quote=True)}"')
     return "".join(parts)
+
+
+def _select_attrs(attrs: dict[str, Any]) -> str:
+    return "".join(_field_name_attrs(attrs))
+
+
+def _toggle_attrs(attrs: dict[str, Any]) -> str:
+    parts = _field_name_attrs(attrs)
+    parts.append(' type="checkbox"')
+    value = attrs.get("value")
+    checked = False
+    if isinstance(value, bool):
+        checked = value
+    elif value is not None and not isinstance(value, dict):
+        checked = str(value).lower() in {"1", "true", "yes", "on"}
+    if checked:
+        parts.append(" checked")
+    return "".join(parts)
+
+
+def _slider_attrs(attrs: dict[str, Any]) -> str:
+    parts = _field_name_attrs(attrs)
+    parts.append(' type="range"')
+    for key in ("min", "max", "step"):
+        raw = attrs.get(key)
+        if raw is not None and not isinstance(raw, dict):
+            parts.append(f' {key}="{html.escape(str(raw), quote=True)}"')
+    value = attrs.get("value")
+    if value is not None and not isinstance(value, dict):
+        parts.append(f' value="{html.escape(str(value), quote=True)}"')
+    return "".join(parts)
+
+
+def _wrap_field(pad: str, label: Any, control_lines: list[str], *, row: bool = False) -> list[str]:
+    if not isinstance(label, str) or not label:
+        return [f"{pad}{line}" if not line.startswith(pad) else line for line in control_lines]
+    lab = html.escape(label)
+    cls = "ourui-toggle-row" if row else "ourui-field"
+    if row:
+        # label after checkbox is common; put control then label text
+        inner = [f"{pad}  {control_lines[0].lstrip()}", f'{pad}  <span class="ourui-field-label">{lab}</span>']
+        return [f'{pad}<label class="{cls}">', *inner, f"{pad}</label>"]
+    return [
+        f'{pad}<label class="{cls}">',
+        f'{pad}  <span class="ourui-field-label">{lab}</span>',
+        *[f"{pad}  {line.lstrip()}" if line.strip().startswith("<") else line for line in control_lines],
+        f"{pad}</label>",
+    ]
 
 
 def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> list[str]:
@@ -312,23 +406,56 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     data_id = f' data-ourui-id="{html.escape(nid)}"'
     events = _event_attrs(node)
     link = _link_attrs(node.get("attributes", {})) if role == "link" else ""
-    field = _input_attrs(node.get("attributes", {})) if role == "input" else ""
-
-    children = node.get("children", [])
-    attrs = f"{class_attr}{data_role}{data_id}{link}{field}{events}"
+    node_attrs = node.get("attributes", {})
 
     if role == "input":
-        label = node.get("attributes", {}).get("label")
-        input_line = f"{pad}<input{attrs} />"
+        field = _input_attrs(node_attrs)
+        attrs = f"{class_attr}{data_role}{data_id}{field}{events}"
+        return _wrap_field(pad, node_attrs.get("label"), [f"<input{attrs} />"])
+
+    if role == "select":
+        field = _select_attrs(node_attrs)
+        attrs = f"{class_attr}{data_role}{data_id}{field}{events}"
+        options = node_attrs.get("options") or []
+        current = "" if node_attrs.get("value") is None else str(node_attrs.get("value"))
+        opt_lines: list[str] = []
+        if isinstance(options, list):
+            for opt in options:
+                if isinstance(opt, dict):
+                    oval = str(opt.get("value", opt.get("label", "")))
+                    olab = str(opt.get("label", oval))
+                else:
+                    oval = str(opt)
+                    olab = oval
+                sel = " selected" if oval == current else ""
+                opt_lines.append(
+                    f'{pad}  <option value="{html.escape(oval, quote=True)}"{sel}>{html.escape(olab)}</option>'
+                )
+        body = [f"{pad}<select{attrs}>", *opt_lines, f"{pad}</select>"]
+        label = node_attrs.get("label")
         if isinstance(label, str) and label:
-            lab = html.escape(label)
             return [
                 f'{pad}<label class="ourui-field">',
-                f'{pad}  <span class="ourui-field-label">{lab}</span>',
-                f"{pad}  <input{attrs} />",
+                f'{pad}  <span class="ourui-field-label">{html.escape(label)}</span>',
+                f"{pad}  <select{attrs}>",
+                *[f"  {line}" if line.startswith(pad) else line for line in opt_lines],
+                f"{pad}  </select>",
                 f"{pad}</label>",
             ]
-        return [input_line]
+        return body
+
+    if role == "toggle":
+        field = _toggle_attrs(node_attrs)
+        attrs = f"{class_attr}{data_role}{data_id}{field}{events}"
+        return _wrap_field(pad, node_attrs.get("label"), [f"<input{attrs} />"], row=True)
+
+    if role == "slider":
+        field = _slider_attrs(node_attrs)
+        attrs = f"{class_attr}{data_role}{data_id}{field}{events}"
+        return _wrap_field(pad, node_attrs.get("label"), [f"<input{attrs} />"])
+
+    children = node.get("children", [])
+    attrs = f"{class_attr}{data_role}{data_id}{link}{events}"
 
     if not children:
         return [f"{pad}<{tag}{attrs}></{tag}>"]

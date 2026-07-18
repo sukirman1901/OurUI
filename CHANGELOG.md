@@ -4,6 +4,14 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.3.2] — 2026-07-18
+
+### Added
+
+- **`ui.Select`**, **`ui.Toggle`**, **`ui.Slider`** (Phase S2 complete for core controls)
+- Checkbox fields collect as booleans; range/select as values
+- Dump schema **version 14**
+
 ## [0.3.1] — 2026-07-18
 
 ### Added

@@ -36,11 +36,13 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     Object.keys(state).forEach((name) => {{
       document.querySelectorAll('[data-ourui-bind="' + name + '"]').forEach((el) => {{
         const tag = (el.tagName || "").toLowerCase();
-        const next = String(state[name]);
-        if (tag === "input" || tag === "textarea" || tag === "select") {{
-          el.value = next;
+        const next = state[name];
+        if (tag === "input" && el.type === "checkbox") {{
+          el.checked = Boolean(next) && next !== "false" && next !== "0" && next !== "";
+        }} else if (tag === "input" || tag === "textarea" || tag === "select") {{
+          el.value = String(next);
         }} else {{
-          el.textContent = next;
+          el.textContent = String(next);
         }}
       }});
     }});
@@ -51,7 +53,11 @@ def emit_js(rtr: dict[str, Any], *, hmr: bool = False) -> str:
     root.querySelectorAll("[data-ourui-field]").forEach((el) => {{
       const key = el.getAttribute("data-ourui-field");
       if (!key) return;
-      payload[key] = el.value;
+      if (el.type === "checkbox") {{
+        payload[key] = !!el.checked;
+      }} else {{
+        payload[key] = el.value;
+      }}
     }});
     return payload;
   }}

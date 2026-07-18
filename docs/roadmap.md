@@ -11,7 +11,7 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capabi
 | **3 — Host** | Host consumes `RTR + Resolved Design` via **Host Contract** | **Done (`0.3.0`)** |
 
 ```text
-Gen 1–3 complete. Language surface continues (S2 Input shipped; more controls / chrome next).
+Gen 1–3 complete. Phase S2 form controls done. Next: S3a Nav (chrome) when needed.
 ```
 
 ## Historical phases (P0)
@@ -37,6 +37,6 @@ Gen 1–3 complete. Language surface continues (S2 Input shipped; more controls 
 | **Presentation R&D** | [RFC-001](rfcs/RFC-001-presentation-system.md); Graph in dump (schema 11, `0.2.0`) | Done |
 | **Design System R&D** | [RFC-002](rfcs/RFC-002-design-system.md); `resolved_design` (schema 12, `0.2.1`) | Done |
 | **Host R&D (Gen 3)** | [RFC-003](rfcs/RFC-003-host-emit.md) contract-primary emit | **Done (`0.3.0`)** |
-| **S2** | `ui.Input` + form fields → `@server` payload (dump schema 13, `0.3.1`) | Done |
+| **S2** | Form controls: `Input` / `Select` / `Toggle` / `Slider` → `@server` (schema 14, `0.3.2`) | Done |
 
-ADRs 005–007 record intent+emit+escape product notes. Sequencing of Presentation / Design System / Host is owned by the RFC ladder (001 → 002 → 003). Language surface continues via S slices (S2 controls next: Slider/Select/Toggle; S3a Nav when needed).
+ADRs 005–007 record intent+emit+escape product notes. Next language slices: **S3a** `ui.Nav` when chrome is needed.

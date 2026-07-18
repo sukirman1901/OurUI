@@ -68,6 +68,9 @@ about = ui.Page(route="/about", ui.Section(title="About"))
 | `Grid` | Presentation | Grid concept (pre-layout) |
 | `Link` | Presentation | Navigation anchor; requires `href=` |
 | `Input` | Presentation | Form field; `name=` collected into `@server` payload on button click |
+| `Select` | Presentation | Dropdown; `options=` list of values |
+| `Toggle` | Presentation | Checkbox; collected as boolean |
+| `Slider` | Presentation | Range; `min=` / `max=` / `step=` |
 
 ### Layout intents (`layout=`)
 
@@ -85,12 +88,21 @@ ui.Link("Docs", href="https://example.com", color="primary")  # external → tar
 
 ```python
 email = State("")
+theme = State("light")
+on = State(True)
+level = State(40)
 
 @server
 def save(**payload):
     email.set(str(payload.get("email", "")))
+    theme.set(str(payload.get("theme", "")))
+    on.set(bool(payload.get("enabled")))
+    level.set(int(payload.get("volume", 0)))
 
-ui.Input(name="email", type="email", placeholder="you@example.com", label="Email", bind=email)
+ui.Input(name="email", type="email", bind=email)
+ui.Select(name="theme", options=["light", "dark"], bind=theme)
+ui.Toggle(name="enabled", label="On", bind=on)
+ui.Slider(name="volume", min=0, max=100, step=5, bind=level)
 ui.Button("Save", on_click=save)  # JS posts collected [data-ourui-field] values
 ```
 

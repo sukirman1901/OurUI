@@ -10,7 +10,7 @@ from ourui.analysis.components import (
     component_call_name,
     expand_component_call,
 )
-from ourui.node import THEME_ATTR_KEYS, Node
+from ourui.node import FORM_CONTROL_KINDS, INPUT_TYPES, THEME_ATTR_KEYS, Node
 from ourui.parse import call_kind, literal_value, parse_file, span_for
 from ourui.theme import apply_theme_overrides, default_tokens, theme_kwargs_to_overrides
 
@@ -194,7 +194,7 @@ class _GraphBuilder:
             if isinstance(val, str):
                 if kind in {"Button", "Text", "Card", "Link"} and "text" not in attrs:
                     attrs["text"] = val
-                elif kind == "Input" and "name" not in attrs:
+                elif kind in FORM_CONTROL_KINDS and "name" not in attrs:
                     attrs["name"] = val
                 elif "title" not in attrs:
                     attrs["title"] = val
@@ -236,7 +236,7 @@ class _GraphBuilder:
                 state_ref = self._maybe_state_ref(kw.value)
                 if state_ref:
                     if kw.arg == "bind":
-                        attrs["value" if kind == "Input" else "text"] = state_ref
+                        attrs["value" if kind in FORM_CONTROL_KINDS else "text"] = state_ref
                     elif kw.arg == "value":
                         attrs["value"] = state_ref
                     else:
@@ -245,8 +245,6 @@ class _GraphBuilder:
             if kw.arg == "type" and kind == "Input":
                 type_val = literal_value(kw.value)
                 if isinstance(type_val, str):
-                    from ourui.node import INPUT_TYPES
-
                     attrs["type"] = type_val if type_val in INPUT_TYPES else "text"
                 continue
             if isinstance(kw.value, ast.Call):

@@ -17,6 +17,9 @@ _LAYOUT_KIND: dict[str, str] = {
     "Text": "Box",
     "Link": "Box",
     "Input": "Box",
+    "Select": "Box",
+    "Toggle": "Box",
+    "Slider": "Box",
 }
 
 _AXIS: dict[str, str] = {
@@ -49,6 +52,10 @@ _PASSTHROUGH_PROPS = (
     "type",
     "label",
     "value",
+    "options",
+    "min",
+    "max",
+    "step",
 )
 
 
