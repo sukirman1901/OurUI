@@ -60,7 +60,7 @@ class Node:
         }
 
 
-INTENT_KINDS = frozenset({"Page", "Hero", "Section", "Shell"})
+INTENT_KINDS = frozenset({"Page", "Hero", "Section", "Shell", "Nav"})
 PRESENTATION_KINDS = frozenset(
     {"Button", "Text", "Card", "Grid", "Link", "Input", "Select", "Toggle", "Slider"}
 )
@@ -74,5 +74,11 @@ FORM_CONTROL_KINDS = frozenset({"Input", "Select", "Toggle", "Slider"})
 
 # Input type= enum (S2)
 INPUT_TYPES = frozenset({"text", "email", "password", "number", "search", "url", "tel"})
+
+# Nav chrome (S3a)
+NAV_PLACEMENTS = frozenset(
+    {"flow", "sticky-top", "fixed-top", "fixed-bottom", "overlay", "backdrop"}
+)
+NAV_TONES = frozenset({"solid", "glass"})
 
 THEME_ATTR_KEYS = frozenset({"variant", "color", "bg", "theme"})

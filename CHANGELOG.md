@@ -4,6 +4,16 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.3.3] — 2026-07-18
+
+### Added
+
+- **`ui.Nav`** (Phase S3a) — chrome bar with `brand=` / `items=` / `actions=`
+- `placement=` intent enum (`sticky-top`, `fixed-top`, …) mapped by emit — not raw CSS `position`
+- `tone=solid|glass` nav surfaces; page pad when `fixed-top` via `:has()`
+- Dump schema **version 15**
+- Demo landing uses Nav + S2 playground controls
+
 ## [0.3.2] — 2026-07-18
 
 ### Added

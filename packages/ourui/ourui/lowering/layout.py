@@ -11,6 +11,7 @@ _LAYOUT_KIND: dict[str, str] = {
     "Hero": "Column",
     "Section": "Column",
     "Shell": "Row",
+    "Nav": "Row",
     "Grid": "Grid",
     "Card": "Box",
     "Button": "Box",
@@ -56,6 +57,11 @@ _PASSTHROUGH_PROPS = (
     "min",
     "max",
     "step",
+    "placement",
+    "tone",
+    "brand",
+    "items",
+    "actions",
 )
 
 

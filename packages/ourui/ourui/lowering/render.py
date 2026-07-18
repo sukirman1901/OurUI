@@ -83,6 +83,11 @@ def lower_to_rtr(ltr: Any) -> RTR:
             "min",
             "max",
             "step",
+            "placement",
+            "tone",
+            "brand",
+            "items",
+            "actions",
         ):
             if key in attrs:
                 props[key] = attrs[key]
@@ -149,6 +154,7 @@ def _role_for(from_intent: str) -> str:
         "Hero": "hero",
         "Section": "section",
         "Shell": "shell",
+        "Nav": "nav",
         "Button": "button",
         "Card": "card",
         "Text": "text",

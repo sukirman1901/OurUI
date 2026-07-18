@@ -1,7 +1,6 @@
-"""Plasma-shaped SaaS dogfood — Phase S1: ui.Link + ui.Shell.
+"""Plasma-shaped SaaS dogfood — S1 Shell/Link, S2 forms, S3a Nav.
 
-Uses the **local editable** OurUI package (S1 not on PyPI 0.1.1 yet).
-Remaining gaps: WebGL, sliders, forms — see GAPS.md.
+Remaining gaps: WebGL, drawer menu — see GAPS.md.
 """
 
 from ourui import Component, State, server, ui
@@ -27,6 +26,18 @@ mode = State("gradient")
 preset = State("ember")
 share_id = State("")
 export_snippet = State("// GAP: no code editor / clipboard UI yet")
+
+
+@server
+def apply_playground(**payload: object) -> dict[str, int | str]:
+    if "mode" in payload:
+        mode.set(str(payload.get("mode", mode.get())))
+    if "lens" in payload:
+        try:
+            lens.set(int(payload.get("lens", lens.get())))  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            pass
+    return {"mode": mode.get(), "lens": lens.get(), "pace": pace.get()}
 
 
 @server
@@ -222,19 +233,23 @@ class StudioStyle(Component):
 
 
 landing = ui.Page(
+    ui.Nav(
+        brand=ui.Link("Plasma", href="/"),
+        items=[
+            ui.Link("Features", href="#features"),
+            ui.Link("Playground", href="#playground"),
+            ui.Link("FAQ", href="#faq"),
+        ],
+        actions=[
+            ui.Link("Open Studio", href="/app", color="primary"),
+        ],
+        placement="sticky-top",
+        tone="glass",
+    ),
     ui.Hero(
         title="Plasma",
-        subtitle="OurUI reconstruction — S1 adds real Link + Shell layout.",
+        subtitle="OurUI reconstruction — S3a Nav + S2 form controls + S1 Shell.",
         cta=ui.Link("Open Studio", href="/app", color="primary"),
-    ),
-    ui.Section(
-        title="Navigate",
-        layout="stack",
-        children=[
-            ui.Link("Studio", href="/app"),
-            ui.Link("Embed stub", href="/embed"),
-            ui.Link("Plasma (real product)", href="https://plasma.nusaiba.dev/"),
-        ],
     ),
     ui.Section(
         title="Why Plasma",
@@ -255,7 +270,14 @@ landing = ui.Page(
         children=[
             FilterRow("Pace", pace, pace_down, pace_up),
             FilterRow("Texture", texture, texture_down, texture_up),
-            ui.Text("GAP S2: color inputs + continuous sliders"),
+            ui.Slider(name="lens", min=0, max=100, step=5, label="Lens", bind=lens),
+            ui.Select(
+                name="mode",
+                options=["gradient", "dither", "raymarch"],
+                label="Mode",
+                bind=mode,
+            ),
+            ui.Button("Apply", color="primary", on_click=apply_playground),
         ],
     ),
     ui.Section(

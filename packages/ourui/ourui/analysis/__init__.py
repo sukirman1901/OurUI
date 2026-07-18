@@ -10,7 +10,14 @@ from ourui.analysis.components import (
     component_call_name,
     expand_component_call,
 )
-from ourui.node import FORM_CONTROL_KINDS, INPUT_TYPES, THEME_ATTR_KEYS, Node
+from ourui.node import (
+    FORM_CONTROL_KINDS,
+    INPUT_TYPES,
+    NAV_PLACEMENTS,
+    NAV_TONES,
+    THEME_ATTR_KEYS,
+    Node,
+)
 from ourui.parse import call_kind, literal_value, parse_file, span_for
 from ourui.theme import apply_theme_overrides, default_tokens, theme_kwargs_to_overrides
 
@@ -219,6 +226,39 @@ class _GraphBuilder:
                     if cid:
                         child_ids.append(cid)
                 continue
+            if kind == "Nav" and kw.arg == "brand" and isinstance(kw.value, ast.Call):
+                cid = self.build_call(kw.value, parent_id=nid, expansion_trail=trail)
+                if cid:
+                    attrs["brand"] = cid
+                    child_ids.append(cid)
+                continue
+            if kind == "Nav" and kw.arg in {"items", "actions"}:
+                slot_ids: list[str] = []
+                val_node = kw.value
+                if isinstance(val_node, (ast.List, ast.Tuple)):
+                    for elt in val_node.elts:
+                        if isinstance(elt, ast.Call):
+                            cid = self.build_call(elt, parent_id=nid, expansion_trail=trail)
+                            if cid:
+                                slot_ids.append(cid)
+                                child_ids.append(cid)
+                elif isinstance(val_node, ast.Call):
+                    cid = self.build_call(val_node, parent_id=nid, expansion_trail=trail)
+                    if cid:
+                        slot_ids.append(cid)
+                        child_ids.append(cid)
+                attrs[kw.arg] = slot_ids
+                continue
+            if kind == "Nav" and kw.arg == "placement":
+                place = literal_value(kw.value)
+                if isinstance(place, str):
+                    attrs["placement"] = place if place in NAV_PLACEMENTS else "sticky-top"
+                continue
+            if kind == "Nav" and kw.arg == "tone":
+                tone = literal_value(kw.value)
+                if isinstance(tone, str):
+                    attrs["tone"] = tone if tone in NAV_TONES else "solid"
+                continue
             if kw.arg == "route" and kind == "Page":
                 route_val = literal_value(kw.value)
                 if isinstance(route_val, str):
@@ -254,6 +294,10 @@ class _GraphBuilder:
                     child_ids.append(cid)
                     continue
             attrs[kw.arg] = literal_value(kw.value)
+
+        if kind == "Nav":
+            attrs.setdefault("placement", "sticky-top")
+            attrs.setdefault("tone", "solid")
 
         provenance = ["parse:ui_call", "analyze:semantic_graph", *[f"expand:{n}" for n in trail]]
         node = Node(

@@ -13,6 +13,7 @@ _ROLE_TAG: dict[str, str] = {
     "hero": "header",
     "section": "section",
     "shell": "div",
+    "nav": "nav",
     "card": "div",
     "grid": "div",
     "text": "span",
@@ -158,10 +159,84 @@ input.ourui-slider {
   max-width: 24rem;
   accent-color: var(--ourui-primary);
 }
+.ourui-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--ourui-space-md);
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--ourui-space-sm) var(--ourui-space-md);
+  z-index: 40;
+}
+.ourui-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ourui-space-sm);
+  font-weight: 600;
+}
+.ourui-nav-items {
+  display: flex;
+  align-items: center;
+  gap: var(--ourui-space-md);
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+}
+.ourui-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ourui-space-sm);
+  margin-inline-start: auto;
+}
+.ourui-nav-solid {
+  background: var(--ourui-card);
+  color: var(--ourui-card-fg);
+  border-bottom: 1px solid var(--ourui-border);
+}
+.ourui-nav-glass {
+  background: color-mix(in srgb, var(--ourui-card) 72%, transparent);
+  color: var(--ourui-card-fg);
+  border-bottom: 1px solid var(--ourui-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.ourui-nav-sticky-top {
+  position: sticky;
+  top: 0;
+}
+.ourui-nav-fixed-top {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+}
+.ourui-nav-fixed-bottom {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  border-bottom: none;
+  border-top: 1px solid var(--ourui-border);
+}
+.ourui-nav-flow {
+  position: static;
+}
+.ourui-nav-overlay {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+}
+.ourui-nav-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.ourui-root:has(.ourui-nav-fixed-top) {
+  padding-top: 3.75rem;
+}
 """
 # Tone classes above use CSS vars seeded from Resolved Design (Host Contract).
 # Per-node rules from Resolved Design override for concrete fill/fg/radius/pad.
-# Form control chrome is host-private layout — not Design System.
+# Form control + Nav chrome is host-private layout — not Design System.
 
 def _as_resolved_design(resolved_design: Any) -> dict[str, Any] | None:
     if resolved_design is None:
@@ -247,16 +322,17 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
     shell = attrs.get("shell_layout")
     role = attrs.get("role", "")
     classes: list[str] = []
-    if shell == "split-3":
-        classes.append("ourui-shell-split-3")
-    elif shell == "stack":
-        classes.append("ourui-shell-stack")
-    elif layout == "vertical":
-        classes.append("ourui-col")
-    elif layout == "horizontal":
-        classes.append("ourui-row")
-    elif layout == "grid":
-        classes.append("ourui-grid")
+    if role != "nav":
+        if shell == "split-3":
+            classes.append("ourui-shell-split-3")
+        elif shell == "stack":
+            classes.append("ourui-shell-stack")
+        elif layout == "vertical":
+            classes.append("ourui-col")
+        elif layout == "horizontal":
+            classes.append("ourui-row")
+        elif layout == "grid":
+            classes.append("ourui-grid")
     if role == "card":
         classes.append("ourui-card")
     if role == "link":
@@ -277,6 +353,12 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         classes.append("ourui-toggle")
     if role == "slider":
         classes.append("ourui-slider")
+    if role == "nav":
+        classes.append("ourui-nav")
+        placement = attrs.get("placement") or "sticky-top"
+        tone = attrs.get("tone") or "solid"
+        classes.append(f"ourui-nav-{placement}")
+        classes.append(f"ourui-nav-{tone}")
     if (
         node["kind"] == "Leaf"
         and "ourui-control" not in classes
@@ -285,6 +367,7 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
         and "ourui-select" not in classes
         and "ourui-toggle" not in classes
         and "ourui-slider" not in classes
+        and "ourui-nav" not in classes
     ):
         classes.append("ourui-leaf")
     return classes
@@ -453,6 +536,42 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
         field = _slider_attrs(node_attrs)
         attrs = f"{class_attr}{data_role}{data_id}{field}{events}"
         return _wrap_field(pad, node_attrs.get("label"), [f"<input{attrs} />"])
+
+    if role == "nav":
+        attrs = f"{class_attr}{data_role}{data_id}{events}"
+        brand = node_attrs.get("brand")
+        items = node_attrs.get("items") if isinstance(node_attrs.get("items"), list) else []
+        actions = node_attrs.get("actions") if isinstance(node_attrs.get("actions"), list) else []
+        slotted = set()
+        if isinstance(brand, str):
+            slotted.add(brand)
+        slotted.update(i for i in items if isinstance(i, str))
+        slotted.update(a for a in actions if isinstance(a, str))
+
+        def _slot(title: str, ids: list[str]) -> list[str]:
+            if not ids:
+                return []
+            out = [f'{pad}  <div class="ourui-nav-{title}">']
+            for cid in ids:
+                if cid in nodes:
+                    out.extend(_render_node(cid, nodes, indent + 2))
+            out.append(f"{pad}  </div>")
+            return out
+
+        lines = [f"{pad}<nav{attrs}>"]
+        if isinstance(brand, str) and brand in nodes:
+            lines.append(f'{pad}  <div class="ourui-nav-brand">')
+            lines.extend(_render_node(brand, nodes, indent + 2))
+            lines.append(f"{pad}  </div>")
+        lines.extend(_slot("items", [i for i in items if isinstance(i, str)]))
+        lines.extend(_slot("actions", [a for a in actions if isinstance(a, str)]))
+        # Positional children not assigned to slots
+        for child_id in node.get("children", []):
+            if child_id in slotted or child_id not in nodes:
+                continue
+            lines.extend(_render_node(child_id, nodes, indent + 1))
+        lines.append(f"{pad}</nav>")
+        return lines
 
     children = node.get("children", [])
     attrs = f"{class_attr}{data_role}{data_id}{link}{events}"

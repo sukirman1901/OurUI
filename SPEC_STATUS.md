@@ -20,7 +20,8 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 **RFC-001** (`v0.2.0`): Presentation Graph in dump (schema **11**, Option A).  
 **RFC-002** (`v0.2.1`): Resolved Design in dump (schema **12**).  
 **RFC-003** (`v0.3.0`): Host Contract Implemented — emit **requires** `RTR + Resolved Design`.  
-**Phase S2** (`v0.3.2`): form controls `Input` / `Select` / `Toggle` / `Slider` (dump schema **14**).
+**Phase S2** (`v0.3.2`): form controls `Input` / `Select` / `Toggle` / `Slider` (dump schema **14**).  
+**Phase S3a** (`v0.3.3`): `ui.Nav` + `placement=` + `tone=` (dump schema **15**).
 
 ### Capability generations
 
@@ -58,12 +59,13 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | LSP | Stable (`ourui lsp` — completions + hover + tokens) |
 | Runtime (single-process prod) | Stable (`ourui serve --prod`) |
 | Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
-| Package (`ourui` 0.3.2) | Stable ([PyPI](https://pypi.org/project/ourui/); Host Contract + S2 form controls) |
+| Package (`ourui` 0.3.3) | Stable ([PyPI](https://pypi.org/project/ourui/); Host Contract + S2 + S3a Nav) |
 | Presentation Graph | Stable (RFC-001 Option A — lowering) |
 | Resolved Design | Stable (RFC-002 — dump + required emit input) |
 | Design System pack (`ourui-default`) | Draft (seeded from `theme.py`; packs API may grow) |
 | Host Contract | Stable (RFC-003 Implemented) |
 | `ui.Link` / `ui.Shell` / `layout=` | Stable (Phase S1 — dump schema **10**) |
 | `ui.Input` / `Select` / `Toggle` / `Slider` | Stable (Phase S2 — dump schema **14**) |
+| `ui.Nav` | Stable (Phase S3a — dump schema **15**) |
 
 Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see ADRs 001–004 under `docs/decisions/`.

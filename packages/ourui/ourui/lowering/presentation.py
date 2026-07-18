@@ -12,6 +12,7 @@ _PRESENTATION_KINDS = frozenset(
         "Hero",
         "Section",
         "Shell",
+        "Nav",
         "Button",
         "Text",
         "Card",
@@ -42,6 +43,11 @@ _PASSTHROUGH = (
     "min",
     "max",
     "step",
+    "placement",
+    "tone",
+    "brand",
+    "items",
+    "actions",
 )
 
 

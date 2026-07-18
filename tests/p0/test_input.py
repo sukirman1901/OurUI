@@ -20,7 +20,7 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_includes_form_controls() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 14
+    assert doc["version"] == 15
     kinds = {n["kind"] for n in doc["semantic_graph"]["nodes"].values()}
     assert {"Input", "Select", "Toggle", "Slider"} <= kinds
     pg_kinds = {n["kind"] for n in doc["presentation_graph"]["nodes"].values()}

@@ -28,6 +28,7 @@ page = ui.Page(
 | `ui.Hero` | Intent | Prominent header block |
 | `ui.Section` | Intent | Grouped content section (`layout=` optional) |
 | `ui.Shell` | Intent | Layout region (`layout=stack\|row\|split-3\|grid`) |
+| `ui.Nav` | Intent | Chrome bar (`placement=`, `tone=`, brand/items/actions) |
 | `ui.Button` | Presentation | Clickable control |
 | `ui.Text` | Presentation | Inline text (or bound `State`) |
 | `ui.Card` | Presentation | Card container |
@@ -269,6 +270,31 @@ ui.Shell(
 | `grid` | `.ourui-grid` |
 
 `layout=` also works on `ui.Section` / `ui.Page`.
+
+## `ui.Nav`
+
+Product chrome bar (Phase S3a). Placement is an intent enum — not raw CSS `position`.
+
+```python
+ui.Nav(
+    brand=ui.Link("Plasma", href="/"),
+    items=[
+        ui.Link("Features", href="#features"),
+        ui.Link("FAQ", href="#faq"),
+    ],
+    actions=[ui.Link("Open Studio", href="/app", color="primary")],
+    placement="sticky-top",
+    tone="glass",
+)
+```
+
+| Prop | Description |
+|------|-------------|
+| `brand` | Leading node (usually `ui.Link`) |
+| `items` | List of nav links |
+| `actions` | Trailing actions (links/buttons) |
+| `placement` | `flow` \| `sticky-top` (default) \| `fixed-top` \| `fixed-bottom` \| `overlay` \| `backdrop` |
+| `tone` | `solid` (default) \| `glass` |
 
 ## Positional arguments
 

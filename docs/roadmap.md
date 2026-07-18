@@ -11,7 +11,7 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capabi
 | **3 — Host** | Host consumes `RTR + Resolved Design` via **Host Contract** | **Done (`0.3.0`)** |
 
 ```text
-Gen 1–3 complete. Phase S2 form controls done. Next: S3a Nav (chrome) when needed.
+Gen 1–3 complete. S1–S2 + S3a Nav shipped. Next optional: S3 tokens / S5 Canvas / S6 polish.
 ```
 
 ## Historical phases (P0)
@@ -38,5 +38,6 @@ Gen 1–3 complete. Phase S2 form controls done. Next: S3a Nav (chrome) when nee
 | **Design System R&D** | [RFC-002](rfcs/RFC-002-design-system.md); `resolved_design` (schema 12, `0.2.1`) | Done |
 | **Host R&D (Gen 3)** | [RFC-003](rfcs/RFC-003-host-emit.md) contract-primary emit | **Done (`0.3.0`)** |
 | **S2** | Form controls: `Input` / `Select` / `Toggle` / `Slider` → `@server` (schema 14, `0.3.2`) | Done |
+| **S3a** | `ui.Nav` + `placement=` + `tone=` (schema 15, `0.3.3`) | Done |
 
-ADRs 005–007 record intent+emit+escape product notes. Next language slices: **S3a** `ui.Nav` when chrome is needed.
+ADRs 005–007 record intent+emit+escape product notes. Next optional: S3 tokens, S5 Canvas, or S6 polish.

@@ -62,6 +62,7 @@ about = ui.Page(route="/about", ui.Section(title="About"))
 | `Hero` | Intent | Hero intent |
 | `Section` | Intent | Section intent; optional `layout=` |
 | `Shell` | Intent | Layout region; `layout=` = `stack` \| `row` \| `split-3` \| `grid` |
+| `Nav` | Intent | Chrome bar; `placement=` + `tone=` + brand/items/actions |
 | `Button` | Presentation | Button-as-concept (not HTML); may carry `on_click` |
 | `Text` | Presentation | Text content |
 | `Card` | Presentation | Card concept |
@@ -104,6 +105,18 @@ ui.Select(name="theme", options=["light", "dark"], bind=theme)
 ui.Toggle(name="enabled", label="On", bind=on)
 ui.Slider(name="volume", min=0, max=100, step=5, bind=level)
 ui.Button("Save", on_click=save)  # JS posts collected [data-ourui-field] values
+```
+
+### Nav (Phase S3a)
+
+```python
+ui.Nav(
+    brand=ui.Link("OurUI", href="/"),
+    items=[ui.Link("Features", href="#features")],
+    actions=[ui.Link("App", href="/app", color="primary")],
+    placement="sticky-top",  # flow | sticky-top | fixed-top | fixed-bottom | overlay | backdrop
+    tone="glass",            # solid | glass
+)
 ```
 
 ## Components (Phase I)

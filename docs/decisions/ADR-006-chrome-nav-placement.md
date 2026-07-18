@@ -1,6 +1,6 @@
 # ADR-006: Chrome intents — Nav, placement, not raw CSS `position`
 
-**Status:** Accepted (design); implementation = Phase **S3a** (before/with S3 tokens)  
+**Status:** Accepted + Implemented (Phase **S3a**, package `0.3.3`)  
 **Date:** 2026-07-18  
 **Relates:** [ADR-005](ADR-005-intent-emit-escape.md)
 
