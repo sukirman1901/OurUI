@@ -51,4 +51,4 @@ Learn how to build web apps in Python with OurUI. Stable surface: `ourui` **1.11
 
 ## Samples
 
-[`examples/tutorial/`](../../examples/tutorial/) · [`examples/landing/`](../../examples/landing/) · [`examples/gateway/`](../../examples/gateway/)
+Inline snippets in the [tutorial](tutorial/01-your-first-page.md). Install: `pip install ourui`.
