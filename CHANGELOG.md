@@ -4,6 +4,12 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package (`0.x` may still refine Stable surfaces with an ADR).
 
+## [0.1.1] — 2026-07-18
+
+### Fixed
+
+- Package README and PyPI project URLs now point at absolute GitHub links (`sukirman1901/OurUI`) so Documentation / Changelog / License open correctly from PyPI
+
 ## [0.1.0] — 2026-07-18
 
 First public P0 release of the OurUI compiler and runtime.

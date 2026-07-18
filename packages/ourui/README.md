@@ -1,4 +1,4 @@
-# ourui 0.1.0
+# ourui 0.1.1
 
 Python package for the **OurUI** compiler and runtime.
 
@@ -6,7 +6,11 @@ Python package for the **OurUI** compiler and runtime.
 
 ## Install
 
-From a clone of the repository:
+```bash
+pip install ourui
+```
+
+From a clone of the repository (editable):
 
 ```bash
 python3 -m venv .venv
@@ -34,9 +38,12 @@ ourui lsp
 
 ## Documentation
 
-- User guide: [`docs/user/`](../../docs/user/README.md) (from repo root)
-- Changelog: [`CHANGELOG.md`](../../CHANGELOG.md)
-- License: MIT ([`LICENSE`](LICENSE))
+Links below open on GitHub (PyPI cannot host the docs tree inside the wheel):
+
+- [User guide](https://github.com/sukirman1901/OurUI/tree/main/docs/user)
+- [Changelog](https://github.com/sukirman1901/OurUI/blob/main/CHANGELOG.md)
+- [License (MIT)](https://github.com/sukirman1901/OurUI/blob/main/LICENSE)
+- [Repository](https://github.com/sukirman1901/OurUI)
 
 ## Requirements
 

@@ -45,6 +45,6 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 | LSP | Stable (`ourui lsp` — completions + hover + tokens) |
 | Runtime (single-process prod) | Stable (`ourui serve --prod`) |
 | Runtime (multi-worker, file store) | Stable (`--prod --workers N`, `--session-dir`) |
-| Package (`ourui` 0.1.0) | Stable (Phase R — MIT, wheel/sdist via `python -m build packages/ourui`) |
+| Package (`ourui` 0.1.1) | Stable (Phase R — MIT; [PyPI](https://pypi.org/project/ourui/); wheel/sdist via `python -m build packages/ourui`) |
 
 Update this table when phases land and when RFCs/ADRs promote artifacts to Stable/Frozen. Breaking changes to Stable artifacts in `0.x` require an ADR and a dump schema version bump when applicable — see ADRs 001–004 under `docs/decisions/`.
