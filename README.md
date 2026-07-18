@@ -15,8 +15,8 @@ ourui emit examples/example.py
 pytest tests/p0
 ```
 
-- `dump` — inspectable JSON: Semantic Graph, Dependency Graph, IIR, LTR, RTR  
-- `emit` — HTML document from HostNode (RTR) only
+- `dump` — JSON: Semantic Graph, Dependency Graph, IIR, LTR, RTR (+ handlers)  
+- `emit` — HTML + CSS + JS shim (`on_click` → `OurUI.invoke`)
 
 ## Core documents
 

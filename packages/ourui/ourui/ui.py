@@ -1,12 +1,20 @@
 """Authoring helpers for examples and future runtime eval.
 
-The P0 compiler does not execute these callables for dump; it parses AST.
+The P0+ compiler does not execute these callables for dump/emit; it parses AST.
 They exist so example modules import cleanly if executed.
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable, TypeVar
+
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+def server(fn: F) -> F:
+    """Mark a function as a server handler (Behavior Domain)."""
+    setattr(fn, "__ourui_server__", True)
+    return fn
 
 
 class _UINamespace:
@@ -22,7 +30,6 @@ class _UINamespace:
                 elif "children" not in props and not isinstance(arg, (str, int, float, bool)):
                     children.append(arg)
                 else:
-                    # positional string/content → text/title heuristics
                     if "text" not in props and isinstance(arg, str) and name in {"Button", "Text", "Card"}:
                         props["text"] = arg
                     elif "title" not in props and isinstance(arg, str):

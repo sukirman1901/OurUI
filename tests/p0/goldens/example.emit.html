@@ -19,7 +19,7 @@ button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
       <header class="ourui-col" data-role="hero" data-ourui-id="n0002">
         <span data-slot="title">Welcome</span>
         <span data-slot="subtitle">Build SaaS in Python</span>
-        <button class="ourui-control" data-role="button" data-ourui-id="n0003">
+        <button class="ourui-control" data-role="button" data-ourui-id="n0003" data-ourui-on-click="get_started">
           <span data-slot="text">Get Started</span>
         </button>
       </header>
@@ -34,5 +34,27 @@ button.ourui-control { padding: 0.5rem 1rem; cursor: pointer; }
       </section>
     </main>
   </div>
+  <script>
+(() => {
+  const handlers = {"get_started":{"kind":"server"}};
+  function invoke(name) {
+    const meta = handlers[name] || { kind: "client" };
+    const detail = { handler: name, kind: meta.kind };
+    window.dispatchEvent(new CustomEvent("ourui:call", { detail }));
+    if (meta.kind === "server") {
+      console.info("[ourui] server call (stub):", name);
+    } else {
+      console.info("[ourui] client call:", name);
+    }
+  }
+  document.addEventListener("click", (ev) => {
+    const el = ev.target && ev.target.closest && ev.target.closest("[data-ourui-on-click]");
+    if (!el) return;
+    ev.preventDefault();
+    invoke(el.getAttribute("data-ourui-on-click"));
+  });
+  window.OurUI = { invoke, handlers };
+})();
+  </script>
 </body>
 </html>

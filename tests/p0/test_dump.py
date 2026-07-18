@@ -21,9 +21,12 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_dump_has_required_sections() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 4
+    assert doc["version"] == 5
     for key in ("semantic_graph", "dependency_graph", "iir", "ltr", "rtr", "emit"):
         assert key in doc
+    assert doc["emit"]["js"] is True
+    assert "get_started" in doc["iir"]["handlers"]
+    assert doc["iir"]["handlers"]["get_started"]["kind"] == "server"
     assert doc["rtr"]["roots"]
     assert any(e["kind"] == "uses_theme" for e in doc["dependency_graph"]["edges"])
 
@@ -61,6 +64,12 @@ def test_rtr_host_nodes() -> None:
     for node in doc["rtr"]["nodes"].values():
         assert "lowering:render" in node["provenance"]
         assert node["metadata"].get("host") is True
+
+
+def test_rtr_carries_click_events() -> None:
+    doc = compile_dump(FIXTURE)
+    button = next(n for n in doc["rtr"]["nodes"].values() if n["attributes"].get("role") == "button")
+    assert button["attributes"]["events"]["click"] == "get_started"
 
 
 def test_golden_dump() -> None:

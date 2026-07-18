@@ -30,11 +30,13 @@ _AXIS: dict[str, str] = {
 class LTR:
     nodes: dict[str, dict[str, Any]] = field(default_factory=dict)
     roots: list[str] = field(default_factory=list)
+    handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "nodes": {nid: node for nid, node in sorted(self.nodes.items())},
             "roots": list(self.roots),
+            "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
         }
 
 
@@ -61,6 +63,8 @@ def lower_to_ltr(iir: Any) -> LTR:
         for key in ("title", "subtitle", "text", "variant", "color"):
             if key in inode.get("attributes", {}):
                 props[key] = inode["attributes"][key]
+        if "events" in inode:
+            props["events"] = dict(inode["events"])
 
         children = list(inode.get("children", []))
 
@@ -76,4 +80,5 @@ def lower_to_ltr(iir: Any) -> LTR:
             generation=inode.get("generation", 0) + 1,
         ).with_hash()
         ltr.nodes[nid] = node.to_dict()
+    ltr.handlers = dict(getattr(iir, "handlers", {}))
     return ltr

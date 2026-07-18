@@ -20,14 +20,14 @@ def _chdir_repo(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_emit_html_contains_host_mapping() -> None:
     html_out = emit_html(FIXTURE, title="Welcome")
     assert "<!DOCTYPE html>" in html_out
-    assert "<main" in html_out  # role=page
-    assert "<header" in html_out  # role=hero
-    assert "<button" in html_out  # role=button
+    assert "<main" in html_out
+    assert "<header" in html_out
+    assert "<button" in html_out
     assert "Get Started" in html_out
-    assert "data-ourui-id=" in html_out
-    # Emitter must not invent raw intent tags
+    assert 'data-ourui-on-click="get_started"' in html_out
+    assert "ourui:call" in html_out
+    assert "window.OurUI" in html_out
     assert "<Hero" not in html_out
-    assert "<Page" not in html_out
 
 
 def test_emit_only_uses_rtr() -> None:
@@ -43,9 +43,9 @@ def test_emit_deterministic() -> None:
 
 def test_dump_version_notes_emit() -> None:
     doc = compile_dump(FIXTURE)
-    assert doc["version"] == 4
+    assert doc["version"] == 5
     assert doc["emit"]["html"] is True
-    assert doc["emit"]["js"] is False
+    assert doc["emit"]["js"] is True
 
 
 def test_golden_html() -> None:
@@ -59,3 +59,4 @@ def test_golden_html() -> None:
 def test_dump_still_works() -> None:
     text = dump_json(FIXTURE)
     assert '"rtr"' in text
+    assert "get_started" in text

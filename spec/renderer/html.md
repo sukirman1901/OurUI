@@ -4,6 +4,8 @@
 
 Maps **HostNode** → HTML. Must not read Python AST or IIR ([I1](../../INVARIANTS.md), [I2](../../INVARIANTS.md)).
 
+Event bindings from RTR `attributes.events.click` become `data-ourui-on-click`. The HTML document inlines the JS shim from [spec/runtime/overview.md](../runtime/overview.md).
+
 | HostNode / role | HTML |
 |---|---|
 | `Container` + layout | `<div class="ourui-col|row|grid">` |

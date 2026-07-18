@@ -22,11 +22,13 @@ HOST_KINDS = frozenset({"Container", "Leaf", "Text", "Drawing", "Slot"})
 class RTR:
     nodes: dict[str, dict[str, Any]] = field(default_factory=dict)
     roots: list[str] = field(default_factory=list)
+    handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "nodes": {nid: node for nid, node in sorted(self.nodes.items())},
             "roots": list(self.roots),
+            "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
         }
 
 
@@ -61,6 +63,8 @@ def lower_to_rtr(ltr: Any) -> RTR:
             "from_layout": layout_kind,
             "from_intent": from_intent,
         }
+        if "events" in attrs:
+            props["events"] = dict(attrs["events"])
         children = list(lnode.get("children", []))
 
         # Promote textual props to Text HostNodes (still no HTML)
@@ -102,6 +106,7 @@ def lower_to_rtr(ltr: Any) -> RTR:
         ).with_hash()
         rtr.nodes[nid] = node.to_dict()
 
+    rtr.handlers = dict(getattr(ltr, "handlers", {}))
     return rtr
 
 

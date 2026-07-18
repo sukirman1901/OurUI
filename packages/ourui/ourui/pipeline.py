@@ -37,7 +37,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
     path = Path(path)
     artifacts = compile_to_rtr(path)
     return {
-        "version": 4,
+        "version": 5,
         "source": artifacts["source"],
         "semantic_graph": artifacts["semantic_graph"].to_dict(),
         "dependency_graph": artifacts["dependency_graph"].to_dict(),
@@ -47,7 +47,7 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
         "emit": {
             "html": True,
             "css": True,
-            "js": False,
+            "js": True,
         },
     }
 

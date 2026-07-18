@@ -2,9 +2,10 @@
 
 | Phase | Deliverable | Status |
 |---|---|---|
-| **A** | Documentation freeze → tag `docs-v1` (when maintainers commit) | Done (tag pending) |
-| **B / P0** | `ourui dump` → Semantic Graph + Dependency Graph + IIR JSON | Done |
+| **A** | Documentation freeze → tag `docs-v1` | Done (`docs-v1`, `compiler-p0e`) |
+| **B / P0** | `ourui dump` → SG + DG + IIR | Done |
 | **C** | Layout Lowering → LTR | Done |
 | **D** | Render Lowering → RTR / HostNode | Done |
-| **E** | HTML emitter (CSS inlined; JS later) | Done |
-| Later | JS emit, Runtime, CLI polish, HMR, LSP | Planned |
+| **E** | HTML + CSS emit | Done |
+| **F** | JS shim + `on_click` / `@server` Behavior Domain | Done |
+| Later | Real server invoke, State, Components, `ourui serve`, HMR, LSP | Planned |

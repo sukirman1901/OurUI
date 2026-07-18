@@ -22,23 +22,39 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 
 - Full Python execution semantics for arbitrary side effects
 - User-defined `Component` classes (planned)
-- `@server` handlers (planned)
 - Reactive `State` (planned)
 - Routing (planned)
+- Real server RPC body execution (shim only in Phase F)
 
-## Built-in kinds (P0)
+## Built-in kinds (P0+)
 
 | Kind | Domain | Notes |
 |---|---|---|
 | `Page` | Intent | Root container |
 | `Hero` | Intent | Hero intent |
 | `Section` | Intent | Section intent |
-| `Button` | Presentation | Button-as-concept (not HTML) |
+| `Button` | Presentation | Button-as-concept (not HTML); may carry `on_click` |
 | `Text` | Presentation | Text content |
 | `Card` | Presentation | Card concept |
 | `Grid` | Presentation | Grid concept (pre-layout) |
 
-Theme references may appear as string tokens in attributes (e.g. `variant="primary"`, `color="primary"`). P0 records them as dependency edges.
+### Behavior (Phase F)
+
+```python
+from ourui import ui, server
+
+@server
+def get_started():
+    ...
+
+ui.Button("Go", on_click=get_started)
+```
+
+- `on_click` accepts a function name (AST `Name`) or string.
+- `@server` marks a handler as server-kind in the handler table.
+- Events lower through IIR → LTR → RTR and become `data-ourui-on-click` + JS shim.
+
+Theme references may appear as string tokens in attributes (e.g. `variant="primary"`).
 
 ## Example
 

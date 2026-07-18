@@ -94,9 +94,9 @@ Deterministic key ordering is required for golden tests (I6).
 4. Document in COMPILER_BOOK + `spec/ir/analysis-views.md`.  
 5. Add dump section + tests.
 
-## 10. How the HTML emitter works
+## 10. How the HTML/JS emitter works
 
-The emitter reads **only** RTR (`HostNode` tree). It maps `role` → tags (`button`, `main`, `header`, …) and layout → CSS classes. See `packages/ourui/ourui/emit/html.py` and [spec/renderer/html.md](spec/renderer/html.md).
+The emitter reads **only** RTR (`HostNode` tree + handlers). It maps `role` → tags and `events.click` → `data-ourui-on-click`, then inlines a small shim (`OurUI.invoke`). See `packages/ourui/ourui/emit/` and [spec/renderer/html.md](spec/renderer/html.md).
 
 ## 11. How to run locally
 

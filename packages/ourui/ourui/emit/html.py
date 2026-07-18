@@ -3,6 +3,8 @@ from __future__ import annotations
 import html
 from typing import Any
 
+from ourui.emit.js import emit_js
+
 # Semantic role → HTML tag (emitter-only decision)
 _ROLE_TAG: dict[str, str] = {
     "button": "button",
@@ -52,15 +54,17 @@ def _tag_for(node: dict[str, Any]) -> str:
     role = node.get("attributes", {}).get("role", "")
     if role in _ROLE_TAG:
         return _ROLE_TAG[role]
-    if kind == "Container":
-        return "div"
-    if kind == "Leaf":
-        return "div"
-    if kind == "Slot":
-        return "div"
-    if kind == "Drawing":
+    if kind in {"Container", "Leaf", "Slot", "Drawing"}:
         return "div"
     return "div"
+
+
+def _event_attrs(node: dict[str, Any]) -> str:
+    events = node.get("attributes", {}).get("events") or {}
+    parts: list[str] = []
+    if "click" in events:
+        parts.append(f' data-ourui-on-click="{html.escape(str(events["click"]))}"')
+    return "".join(parts)
 
 
 def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> list[str]:
@@ -80,20 +84,20 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
     role = node.get("attributes", {}).get("role", "")
     data_role = f' data-role="{html.escape(role)}"' if role else ""
     data_id = f' data-ourui-id="{html.escape(nid)}"'
+    events = _event_attrs(node)
 
     children = node.get("children", [])
-    open_tag = f"{pad}<{tag}{class_attr}{data_role}{data_id}>"
-    close_tag = f"{pad}</{tag}>"
+    attrs = f"{class_attr}{data_role}{data_id}{events}"
 
     if not children:
-        return [f"{pad}<{tag}{class_attr}{data_role}{data_id}></{tag}>"]
+        return [f"{pad}<{tag}{attrs}></{tag}>"]
 
-    lines = [open_tag]
+    lines = [f"{pad}<{tag}{attrs}>"]
     for child_id in children:
         if child_id not in nodes:
             continue
         lines.extend(_render_node(child_id, nodes, indent + 1))
-    lines.append(close_tag)
+    lines.append(f"{pad}</{tag}>")
     return lines
 
 
@@ -106,6 +110,7 @@ def emit_html_document(rtr: dict[str, Any], *, title: str = "OurUI") -> str:
         body_lines.extend(_render_node(root, nodes, 2))
     body_lines.append("  </div>")
 
+    js = emit_js(rtr).rstrip("\n")
     parts = [
         "<!DOCTYPE html>",
         '<html lang="en">',
@@ -118,6 +123,9 @@ def emit_html_document(rtr: dict[str, Any], *, title: str = "OurUI") -> str:
         "</head>",
         "<body>",
         *body_lines,
+        "  <script>",
+        js,
+        "  </script>",
         "</body>",
         "</html>",
         "",
@@ -130,9 +138,9 @@ def emit_css() -> str:
 
 
 def emit_bundle(rtr: dict[str, Any], *, title: str = "OurUI") -> dict[str, str]:
-    """Serializable emit artifacts (I10): html + css. JS deferred."""
+    """Serializable emit artifacts (I10): html + css + js."""
     return {
         "html": emit_html_document(rtr, title=title),
         "css": emit_css(),
-        "js": "",  # Phase E minimal — no JS yet
+        "js": emit_js(rtr),
     }

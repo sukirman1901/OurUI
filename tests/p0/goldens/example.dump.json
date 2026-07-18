@@ -3,6 +3,11 @@
     "edges": [
       {
         "from": "n0003",
+        "kind": "on_click",
+        "to": "get_started"
+      },
+      {
+        "from": "n0003",
         "kind": "uses_theme",
         "to": "theme0004"
       }
@@ -11,9 +16,22 @@
   "emit": {
     "css": true,
     "html": true,
-    "js": false
+    "js": true
   },
   "iir": {
+    "handlers": {
+      "get_started": {
+        "kind": "server",
+        "name": "get_started",
+        "span": {
+          "end_col": 15,
+          "end_line": 6,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 0,
+          "start_line": 5
+        }
+      }
+    },
     "nodes": {
       "n0001": {
         "attributes": {},
@@ -37,10 +55,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 16,
+          "end_line": 22,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 3
+          "start_line": 9
         }
       },
       "n0002": {
@@ -70,10 +88,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 8,
+          "end_line": 14,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 4
+          "start_line": 10
         }
       },
       "n0003": {
@@ -83,11 +101,15 @@
         },
         "children": [],
         "domain": "presentation",
+        "events": {
+          "click": "get_started"
+        },
         "generation": 1,
         "hash": "af39003e2d7a5288",
         "id": "n0003",
         "kind": "Button",
         "metadata": {
+          "behavior": true,
           "domain": "presentation"
         },
         "provenance": [
@@ -97,11 +119,11 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 55,
-          "end_line": 7,
+          "end_col": 77,
+          "end_line": 13,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 7
+          "start_line": 13
         }
       },
       "n0005": {
@@ -128,10 +150,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 15,
+          "end_line": 21,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 9
+          "start_line": 15
         }
       },
       "n0006": {
@@ -155,10 +177,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 12,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 12
+          "start_line": 18
         }
       },
       "n0007": {
@@ -182,10 +204,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 13,
+          "end_line": 19,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 13
+          "start_line": 19
         }
       }
     },
@@ -194,6 +216,19 @@
     ]
   },
   "ltr": {
+    "handlers": {
+      "get_started": {
+        "kind": "server",
+        "name": "get_started",
+        "span": {
+          "end_col": 15,
+          "end_line": 6,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 0,
+          "start_line": 5
+        }
+      }
+    },
     "nodes": {
       "n0001": {
         "attributes": {
@@ -220,10 +255,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 16,
+          "end_line": 22,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 3
+          "start_line": 9
         }
       },
       "n0002": {
@@ -252,22 +287,25 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 8,
+          "end_line": 14,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 4
+          "start_line": 10
         }
       },
       "n0003": {
         "attributes": {
           "axis": "none",
+          "events": {
+            "click": "get_started"
+          },
           "from_intent": "Button",
           "text": "Get Started",
           "variant": "primary"
         },
         "children": [],
         "generation": 2,
-        "hash": "39c53345e11730c4",
+        "hash": "a5e158665f3be7f5",
         "id": "n0003",
         "kind": "Box",
         "metadata": {
@@ -281,11 +319,11 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 55,
-          "end_line": 7,
+          "end_col": 77,
+          "end_line": 13,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 7
+          "start_line": 13
         }
       },
       "n0005": {
@@ -314,10 +352,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 15,
+          "end_line": 21,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 9
+          "start_line": 15
         }
       },
       "n0006": {
@@ -343,10 +381,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 12,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 12
+          "start_line": 18
         }
       },
       "n0007": {
@@ -372,10 +410,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 13,
+          "end_line": 19,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 13
+          "start_line": 19
         }
       }
     },
@@ -384,6 +422,19 @@
     ]
   },
   "rtr": {
+    "handlers": {
+      "get_started": {
+        "kind": "server",
+        "name": "get_started",
+        "span": {
+          "end_col": 15,
+          "end_line": 6,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 0,
+          "start_line": 5
+        }
+      }
+    },
     "nodes": {
       "n0001": {
         "attributes": {
@@ -414,10 +465,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 16,
+          "end_line": 22,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 3
+          "start_line": 9
         }
       },
       "n0002": {
@@ -450,14 +501,17 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 8,
+          "end_line": 14,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 4
+          "start_line": 10
         }
       },
       "n0003": {
         "attributes": {
+          "events": {
+            "click": "get_started"
+          },
           "from_intent": "Button",
           "from_layout": "Box",
           "layout": "none",
@@ -467,7 +521,7 @@
           "text0001"
         ],
         "generation": 3,
-        "hash": "1f06276cba3ba856",
+        "hash": "0d3456ff223b8b91",
         "id": "n0003",
         "kind": "Container",
         "metadata": {
@@ -483,11 +537,11 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 55,
-          "end_line": 7,
+          "end_col": 77,
+          "end_line": 13,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 7
+          "start_line": 13
         }
       },
       "n0005": {
@@ -520,10 +574,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 15,
+          "end_line": 21,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 9
+          "start_line": 15
         }
       },
       "n0006": {
@@ -554,10 +608,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 12,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 12
+          "start_line": 18
         }
       },
       "n0007": {
@@ -588,10 +642,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 13,
+          "end_line": 19,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 13
+          "start_line": 19
         }
       },
       "text0001": {
@@ -618,11 +672,11 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 55,
-          "end_line": 7,
+          "end_col": 77,
+          "end_line": 13,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 7
+          "start_line": 13
         }
       },
       "text0002": {
@@ -650,10 +704,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 8,
+          "end_line": 14,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 4
+          "start_line": 10
         }
       },
       "text0003": {
@@ -681,10 +735,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 8,
+          "end_line": 14,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 4
+          "start_line": 10
         }
       },
       "text0004": {
@@ -712,10 +766,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 12,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 12
+          "start_line": 18
         }
       },
       "text0005": {
@@ -743,10 +797,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 13,
+          "end_line": 19,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 13
+          "start_line": 19
         }
       },
       "text0006": {
@@ -774,10 +828,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 15,
+          "end_line": 21,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 9
+          "start_line": 15
         }
       }
     },
@@ -804,6 +858,11 @@
       },
       {
         "from": "n0003",
+        "kind": "calls_handler",
+        "to": "get_started"
+      },
+      {
+        "from": "n0003",
         "kind": "uses_theme",
         "to": "theme0004"
       },
@@ -818,6 +877,19 @@
         "to": "n0007"
       }
     ],
+    "handlers": {
+      "get_started": {
+        "kind": "server",
+        "name": "get_started",
+        "span": {
+          "end_col": 15,
+          "end_line": 6,
+          "path": "tests/p0/fixtures/example.py",
+          "start_col": 0,
+          "start_line": 5
+        }
+      }
+    },
     "nodes": {
       "n0001": {
         "attributes": {},
@@ -837,10 +909,10 @@
         "revision": 0,
         "span": {
           "end_col": 1,
-          "end_line": 16,
+          "end_line": 22,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 7,
-          "start_line": 3
+          "start_line": 9
         }
       },
       "n0002": {
@@ -866,20 +938,23 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 8,
+          "end_line": 14,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 4
+          "start_line": 10
         }
       },
       "n0003": {
         "attributes": {
+          "on_click": {
+            "__handler__": "get_started"
+          },
           "text": "Get Started",
           "variant": "primary"
         },
         "children": [],
         "generation": 0,
-        "hash": "739fec19793d9402",
+        "hash": "87ac5416acf786b7",
         "id": "n0003",
         "kind": "Button",
         "metadata": {},
@@ -889,11 +964,11 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 55,
-          "end_line": 7,
+          "end_col": 77,
+          "end_line": 13,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 7
+          "start_line": 13
         }
       },
       "n0005": {
@@ -916,10 +991,10 @@
         "revision": 0,
         "span": {
           "end_col": 5,
-          "end_line": 15,
+          "end_line": 21,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 4,
-          "start_line": 9
+          "start_line": 15
         }
       },
       "n0006": {
@@ -939,10 +1014,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 12,
+          "end_line": 18,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 12
+          "start_line": 18
         }
       },
       "n0007": {
@@ -962,10 +1037,10 @@
         "revision": 0,
         "span": {
           "end_col": 31,
-          "end_line": 13,
+          "end_line": 19,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 13
+          "start_line": 19
         }
       },
       "theme0004": {
@@ -983,11 +1058,11 @@
         ],
         "revision": 0,
         "span": {
-          "end_col": 55,
-          "end_line": 7,
+          "end_col": 77,
+          "end_line": 13,
           "path": "tests/p0/fixtures/example.py",
           "start_col": 12,
-          "start_line": 7
+          "start_line": 13
         }
       }
     },
@@ -996,5 +1071,5 @@
     ]
   },
   "source": "tests/p0/fixtures/example.py",
-  "version": 4
+  "version": 5
 }

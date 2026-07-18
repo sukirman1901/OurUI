@@ -1,5 +1,18 @@
 # Runtime
 
-**Status:** Experimental. Not started until after Phase E emitters stabilize.
+**Status:** Draft shim (Phase F); real RPC Experimental.
 
-Runtime will host islands / bindings that attach to emitted HostNode interactivity. It must never receive Python AST ([I1](../../INVARIANTS.md)).
+## Phase F shim
+
+Emitted JS (`packages/ourui/ourui/emit/js.py`):
+
+- Binds `click` on `[data-ourui-on-click]`
+- Calls `OurUI.invoke(handlerName)`
+- Dispatches `ourui:call` CustomEvent
+- Logs server vs client stubs (`console.info`)
+
+Handlers come from RTR (`@server` / plain `def` + `on_click=`). No Python AST in the browser (I1).
+
+## Next
+
+Replace stub with HTTP/WebSocket call to a real OurUI server runtime.

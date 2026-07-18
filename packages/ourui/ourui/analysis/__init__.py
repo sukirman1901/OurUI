@@ -14,12 +14,14 @@ class SemanticGraph:
     nodes: dict[str, Node] = field(default_factory=dict)
     roots: list[str] = field(default_factory=list)
     edges: list[dict[str, str]] = field(default_factory=list)
+    handlers: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "nodes": {nid: n.to_dict() for nid, n in sorted(self.nodes.items())},
             "roots": list(self.roots),
             "edges": sorted(self.edges, key=lambda e: (e["from"], e["to"], e["kind"])),
+            "handlers": {k: self.handlers[k] for k in sorted(self.handlers)},
         }
 
 
@@ -31,6 +33,14 @@ class DependencyGraph:
         return {
             "edges": sorted(self.edges, key=lambda e: (e["from"], e["to"], e["kind"])),
         }
+
+
+def _is_server_decorator(dec: ast.AST) -> bool:
+    if isinstance(dec, ast.Name) and dec.id == "server":
+        return True
+    if isinstance(dec, ast.Attribute) and dec.attr == "server":
+        return True
+    return False
 
 
 class _GraphBuilder:
@@ -60,6 +70,13 @@ class _GraphBuilder:
         self._theme_nodes[token] = nid
         return nid
 
+    def register_handler(self, name: str, *, kind: str, at: ast.AST) -> None:
+        self.graph.handlers[name] = {
+            "name": name,
+            "kind": kind,
+            "span": span_for(self.path, at).to_dict(),
+        }
+
     def build_call(self, call: ast.Call, parent_id: str | None = None) -> str | None:
         kind = call_kind(call)
         if kind is None:
@@ -69,7 +86,6 @@ class _GraphBuilder:
         attrs: dict[str, Any] = {}
         child_ids: list[str] = []
 
-        # Positional: nested calls → children; string → text/title
         for arg in call.args:
             if isinstance(arg, ast.Call) and call_kind(arg):
                 cid = self.build_call(arg, parent_id=nid)
@@ -109,6 +125,14 @@ class _GraphBuilder:
                     if cid:
                         child_ids.append(cid)
                 continue
+            if kw.arg == "on_click":
+                if isinstance(kw.value, ast.Name):
+                    attrs["on_click"] = {"__handler__": kw.value.id}
+                elif isinstance(kw.value, ast.Constant) and isinstance(kw.value.value, str):
+                    attrs["on_click"] = {"__handler__": kw.value.value}
+                else:
+                    attrs["on_click"] = literal_value(kw.value)
+                continue
             if isinstance(kw.value, ast.Call) and call_kind(kw.value):
                 cid = self.build_call(kw.value, parent_id=nid)
                 if cid:
@@ -137,12 +161,19 @@ class _GraphBuilder:
                 tid = self.theme_node(value, call)
                 self.dep.edges.append({"from": nid, "to": tid, "kind": "uses_theme"})
                 self.graph.edges.append({"from": nid, "to": tid, "kind": "uses_theme"})
+            if key == "on_click" and isinstance(value, dict) and "__handler__" in value:
+                handler = value["__handler__"]
+                self.dep.edges.append({"from": nid, "to": handler, "kind": "on_click"})
+                self.graph.edges.append({"from": nid, "to": handler, "kind": "calls_handler"})
 
         return nid
 
     def visit_module(self, module: ast.Module) -> None:
         for stmt in module.body:
-            if isinstance(stmt, ast.Assign):
+            if isinstance(stmt, ast.FunctionDef):
+                kind = "server" if any(_is_server_decorator(d) for d in stmt.decorator_list) else "client"
+                self.register_handler(stmt.name, kind=kind, at=stmt)
+            elif isinstance(stmt, ast.Assign):
                 if isinstance(stmt.value, ast.Call) and call_kind(stmt.value):
                     self.build_call(stmt.value)
             elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
@@ -163,6 +194,5 @@ def build_semantic_graph(path: str | Path) -> tuple[SemanticGraph, DependencyGra
     module = parse_file(path)
     builder = _GraphBuilder(_display_path(path))
     builder.visit_module(module)
-    # stable root order
     builder.graph.roots = sorted(set(builder.graph.roots))
     return builder.graph, builder.dep
