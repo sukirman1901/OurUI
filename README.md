@@ -17,7 +17,8 @@ pip install -e packages/ourui pytest
 ourui dump examples/example.py
 ourui emit examples/example.py
 ourui serve examples/example.py
-ourui serve demo/app.py          # Plasma-shaped dogfood (S1–S6)
+ourui serve examples/tutorial/06_counter_app.py
+# or: examples/enterprise/crud_app.py
 ourui lsp
 pytest tests/p0
 ```
@@ -27,7 +28,7 @@ pytest tests/p0
 - `serve` — preview + RPC + HMR + routing; `--prod` / `--workers` for production sessions  
 - `lsp` — completions + hover for `ui.*`, `State`, `@server`
 
-**Demo:** http://127.0.0.1:8765/ · `/app` · `/embed` after `ourui serve demo/app.py`
+**Samples:** [examples/tutorial/](examples/tutorial/) · [examples/enterprise/](examples/enterprise/)
 
 ## User documentation
 

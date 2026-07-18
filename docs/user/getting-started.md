@@ -35,17 +35,14 @@ ourui serve examples/tutorial/06_counter_app.py
 
 Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/). You should see a welcome hero, feature cards, and a counter.
 
-## Run the Plasma demo (full Phase S surface)
+## Run more samples
 
 ```bash
-ourui serve demo/app.py
+ourui serve examples/enterprise/crud_app.py
+ourui serve examples/enterprise/settings_app.py --port 8766
 ```
 
-| URL | What you see |
-|-----|----------------|
-| http://127.0.0.1:8765/ | Landing — Nav, Canvas, tokens, motion, Footer |
-| http://127.0.0.1:8765/app | Studio shell (`split-3`) + WebGL preview |
-| http://127.0.0.1:8765/embed | Embed stub |
+Enterprise kit and OIDC/gateway stubs live under [`examples/enterprise/`](../../examples/enterprise/).
 
 ## Optional: emit static HTML
 

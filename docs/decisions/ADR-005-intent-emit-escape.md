@@ -44,7 +44,7 @@ Explicit non-goals:
 | **S5** | Host escape: Canvas / WebGL | Done |
 | **S6** | Host polish: states, Image/Icon/Meta, drawer | Done |
 
-Evidence: `demo/GAPS.md` (language gaps closed; Redis/auth remain app-scope).
+Evidence: early Plasma-shaped dogfood gaps (language gaps closed; Redis/auth remain app-scope).
 
 ## Consequences
 

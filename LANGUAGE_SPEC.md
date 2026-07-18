@@ -130,7 +130,7 @@ Function and class components expand at Analyze. `State` + `@server` + `on_click
 
 ## Example
 
-See [examples/example.py](examples/example.py) and [demo/app.py](demo/app.py).
+See [examples/example.py](examples/example.py) and [examples/tutorial/](examples/tutorial/).
 
 ## Errors
 

@@ -101,5 +101,5 @@ Compiler emits CSS/JS motion presets — authors do not write keyframes by defau
 ## Consequences
 
 - Roadmap treats **structure + chrome + presentation + motion** as one product arc — now delivered in `0.4.0`.
-- Demo (`demo/app.py`) dogfoods the full stack (Nav + tokens + layout + motion + Canvas + Meta/Footer).
+- Dogfood historically used a local Plasma-shaped app (`demo/`, not published).
 - Reject feature requests that only add unstyled tags without emit CSS + defaults.

@@ -23,7 +23,7 @@ User docs under `docs/user/` document the **Stable** surface for `ourui` **1.6.0
 | **Components** | Function components and `Component` classes |
 | **Developer UX** | HMR (dev), LSP completions/hover |
 
-See [Getting started](../getting-started.md) and the [Tutorial](../README.md#tutorial). API details: [Reference](../README.md#reference). Dogfood: `demo/app.py`. Gateway (auth outside `ui.*`): [examples/enterprise/gateway](../../../examples/enterprise/gateway/).
+See [Getting started](../getting-started.md) and the [Tutorial](../README.md#tutorial). API details: [Reference](../README.md#reference). Samples: `examples/tutorial/`, `examples/enterprise/`. Gateway (auth outside `ui.*`): [examples/enterprise/gateway](../../../examples/enterprise/gateway/).
 
 ## Not in language scope (yet)
 

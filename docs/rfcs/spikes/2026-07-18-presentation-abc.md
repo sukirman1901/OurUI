@@ -5,7 +5,7 @@
 
 ## Method
 
-Compared three shapes against the same IIR fixtures (`examples/tutorial/01_page.py`, `demo/app.py` mental model):
+Compared three shapes against the same IIR fixtures (`examples/tutorial/01_page.py`, Plasma-shaped dogfood mental model):
 
 | Option | Prototype |
 |--------|-----------|

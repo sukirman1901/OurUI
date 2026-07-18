@@ -25,7 +25,7 @@ Run:
 ourui serve examples/tutorial/05_theme.py
 ```
 
-Inspect page source for `--ourui-primary` and related variables. For the full token set + ThemeToggle + Canvas, run the Plasma demo: `ourui serve demo/app.py`.
+Inspect page source for `--ourui-primary` and related variables. For a denser branded screen, try `ourui serve examples/enterprise/settings_app.py`.
 
 ## What you learned
 

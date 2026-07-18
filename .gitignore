@@ -9,3 +9,6 @@ build/
 
 # Local agent planning artifacts (not for public repo)
 docs/superpowers/
+
+# Local dogfood only — do not publish
+demo/

@@ -35,7 +35,7 @@ A language platform where:
 
 Host strategy (ADR-005): **intent + emit + escape** — not a React/Tailwind clone in Python.
 
-Package: [ourui on PyPI](https://pypi.org/project/ourui/) · Demo: `ourui serve demo/app.py`
+Package: [ourui on PyPI](https://pypi.org/project/ourui/) · Samples: `ourui serve examples/tutorial/06_counter_app.py`
 
 ## Values
 

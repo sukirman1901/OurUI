@@ -42,6 +42,6 @@ Work through the examples in order. Each step links to a runnable file under `ex
 - [How OurUI compiles](concepts/how-ourui-compiles.md)
 - [What Stable includes](concepts/what-p0-includes.md) — supported features and out-of-scope list
 
-## Demo
+## Samples
 
-Plasma-shaped dogfood: `ourui serve demo/app.py` → http://127.0.0.1:8765/ ([demo/README.md](../../demo/README.md)).
+Published samples: [`examples/tutorial/`](../../examples/tutorial/), [`examples/enterprise/`](../../examples/enterprise/).
