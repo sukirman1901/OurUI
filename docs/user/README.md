@@ -19,12 +19,12 @@ Work through the examples in order. Each step links to a runnable file under `ex
 
 ## Guides
 
-Task-oriented how-tos (coming soon):
+Task-oriented how-tos:
 
-- [Project layout](guides/project-layout.md)
-- [Deploying](guides/deploying.md)
-- [LSP and editor setup](guides/lsp-editor-setup.md)
-- [Debugging with dump](guides/debugging-with-dump.md)
+- [Project layout](guides/project-layout.md) — `app.py`, `examples/`, venv
+- [Deploying](guides/deploying.md) — `--prod`, workers, session directory
+- [LSP and editor setup](guides/lsp-editor-setup.md) — `ourui lsp` in your editor
+- [Debugging with dump](guides/debugging-with-dump.md) — routes, tokens, serve errors
 
 ## Reference
 
