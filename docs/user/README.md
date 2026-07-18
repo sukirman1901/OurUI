@@ -28,7 +28,7 @@ Task-oriented how-tos:
 
 ## Reference
 
-API and CLI lookup (coming soon):
+API and CLI lookup:
 
 - [CLI](reference/cli.md)
 - [UI components](reference/ui-components.md)

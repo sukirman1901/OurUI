@@ -133,4 +133,4 @@ On startup, the banner prints each page URL, `POST /__ourui/call/<handler>`, and
 
 - [Guides: Project layout](../guides/project-layout.md) — organizing a real project
 - [Guides: Deploying](../guides/deploying.md) — production deployment
-- [Reference: CLI](../reference/cli.md) — full CLI lookup (coming soon)
+- [Reference: CLI](../reference/cli.md) — full CLI lookup
