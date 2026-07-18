@@ -20,11 +20,11 @@ UI_COMPONENTS: dict[str, str] = {
     "Card": "Presentation domain card container.",
     "Grid": "Layout grid container.",
     "Link": "Presentation domain navigation anchor (href).",
-    "Shell": "Layout region (layout=stack|row|split-2|split-3|split-sidebar|grid); gap=/pad=/align=/justify=.",
+    "Shell": "Layout region (layout=stack|row|split-2|split-3|split-sidebar|grid); gap=/pad=/width=/grow=/grid_cols= style intents.",
     "Nav": "Chrome bar; placement= + tone=solid|glass; menu=drawer; brand/items/actions.",
     "Footer": "Page footer; brand=/links=/meta= slots.",
     "ThemeToggle": "Client control that toggles .dark on <html>.",
-    "Theme": "Design tokens: pack=, recipe=, density=, or color overrides for --ourui-*.",
+    "Theme": "Design tokens: pack=, recipe=, density=, color overrides, space=/sizes=/type= scale dicts.",
     "Canvas": "WebGL escape; mode=gradient|dither|raymarch (Plasma.init).",
     "Frame": "Host escape iframe preview; bind=/srcdoc= HTML document string.",
     "Image": "Image; src=/alt=/fit=cover|contain.",
@@ -58,6 +58,81 @@ _TOP_LEVEL_PREFIX = re.compile(r"^\s*(\w*)$")
 _UI_HOVER = re.compile(r"ui\.(\w+)")
 _COLOR_KW = re.compile(r"""(?:color|variant|bg)\s*=\s*["'](\w*)$""")
 _THEME_KW = re.compile(r"""(?:primary|primary_fg|bg|fg|muted|muted_fg|border|card|card_fg|accent|accent_fg|danger|danger_fg|radius|space_sm|space_md)\s*=\s*["']([^"']*)$""")
+_STYLE_KW = re.compile(
+    r"""(?P<prop>width|height|min_width|max_width|size|pad|pad_x|pad_y|gap|grow|shrink|basis|"""
+    r"""grid_cols|col_span|text|weight|leading|radius|opacity|blur|z|overflow|pos|"""
+    r"""hide_below|show_below)\s*=\s*["'](?P<val>[^"']*)$"""
+)
+
+_SIZE_VALUES = (
+    "auto",
+    "full",
+    "screen",
+    "xs",
+    "sm",
+    "md",
+    "lg",
+    "xl",
+    "2xl",
+    "3xl",
+    "4xl",
+    "5xl",
+    "6xl",
+    "7xl",
+    "1/2",
+    "1/3",
+    "2/3",
+    "1/4",
+    "3/4",
+)
+_SPACE_VALUES = ("0", "px", "1", "2", "3", "4", "5", "6", "8", "10", "12", "16", "none", "xs", "sm", "md", "lg", "xl", "2xl")
+_TEXT_VALUES = ("xs", "sm", "md", "base", "lg", "xl", "2xl", "3xl", "4xl", "display")
+_BREAK_VALUES = ("md", "lg")
+
+
+def _style_value_items(prop: str, prefix: str) -> list[dict[str, Any]]:
+    if prop in {"width", "height", "min_width", "max_width", "size", "basis"}:
+        values = _SIZE_VALUES
+    elif prop in {"pad", "pad_x", "pad_y", "gap"}:
+        values = _SPACE_VALUES
+    elif prop == "text":
+        values = _TEXT_VALUES
+    elif prop in {"hide_below", "show_below"}:
+        values = _BREAK_VALUES
+    elif prop in {"grow", "shrink"}:
+        values = ("0", "1")
+    elif prop == "grid_cols" or prop == "col_span":
+        values = tuple(str(i) for i in range(1, 13))
+    elif prop == "weight":
+        values = ("normal", "medium", "semibold", "bold")
+    elif prop == "leading":
+        values = ("tight", "normal", "relaxed")
+    elif prop == "radius":
+        values = ("none", "sm", "md", "lg", "xl", "full")
+    elif prop == "opacity":
+        values = ("0", "50", "75", "100")
+    elif prop == "blur":
+        values = ("none", "sm", "md", "lg")
+    elif prop == "z":
+        values = ("auto", "0", "10", "20", "30", "40", "50")
+    elif prop == "overflow":
+        values = ("auto", "hidden", "clip", "scroll", "visible")
+    elif prop == "pos":
+        values = ("static", "relative", "absolute", "fixed", "sticky")
+    else:
+        values = ()
+    items: list[dict[str, Any]] = []
+    for name in values:
+        if str(name).startswith(prefix):
+            items.append(
+                _completion_item(
+                    str(name),
+                    detail=f"{prop}={name}",
+                    documentation=f"Style intent value for {prop}= (ADR-013).",
+                    kind=12,
+                )
+            )
+    return items
 
 
 def _completion_item(label: str, *, detail: str, documentation: str, kind: int) -> dict[str, Any]:
@@ -128,6 +203,10 @@ def get_completions(text: str, line: int, character: int) -> list[dict[str, Any]
     color_match = _COLOR_KW.search(prefix)
     if color_match is not None:
         return _token_completion_items(color_match.group(1))
+
+    style_match = _STYLE_KW.search(prefix)
+    if style_match is not None:
+        return _style_value_items(style_match.group("prop"), style_match.group("val"))
 
     ui_match = _UI_PREFIX.search(prefix)
     if ui_match is not None:

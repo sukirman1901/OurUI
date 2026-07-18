@@ -1,6 +1,6 @@
 # Language Spec
 
-Normative surface for the current compiler (`ourui` **1.6.0**, dump schema **28** additive). Language/IR breaking changes remain **Frozen** at schema **25** for `1.x` — a major bump (`2.0`) + ADR/RFC is required to break them.
+Normative surface for the current compiler (`ourui` **1.9.1**, dump schema **30** additive). Language/IR breaking changes remain **Frozen** at schema **25** for `1.x` — a major bump (`2.0`) + ADR/RFC is required to break them.
 
 ## Status
 
@@ -20,10 +20,11 @@ OurUI programs are Python modules that build UI intent using the `ourui.ui` surf
 - `State(...)`, `@server` handlers, function/class components
 - `ui.Theme(...)` for design token overrides
 
-### Not yet
+### Not in language scope
 
 - Full Python execution semantics for arbitrary side effects in UI construction
 - Client-only `State` (browser-local)
+- Component kit / block registry inside Stable `ui.*` ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md))
 
 ## Design tokens
 
@@ -44,10 +45,16 @@ Token families (override via `ui.Theme`):
 | Space | `space_xs` … `space_2xl` |
 | Type | `font_sans`, `font_display`, `text_xs` … `text_2xl`, `leading_*` |
 | Elevation | `elev_0` … `elev_3` |
+| Scale tables (ADR-013) | `space={...}`, `sizes={...}`, `type={...}` dict overrides for `--ourui-space-*` / `--ourui-size-*` / `--ourui-text-*` |
 
-- HTML emit writes `:root { … }` and `.dark { … }`
+- HTML emit writes `:root { … }` and `.dark { … }` plus generated style-intent utilities (`.ourui-w-lg`, …)
 - `color=` / `variant=` / `bg=` matching roles add tone classes
-- Dump includes `semantic_graph.tokens` (since schema **21**; current dump schema **28**)
+- Layout/presentation props such as `width=`, `pad_x=`, `grow=`, `grid_cols=` — see [style-intents.md](docs/user/reference/style-intents.md) ([ADR-013](docs/decisions/ADR-013-style-intent-catalog.md))
+- Dump includes `semantic_graph.tokens` (since schema **21**; current dump schema **30**) and `style_catalog`
+
+## Style intents
+
+Authoring uses **intent props** (not utility class strings). Emit generates finite `.ourui-*` utilities from Tailwind-derived scales. Kit/pattern libraries compose these props outside the language.
 
 ## Routing
 

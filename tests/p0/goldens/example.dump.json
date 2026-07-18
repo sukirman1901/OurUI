@@ -4,7 +4,7 @@
     "pack": "ourui-default",
     "pack_version": "1.2.0",
     "schema": 30,
-    "sha256": "77e701f6695b96583dcb1fe852ddf367d56606f1b62641d2e1721d5562bd7534"
+    "sha256": "5a019ae9db9eb195cbb1fc192cc76a6d3c603d4cdb6843cf0e929802e89cf41b"
   },
   "dependency_graph": {
     "edges": [
@@ -62,6 +62,7 @@
     "security_headers": true,
     "show": true,
     "state": true,
+    "style_intents": true,
     "table": true,
     "toast": true,
     "tokens": true,
@@ -2482,5 +2483,582 @@
     }
   },
   "source": "tests/p0/fixtures/example.py",
+  "style_catalog": {
+    "by_status": {
+      "A": 95,
+      "B": 12,
+      "C": 3
+    },
+    "entries": 110,
+    "items": [
+      {
+        "notes": "No class= API",
+        "ourui": "intent-props",
+        "status": "A",
+        "tw": "utility-classes-authoring"
+      },
+      {
+        "notes": "disabled/invalid/loading",
+        "ourui": "host-css+control-attrs",
+        "status": "AB",
+        "tw": "hover-focus-states"
+      },
+      {
+        "notes": "md/lg breakpoints",
+        "ourui": "hide_below/show_below",
+        "status": "A",
+        "tw": "responsive"
+      },
+      {
+        "notes": "existing",
+        "ourui": "ThemeToggle+.dark",
+        "status": "AB",
+        "tw": "dark-mode"
+      },
+      {
+        "notes": "scales+packs",
+        "ourui": "--ourui-*+Theme",
+        "status": "AB",
+        "tw": "theme-variables"
+      },
+      {
+        "notes": "token roles",
+        "ourui": "color=/Theme",
+        "status": "A",
+        "tw": "colors"
+      },
+      {
+        "notes": "allowlisted lengths",
+        "ourui": "Theme+literals",
+        "status": "A",
+        "tw": "custom-styles"
+      },
+      {
+        "notes": "compiler AST not class scan",
+        "ourui": "n/a",
+        "status": "B",
+        "tw": "class-detection"
+      },
+      {
+        "notes": "html/body reset",
+        "ourui": "host-preflight",
+        "status": "B",
+        "tw": "preflight"
+      },
+      {
+        "ourui": "aspect=",
+        "status": "A",
+        "tw": "aspect-ratio"
+      },
+      {
+        "notes": "not Table columns=",
+        "ourui": "text_columns=",
+        "status": "A",
+        "tw": "columns-multicol"
+      },
+      {
+        "notes": "print defaults",
+        "ourui": "host-print",
+        "status": "B",
+        "tw": "break-after-before-inside"
+      },
+      {
+        "ourui": "host",
+        "status": "B",
+        "tw": "box-decoration-break"
+      },
+      {
+        "ourui": "preflight",
+        "status": "B",
+        "tw": "box-sizing"
+      },
+      {
+        "ourui": "display=/layout=",
+        "status": "A",
+        "tw": "display"
+      },
+      {
+        "ourui": "float=",
+        "status": "A",
+        "tw": "float"
+      },
+      {
+        "ourui": "clear=",
+        "status": "A",
+        "tw": "clear"
+      },
+      {
+        "ourui": "isolate=",
+        "status": "A",
+        "tw": "isolation"
+      },
+      {
+        "notes": "Image",
+        "ourui": "fit=",
+        "status": "A",
+        "tw": "object-fit"
+      },
+      {
+        "ourui": "object_position=",
+        "status": "A",
+        "tw": "object-position"
+      },
+      {
+        "ourui": "overflow=/overflow_x/y=",
+        "status": "A",
+        "tw": "overflow"
+      },
+      {
+        "ourui": "host",
+        "status": "B",
+        "tw": "overscroll"
+      },
+      {
+        "ourui": "pos=/placement=",
+        "status": "A",
+        "tw": "position"
+      },
+      {
+        "ourui": "inset=/top/right/bottom/left=",
+        "status": "A",
+        "tw": "inset-sides"
+      },
+      {
+        "ourui": "visible=/Show/When",
+        "status": "A",
+        "tw": "visibility"
+      },
+      {
+        "ourui": "z=",
+        "status": "A",
+        "tw": "z-index"
+      },
+      {
+        "ourui": "basis=",
+        "status": "A",
+        "tw": "flex-basis"
+      },
+      {
+        "ourui": "direction=/layout=",
+        "status": "A",
+        "tw": "flex-direction"
+      },
+      {
+        "ourui": "wrap=",
+        "status": "A",
+        "tw": "flex-wrap"
+      },
+      {
+        "ourui": "flex=",
+        "status": "A",
+        "tw": "flex"
+      },
+      {
+        "ourui": "grow=",
+        "status": "A",
+        "tw": "flex-grow"
+      },
+      {
+        "ourui": "shrink=",
+        "status": "A",
+        "tw": "flex-shrink"
+      },
+      {
+        "ourui": "order=",
+        "status": "A",
+        "tw": "order"
+      },
+      {
+        "ourui": "grid_cols=",
+        "status": "A",
+        "tw": "grid-template-columns"
+      },
+      {
+        "ourui": "col_span=/col_start=",
+        "status": "A",
+        "tw": "grid-column"
+      },
+      {
+        "ourui": "grid_rows=",
+        "status": "A",
+        "tw": "grid-template-rows"
+      },
+      {
+        "ourui": "row_span=/row_start=",
+        "status": "A",
+        "tw": "grid-row"
+      },
+      {
+        "ourui": "grid_flow=",
+        "status": "A",
+        "tw": "grid-auto-flow"
+      },
+      {
+        "notes": "auto|min|max|fr",
+        "ourui": "grid_auto_cols=",
+        "status": "A",
+        "tw": "grid-auto-columns"
+      },
+      {
+        "notes": "auto|min|max|fr",
+        "ourui": "grid_auto_rows=",
+        "status": "A",
+        "tw": "grid-auto-rows"
+      },
+      {
+        "ourui": "gap=/gap_x/y=",
+        "status": "A",
+        "tw": "gap"
+      },
+      {
+        "ourui": "justify=",
+        "status": "A",
+        "tw": "justify-content"
+      },
+      {
+        "ourui": "justify_items=",
+        "status": "A",
+        "tw": "justify-items"
+      },
+      {
+        "ourui": "self=",
+        "status": "A",
+        "tw": "justify-self"
+      },
+      {
+        "ourui": "align_content=",
+        "status": "A",
+        "tw": "align-content"
+      },
+      {
+        "ourui": "align=",
+        "status": "A",
+        "tw": "align-items"
+      },
+      {
+        "ourui": "self=",
+        "status": "A",
+        "tw": "align-self"
+      },
+      {
+        "ourui": "place=",
+        "status": "A",
+        "tw": "place-content"
+      },
+      {
+        "ourui": "place_items=",
+        "status": "A",
+        "tw": "place-items"
+      },
+      {
+        "ourui": "self=",
+        "status": "A",
+        "tw": "place-self"
+      },
+      {
+        "ourui": "pad=/pad_*",
+        "status": "A",
+        "tw": "padding"
+      },
+      {
+        "ourui": "margin=/margin_*",
+        "status": "A",
+        "tw": "margin"
+      },
+      {
+        "ourui": "width=",
+        "status": "A",
+        "tw": "width"
+      },
+      {
+        "ourui": "min_width=",
+        "status": "A",
+        "tw": "min-width"
+      },
+      {
+        "ourui": "max_width=",
+        "status": "A",
+        "tw": "max-width"
+      },
+      {
+        "ourui": "height=",
+        "status": "A",
+        "tw": "height"
+      },
+      {
+        "ourui": "min_height=",
+        "status": "A",
+        "tw": "min-height"
+      },
+      {
+        "ourui": "max_height=",
+        "status": "A",
+        "tw": "max-height"
+      },
+      {
+        "ourui": "size=",
+        "status": "A",
+        "tw": "size"
+      },
+      {
+        "ourui": "inline_size=",
+        "status": "A",
+        "tw": "inline-size"
+      },
+      {
+        "ourui": "block_size=",
+        "status": "A",
+        "tw": "block-size"
+      },
+      {
+        "ourui": "min_/max_inline/block_size=",
+        "status": "A",
+        "tw": "min-max-logical"
+      },
+      {
+        "ourui": "Theme font_*",
+        "status": "AB",
+        "tw": "font-family"
+      },
+      {
+        "ourui": "text=",
+        "status": "A",
+        "tw": "font-size"
+      },
+      {
+        "ourui": "preflight",
+        "status": "B",
+        "tw": "font-smoothing"
+      },
+      {
+        "ourui": "italic=",
+        "status": "A",
+        "tw": "font-style"
+      },
+      {
+        "ourui": "weight=",
+        "status": "A",
+        "tw": "font-weight"
+      },
+      {
+        "ourui": "tracking=",
+        "status": "A",
+        "tw": "letter-spacing"
+      },
+      {
+        "ourui": "line_clamp=",
+        "status": "A",
+        "tw": "line-clamp"
+      },
+      {
+        "ourui": "leading=",
+        "status": "A",
+        "tw": "line-height"
+      },
+      {
+        "ourui": "List host",
+        "status": "B",
+        "tw": "list-style"
+      },
+      {
+        "ourui": "align_text=",
+        "status": "A",
+        "tw": "text-align"
+      },
+      {
+        "ourui": "color=",
+        "status": "A",
+        "tw": "color"
+      },
+      {
+        "ourui": "decorate=",
+        "status": "A",
+        "tw": "text-decoration"
+      },
+      {
+        "ourui": "transform_text=",
+        "status": "A",
+        "tw": "text-transform"
+      },
+      {
+        "ourui": "ellipsis=",
+        "status": "A",
+        "tw": "text-overflow"
+      },
+      {
+        "ourui": "wrap_text=",
+        "status": "A",
+        "tw": "text-wrap"
+      },
+      {
+        "ourui": "whitespace=",
+        "status": "A",
+        "tw": "white-space"
+      },
+      {
+        "ourui": "host",
+        "status": "B",
+        "tw": "vertical-align"
+      },
+      {
+        "ourui": "host",
+        "status": "B",
+        "tw": "word-break-hyphens"
+      },
+      {
+        "ourui": "bg=/color tones",
+        "status": "A",
+        "tw": "background-color"
+      },
+      {
+        "ourui": "Canvas/Image escape",
+        "status": "C",
+        "tw": "background-image"
+      },
+      {
+        "ourui": "bg_size/bg_position/bg_repeat=",
+        "status": "A",
+        "tw": "background-size-pos-repeat"
+      },
+      {
+        "ourui": "radius=/Theme",
+        "status": "A",
+        "tw": "border-radius"
+      },
+      {
+        "ourui": "border=/border_w=",
+        "status": "A",
+        "tw": "border-width-color"
+      },
+      {
+        "ourui": "outline=/focus host",
+        "status": "AB",
+        "tw": "outline"
+      },
+      {
+        "ourui": "shadow=/elev=",
+        "status": "A",
+        "tw": "box-shadow"
+      },
+      {
+        "ourui": "host",
+        "status": "B",
+        "tw": "text-shadow"
+      },
+      {
+        "ourui": "opacity=",
+        "status": "A",
+        "tw": "opacity"
+      },
+      {
+        "ourui": "escape",
+        "status": "C",
+        "tw": "mix-blend"
+      },
+      {
+        "ourui": "escape",
+        "status": "C",
+        "tw": "mask"
+      },
+      {
+        "ourui": "blur=",
+        "status": "A",
+        "tw": "filter-blur"
+      },
+      {
+        "ourui": "backdrop_blur=",
+        "status": "A",
+        "tw": "backdrop-filter"
+      },
+      {
+        "notes": "grayscale|sepia|invert|…",
+        "ourui": "filter=",
+        "status": "A",
+        "tw": "other-filters"
+      },
+      {
+        "ourui": "motion= ADR-012",
+        "status": "A",
+        "tw": "transition-animation"
+      },
+      {
+        "ourui": "rotate=/scale=/translate_*=",
+        "status": "A",
+        "tw": "transform-rotate-scale-translate"
+      },
+      {
+        "notes": "perspective stays escape",
+        "ourui": "skew_x=/skew_y=",
+        "status": "A",
+        "tw": "skew-perspective"
+      },
+      {
+        "ourui": "table_layout=",
+        "status": "A",
+        "tw": "table-layout"
+      },
+      {
+        "ourui": "border_collapse=",
+        "status": "A",
+        "tw": "border-collapse"
+      },
+      {
+        "ourui": "cursor=",
+        "status": "A",
+        "tw": "cursor"
+      },
+      {
+        "ourui": "select=",
+        "status": "A",
+        "tw": "user-select"
+      },
+      {
+        "ourui": "pointer=",
+        "status": "A",
+        "tw": "pointer-events"
+      },
+      {
+        "ourui": "resize=",
+        "status": "A",
+        "tw": "resize"
+      },
+      {
+        "ourui": "scroll=",
+        "status": "A",
+        "tw": "scroll-behavior"
+      },
+      {
+        "ourui": "snap=",
+        "status": "A",
+        "tw": "scroll-snap"
+      },
+      {
+        "ourui": "touch=",
+        "status": "A",
+        "tw": "touch-action"
+      },
+      {
+        "ourui": "accent= / tokens",
+        "status": "AB",
+        "tw": "accent-color"
+      },
+      {
+        "ourui": "host motion",
+        "status": "B",
+        "tw": "will-change"
+      },
+      {
+        "ourui": "fill=/stroke=",
+        "status": "A",
+        "tw": "svg-fill-stroke"
+      },
+      {
+        "ourui": "forced_colors=",
+        "status": "A",
+        "tw": "forced-color-adjust"
+      }
+    ],
+    "version": "1.0.0"
+  },
   "version": 30
 }

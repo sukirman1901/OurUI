@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from ourui.analysis import build_semantic_graph
-from ourui.design import PACK_ID, PACK_VERSION, catalog_summary, resolve_design
+from ourui.design import PACK_ID, PACK_VERSION, catalog_summary, resolve_design, style_catalog_summary
 from ourui.emit import emit_bundle, emit_html_document
 from ourui.lowering import lower_to_iir, lower_to_ltr, lower_to_presentation_graph, lower_to_rtr
 from ourui.serialize import dumps_deterministic
@@ -40,6 +40,7 @@ def compile_to_rtr(path: str | Path, *, route: str | None = None) -> dict[str, A
         density=getattr(sg, "density", None),
         pack_id=getattr(sg, "pack", None),
         recipe_id=getattr(sg, "recipe", None),
+        scale_overrides=getattr(sg, "scale_overrides", None) or None,
     )
     ltr = lower_to_ltr(iir)
     rtr = lower_to_rtr(ltr)
@@ -108,8 +109,10 @@ def compile_dump(path: str | Path) -> dict[str, Any]:
             "packs": True,
             "recipes": True,
             "motion": True,
+            "style_intents": True,
         },
         "motion": catalog_summary(),
+        "style_catalog": style_catalog_summary(),
     }
     digest_body = dumps_deterministic(dump)
     dump["attestation"]["sha256"] = hashlib.sha256(digest_body.encode("utf-8")).hexdigest()

@@ -4,6 +4,36 @@ All notable changes to the OurUI package are documented here.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows [SemVer](https://semver.org/) for the `ourui` Python package.
 
+## [1.9.1] — 2026-07-18
+
+### Added
+
+- [ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md): language primitives first; kit stays out of `ui.*`
+- Promote high-use catalog C→A: `text_columns=`, `object_position=`, `grid_auto_cols/rows=`, `bg_size|position|repeat=`, `filter=` presets, `skew_x/y=`
+
+## [1.9.0] — 2026-07-18
+
+### Added — Style Intent Catalog (ADR-013)
+
+- Tailwind-derived scales (`design/scales.py`) → `--ourui-space-*`, `--ourui-size-*`, type/radius/z/blur/opacity
+- Intent props (`width=`, `pad_x=`, `grow=`, `grid_cols=`, `blur=`, …) emit `.ourui-*` utilities — not utility-class authoring
+- Coverage matrix `design/style_catalog.py` (TOC → A/B/C); dump `style_catalog` + `emit.style_intents`
+- `ui.Theme(space=..., sizes=..., type=...)` scale overrides
+- Allowlisted length literals (`width="12rem"`) → per-node CSS
+- Docs: [style-intents.md](docs/user/reference/style-intents.md), [ADR-013](docs/decisions/ADR-013-style-intent-catalog.md)
+- LSP completions for common style intent values
+
+## [1.8.4] — 2026-07-18
+
+### Changed — Host chrome defaults (package craft)
+
+- Document reset: `html, body` margin 0 + token background; `overflow-x: clip`
+- ThemeToggle / nav menu: ghost controls (not primary fill); 44px hit targets
+- Nav item/action links: muted by default; brand stays strong; no underline hover
+- Page flush when Nav is first child; product chrome breakout kept off marketing
+- Tables: horizontal scroll contract; primary CTA links use 44px min-height
+- Regression tests: `tests/p0/test_host_chrome.py`
+
 ## [1.8.3] — 2026-07-18
 
 ### Added — Motion M3 (full catalog emit)

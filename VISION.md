@@ -23,7 +23,7 @@ A language platform where:
 
 > Developer writes intent. Compiler writes implementation. Host receives primitives.
 
-## Where we are (`1.6.0`)
+## Where we are (`1.9.1`)
 
 | Capability generation | Proof | Status |
 |---|---|---|
@@ -31,11 +31,13 @@ A language platform where:
 | **2 — Semantic presentation** | Presentation Graph + Design System → Resolved Design | Done |
 | **3 — Host Contract** | Emit requires `RTR + Resolved Design` | Done |
 
-**Phase S** through **S6**, **Phase T–W**, Enterprise **E1–E5**, and host **security hardening** are shipped. Dump schema **25** remains **Frozen** for language/IR breaking changes in `1.x`; schemas **26–28** are additive. Current package: **1.6.0** (schema **28**).
+**Phase S** through **S6**, **Phase T–W**, Enterprise **E1–E5**, host **security**, **motion** (ADR-012), and the **Style Intent Catalog** (ADR-013) are shipped. Language stays **primitives-first** — no in-language component kit ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md)).
 
-Host strategy (ADR-005): **intent + emit + escape** — not a React/Tailwind clone in Python.
+Dump schema **25** remains **Frozen** for language/IR breaking changes in `1.x`; schemas **26–30** are additive. Current package: **1.9.1** (schema **30**).
 
-Package: [ourui on PyPI](https://pypi.org/project/ourui/) · Samples: `ourui serve examples/tutorial/06_counter_app.py`
+Host strategy (ADR-005): **intent + emit + escape** — not a React/Tailwind clone in Python. Scales may be Tailwind-class in depth; authoring stays OurUI intent props.
+
+Package: [ourui on PyPI](https://pypi.org/project/ourui/) · Samples: `ourui serve examples/tutorial/06_counter_app.py` · Landing dogfood: `examples/landing/`
 
 ## Values
 

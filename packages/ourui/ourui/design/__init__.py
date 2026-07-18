@@ -16,6 +16,7 @@ from ourui.design.resolve import (
     default_pack,
     resolve_design,
 )
+from ourui.design.style_catalog import catalog_summary as style_catalog_summary
 
 __all__ = [
     "PACK_ID",
@@ -32,4 +33,5 @@ __all__ = [
     "motion_css_class",
     "resolve_design",
     "resolve_motion",
+    "style_catalog_summary",
 ]

@@ -19,7 +19,8 @@ Promoted **Phase M** (`spec-p0-stable`): P0 implemented surfaces are **Stable**.
 **Phase S2–S6** (`v0.4.x`, dump schema **21**): form controls through Canvas + polish — **Stable**.  
 **Phase T–W → 1.0**: language freeze — schema **25 Frozen**.  
 **Enterprise E1–E5**: screen completeness through trust — schemas **26–27**.  
-**Security (1.6.0)**: CSRF, session gate, CSP nonce, rate limit, attestation `sha256` — schema **28**.
+**Security (1.6.0)**: CSRF, session gate, CSP nonce, rate limit, attestation `sha256` — schema **28**.  
+**Packs/recipes (1.7)** + **motion (1.8)** + **style intents (1.9)** — dump schema **30** additive. Current package **1.9.1**. Language primitives first ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md)).
 
 See [roadmap.md](docs/roadmap.md).
 
@@ -35,6 +36,7 @@ See [roadmap.md](docs/roadmap.md).
 | Enterprise E1 screen completeness | Done (`1.1.0`, schema **26**) |
 | Enterprise E2–E5 (pack/density/check, operate, kit, trust) | Done (`1.5.0`, schema **27**) |
 | Security hardening (CSRF, session gate, nonce, attest hash) | Done (`1.6.0`, schema **28**) |
+| Style Intent Catalog + primitives boundary | Done (`1.9.1`, schema **30**) |
 
 | Area | Status |
 |---|---|
@@ -53,8 +55,10 @@ See [roadmap.md](docs/roadmap.md).
 | `ourui serve` / State / `@server` / HMR / routing / LSP | Stable |
 | `ourui check` / structured diagnostics | Stable (Phase V) |
 | Runtime (prod + multi-worker file store) | Stable |
-| Package (`ourui` **1.8.3**) | Dump schema **30** (additive; 25 Frozen baseline at 1.0) |
+| Package (`ourui` **1.9.1**) | Dump schema **30** (additive; 25 Frozen baseline at 1.0) |
 | Named packs + recipes | Stable (**1.7.0**) |
+| Style Intent Catalog (ADR-013) | Stable (**1.9.0+**) — scales + intent props + host utilities |
+| Language vs Kit boundary (ADR-014) | Accepted — kit out of language; primitives first |
 | `ui.Show` / `ui.When` | Stable (Enterprise E1) |
 | Dynamic `List`/`Table` (`items=`/`rows=` State) | Stable (Enterprise E1) |
 | Pack versioning + density | Stable (Enterprise E2) |
@@ -69,7 +73,7 @@ See [roadmap.md](docs/roadmap.md).
 | Type/space/elevation tokens + `ui.ThemeToggle` | Stable (S3) |
 | `ui.Footer` + Hero/Section `pad=` | Stable (S3b) |
 | `gap=` / `align=` / `justify=` / `split-sidebar` | Stable (S4) |
-| `motion=` vocabulary (`family.pattern`) | **146 Stable emit** (M1–M3, catalog **1.2.0**, package **1.8.3**) |
+| `motion=` vocabulary (`family.pattern`) | **146 Stable emit** (M1–M3, catalog **1.2.0**, package **1.8.3+**) |
 | `ui.Canvas` / `ui.Frame` | Stable (S5 / 0.4.1) |
 | Drawer / Menu / Image / Icon / Meta / Code / CopyButton / control states | Stable (S6) |
 | `ui.Form` / `ui.Dialog` / `ui.Toast` | Stable (Phase T) |

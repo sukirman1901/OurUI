@@ -44,6 +44,8 @@ Analysis Views answer questions such as: *who uses `Theme.primary`?* *who calls 
 | Compiler | Implementation (graphs, OurIR, emitters) |
 | Host | Primitives (DOM, PDF objects, …) |
 
+Design tokens and style intents are **language primitives** — not a component marketplace. A future kit (if any) composes those primitives **outside** Stable `ui.*` ([ADR-014](docs/decisions/ADR-014-language-primitives-vs-kit.md)).
+
 ## Related documents
 
 - Hard rules: [INVARIANTS.md](INVARIANTS.md)

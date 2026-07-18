@@ -23,7 +23,9 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e packages/ourui
 ```
 
-Current Stable package: **1.8.3** ([PyPI](https://pypi.org/project/ourui/)). Dump schema **30** (additive); language/IR breaking changes remain Frozen at schema **25** until `2.0`.
+Current Stable package: **1.9.1** ([PyPI](https://pypi.org/project/ourui/) or editable install from this repo). Dump schema **30** (additive); language/IR breaking changes remain Frozen at schema **25** until `2.0`.
+
+Style layout/type props: [Style intents](reference/style-intents.md) (ADR-013). Component kits stay **out of** the language ([ADR-014](../decisions/ADR-014-language-primitives-vs-kit.md)).
 
 ## Run the sample app
 

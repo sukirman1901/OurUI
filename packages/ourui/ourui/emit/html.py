@@ -7,6 +7,12 @@ from typing import Any
 
 from ourui.design.motion import motion_css_class
 from ourui.design.motion_css import motion_host_css
+from ourui.design.scales import emit_scale_css_vars
+from ourui.design.style_intents import (
+    collect_inline_literal_css,
+    emit_utility_css,
+    style_intent_classes,
+)
 from ourui.emit.js import emit_js
 from ourui.runtime.security import csp_content as _csp_content_fn
 from ourui.theme import COLOR_TOKEN_NAMES, emit_tokens_css
@@ -94,6 +100,10 @@ html {
   flex-direction: column;
   background: var(--ourui-bg);
 }
+/* Chrome flush: no top page pad when Nav is first child */
+[data-role="page"]:has(> [data-role="nav"]:first-child) {
+  padding-block-start: 0;
+}
 /* Chrome breakout on measured pages (product/ops) — avoid on marketing */
 [data-role="page"] > [data-role="nav"],
 [data-role="page"] > [data-role="footer"] {
@@ -102,6 +112,7 @@ html {
   max-width: none;
   padding-inline: var(--ourui-space-md);
   align-self: stretch;
+  flex-shrink: 0;
 }
 .ourui-root:not([data-recipe="marketing"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="nav"],
 .ourui-root:not([data-recipe="marketing"]) [data-role="page"]:not(:has([data-role="shell"])):not(:has(.ourui-shell-stack)) > [data-role="footer"] {
@@ -259,7 +270,7 @@ html {
 [data-role="hero"] [data-slot="subtitle"],
 [data-role="hero"] > :is(p, span)[data-slot="subtitle"] {
   display: block;
-  margin-top: 0;
+  margin-top: var(--ourui-space-sm);
   font-size: var(--ourui-text-md);
   line-height: var(--ourui-leading-relaxed);
   color: var(--ourui-muted-fg);
@@ -309,6 +320,28 @@ p a.ourui-link:hover {
 .ourui-footer a.ourui-link:hover {
   text-decoration: none;
 }
+.ourui-nav-brand a.ourui-link {
+  color: var(--ourui-fg);
+  font-weight: 600;
+}
+.ourui-nav-items a.ourui-link:not(.ourui-tone-primary) {
+  color: var(--ourui-muted-fg);
+  font-size: var(--ourui-text-sm);
+  font-weight: 500;
+}
+.ourui-nav-items a.ourui-link:not(.ourui-tone-primary):hover {
+  color: var(--ourui-fg);
+  opacity: 1;
+}
+.ourui-nav-actions a.ourui-link:not(.ourui-tone-primary) {
+  color: var(--ourui-muted-fg);
+  font-size: var(--ourui-text-sm);
+  font-weight: 500;
+}
+.ourui-nav-actions a.ourui-link:not(.ourui-tone-primary):hover {
+  color: var(--ourui-fg);
+  opacity: 1;
+}
 a.ourui-tone-primary { color: var(--ourui-primary); }
 a.ourui-tone-accent { color: var(--ourui-accent); }
 a.ourui-tone-danger { color: var(--ourui-danger); }
@@ -319,7 +352,7 @@ a.ourui-link.ourui-tone-primary {
   align-items: center;
   justify-content: center;
   padding: var(--ourui-space-sm) var(--ourui-space-md);
-  min-height: 2.25rem;
+  min-height: 2.75rem;
   border-radius: var(--ourui-radius);
   background: var(--ourui-primary);
   color: var(--ourui-primary-fg);
@@ -335,11 +368,9 @@ a.ourui-link.ourui-tone-primary:hover {
   text-decoration: none;
 }
 button.ourui-control,
-button.ourui-theme-toggle,
-button.ourui-copy-button,
-button.ourui-nav-menu-btn {
+button.ourui-copy-button {
   padding: var(--ourui-space-sm) var(--ourui-space-md);
-  min-height: 2.25rem;
+  min-height: 2.75rem;
   cursor: pointer;
   border-radius: var(--ourui-radius);
   border: 1px solid transparent;
@@ -351,14 +382,34 @@ button.ourui-nav-menu-btn {
   box-shadow: var(--ourui-elev-0);
   transition: background 120ms ease, border-color 120ms ease, opacity 120ms ease;
 }
+/* Chrome utilities: theme + menu — ghost, not primary fill */
+button.ourui-theme-toggle,
+button.ourui-nav-menu-btn {
+  padding: var(--ourui-space-sm);
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+  border-radius: var(--ourui-radius);
+  border: 1px solid var(--ourui-border);
+  background: transparent;
+  color: var(--ourui-fg);
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  box-shadow: none;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
 button.ourui-control:hover:not(:disabled),
-button.ourui-theme-toggle:hover:not(:disabled),
-button.ourui-copy-button:hover:not(:disabled),
-button.ourui-nav-menu-btn:hover:not(:disabled) {
+button.ourui-copy-button:hover:not(:disabled) {
   opacity: 0.92;
 }
+button.ourui-theme-toggle:hover:not(:disabled),
+button.ourui-nav-menu-btn:hover:not(:disabled) {
+  background: var(--ourui-muted);
+  opacity: 1;
+}
 button.ourui-tone-primary:hover:not(:disabled),
-button.ourui-control:not([class*="ourui-tone-"]):hover:not(:disabled) {
+button.ourui-control:not([class*="ourui-tone-"]):not(.ourui-theme-toggle):not(.ourui-nav-menu-btn):hover:not(:disabled) {
   background: color-mix(in srgb, var(--ourui-primary) 88%, var(--ourui-fg));
   opacity: 1;
 }
@@ -565,9 +616,19 @@ select.ourui-select:focus {
 .ourui-list-item:last-child { border-bottom: none; }
 .ourui-table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: var(--ourui-text-sm);
   background: var(--ourui-card);
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.ourui-table thead,
+.ourui-table tbody {
+  display: table;
+  width: 100%;
+  min-width: 36rem;
 }
 .ourui-table th,
 .ourui-table td {
@@ -660,11 +721,14 @@ input.ourui-slider {
   display: flex;
   align-items: center;
   gap: var(--ourui-space-md);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   width: 100%;
   box-sizing: border-box;
   padding: var(--ourui-space-sm) var(--ourui-space-md);
   z-index: 40;
+}
+@media (max-width: 767px) {
+  .ourui-nav { flex-wrap: wrap; }
 }
 .ourui-nav-brand {
   display: flex;
@@ -1022,7 +1086,15 @@ def _layout_intent_classes(attrs: dict[str, Any]) -> list[str]:
         cls = motion_css_class(motion)
         if cls:
             classes.append(cls)
-    return classes
+    # ADR-013 style intent utilities (width=, pad_x=, grow=, …)
+    classes.extend(style_intent_classes(attrs))
+    seen: set[str] = set()
+    out: list[str] = []
+    for c in classes:
+        if c not in seen:
+            seen.add(c)
+            out.append(c)
+    return out
 
 
 def _classes_for(node: dict[str, Any]) -> list[str]:
@@ -1061,7 +1133,6 @@ def _classes_for(node: dict[str, Any]) -> list[str]:
                 classes.append(cls)
     if role == "theme-toggle":
         classes.append("ourui-theme-toggle")
-        classes.append("ourui-control")
     if role == "copy-button":
         classes.append("ourui-copy-button")
         classes.append("ourui-control")
@@ -1740,7 +1811,7 @@ def _render_node(nid: str, nodes: dict[str, dict[str, Any]], indent: int) -> lis
         lines = [f"{pad}<nav{attrs}>"]
         if menu == "drawer":
             lines.append(
-                f'{pad}  <button type="button" class="ourui-nav-menu-btn ourui-control" '
+                f'{pad}  <button type="button" class="ourui-nav-menu-btn" '
                 f'data-ourui-drawer-open="1" aria-label="Open menu">{_icon_svg("menu")}</button>'
             )
         if isinstance(brand, str) and brand in nodes:
@@ -1898,14 +1969,29 @@ def _page_chrome_css(rd: dict[str, Any]) -> str:
     )
 
 
-def emit_css(*, resolved_design: Any) -> str:
+def emit_css(*, resolved_design: Any, rtr_nodes: dict[str, Any] | None = None) -> str:
     """Emit host CSS from Resolved Design (Host Contract — required)."""
     rd = _as_resolved_design(resolved_design)
     if rd is None:
         raise TypeError("resolved_design is required (Host Contract: RTR + Resolved Design)")
     token_block = emit_tokens_css(_tokens_from_resolved(rd))
+    scale_overrides = rd.get("scales") if isinstance(rd, dict) else getattr(resolved_design, "scales", None)
+    if not isinstance(scale_overrides, dict):
+        scale_overrides = None
+    scale_block = emit_scale_css_vars(overrides=scale_overrides)
+    utility_block = emit_utility_css()
     page_block = _page_chrome_css(rd)
-    return token_block + page_block + _BASE_CSS + motion_host_css() + _emit_resolved_node_css(rd)
+    inline_block = collect_inline_literal_css(rtr_nodes or {})
+    return (
+        token_block
+        + scale_block
+        + page_block
+        + _BASE_CSS
+        + utility_block
+        + motion_host_css()
+        + _emit_resolved_node_css(rd)
+        + inline_block
+    )
 
 
 def emit_html_document(
@@ -1943,7 +2029,7 @@ def emit_html_document(
     body_lines.append("  </div>")
 
     js = emit_js(rtr, hmr=hmr).rstrip("\n")
-    css = emit_css(resolved_design=resolved_design).rstrip("\n")
+    css = emit_css(resolved_design=resolved_design, rtr_nodes=nodes).rstrip("\n")
     head_extra: list[str] = []
     desc = meta.get("description")
     if isinstance(desc, str) and desc:
@@ -2013,10 +2099,11 @@ def emit_bundle(
     resolved_design: Any,
 ) -> dict[str, str]:
     """Serializable emit artifacts (I10): html + css + js."""
+    nodes = rtr.get("nodes") or {}
     return {
         "html": emit_html_document(
             rtr, title=title, resolved_design=resolved_design
         ),
-        "css": emit_css(resolved_design=resolved_design),
+        "css": emit_css(resolved_design=resolved_design, rtr_nodes=nodes),
         "js": emit_js(rtr),
     }

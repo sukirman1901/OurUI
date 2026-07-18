@@ -137,7 +137,7 @@ IMAGE_FITS = frozenset({"cover", "contain", "fill", "none"})
 THEME_ATTR_KEYS = frozenset({"variant", "color", "bg", "theme"})
 
 # Shared passthrough for layout → render → presentation
-LAYOUT_PASSTHROUGH = (
+_LAYOUT_CORE = (
     "title",
     "subtitle",
     "text",
@@ -195,3 +195,18 @@ LAYOUT_PASSTHROUGH = (
     "then",
     "else_",
 )
+
+
+def _layout_passthrough() -> tuple[str, ...]:
+    from ourui.design.style_intents import STYLE_PASSTHROUGH
+
+    seen: set[str] = set()
+    out: list[str] = []
+    for key in (*_LAYOUT_CORE, *STYLE_PASSTHROUGH):
+        if key not in seen:
+            seen.add(key)
+            out.append(key)
+    return tuple(out)
+
+
+LAYOUT_PASSTHROUGH = _layout_passthrough()

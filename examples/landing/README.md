@@ -1,6 +1,6 @@
 # OurUI landing (dogfood)
 
-Marketing landing authored in OurUI. **Phase 1:** site header only (Quiet compiler / svelte.dev-style chrome).
+Marketing landing authored in OurUI — dogfood for language primitives + `recipe="marketing"` host chrome.
 
 ## Layout
 
@@ -16,7 +16,7 @@ examples/landing/
 
 OurUI compiles a **single** entry module. Edit the live tree in `app.py`; keep the `components/` and `pages/` mirrors aligned when you change the header or shell.
 
-## Monitor (phase 1)
+## Run
 
 ```bash
 # from repo root, with venv active
@@ -35,10 +35,10 @@ ourui emit examples/landing/app.py
 
 | Now | Next |
 |-----|------|
-| Full-bleed glass `ui.Nav` (`recipe=marketing` + sticky + drawer) | Hero (full-bleed) |
-| Docs / Tutorial / Examples | Logo cloud, features |
-| ThemeToggle + GitHub + Get started CTA (button-styled link) | Testimonials, CTA, footer |
+| Full-bleed glass `ui.Nav` (`recipe=marketing` + sticky + drawer) | Hero / sections composed with style intents |
+| Docs / Tutorial / Examples links | Logo cloud, features |
+| ThemeToggle + GitHub + Get started CTA | Testimonials, CTA, footer |
 
-## Theme
+Prefer **intent props** (`width=`, `pad_x=`, `gap=`, …) over hand-authored host CSS — see [Style intents](../../docs/user/reference/style-intents.md). Kit/block patterns stay out of the language ([ADR-014](../../docs/decisions/ADR-014-language-primitives-vs-kit.md)).
 
-`ui.Theme(recipe="marketing")` — full-bleed chrome and sections; body copy keeps a reading measure.
+Requires `ourui` **1.9.1+** (Style Intent Catalog + marketing recipe).

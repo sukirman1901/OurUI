@@ -16,7 +16,7 @@ Compiler → Presentation Graph (RFC-001)
 
 **Generation 3 Done (`0.3.0`):** web emit is contract-primary.  
 **Phase S Done (`0.4.0`):** language surface through Canvas + polish (schema 21).  
-**1.0 + Enterprise + security:** package **1.6.0**, dump schema **28** (additive).  
+**1.0 + Enterprise + security + motion + style intents:** package **1.9.1**, dump schema **30** (additive; language/IR Frozen at **25**).  
 `_BASE_CSS` is host-private chrome (layout). Design values come from Resolved Design.  
 CSS AST (if any) remains an optional web-host detail (Step F).
 

@@ -46,6 +46,7 @@ class SemanticGraph:
     density: str = "comfortable"
     pack: str = "ourui-default"
     recipe: str | None = None
+    scale_overrides: dict[str, dict[str, str]] = field(default_factory=dict)
     diagnostics: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -68,6 +69,8 @@ class SemanticGraph:
         }
         if self.recipe is not None:
             out["recipe"] = self.recipe
+        if self.scale_overrides:
+            out["scale_overrides"] = {k: dict(v) for k, v in self.scale_overrides.items()}
         return out
 
 
@@ -264,6 +267,14 @@ class _GraphBuilder:
 
         light, dark = theme_kwargs_to_overrides(attrs)
         self.graph.tokens = apply_theme_overrides(self.graph.tokens, light=light, dark=dark)
+
+        # ADR-013 scale overrides: space= / sizes= / type= dicts
+        for family in ("space", "sizes", "type"):
+            raw = attrs.get(family)
+            if isinstance(raw, dict) and raw:
+                self.graph.scale_overrides[family] = {
+                    str(k): str(v) for k, v in raw.items() if v is not None
+                }
 
     def _maybe_state_ref(self, node: ast.AST) -> dict[str, str] | None:
         if isinstance(node, ast.Name) and node.id in self.graph.states:

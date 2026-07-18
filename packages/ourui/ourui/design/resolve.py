@@ -31,6 +31,7 @@ class ResolvedDesign:
     density: str | None = None
     recipe: str | None = None
     page: dict[str, str] = field(default_factory=dict)
+    scales: dict[str, dict[str, str]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         out: dict[str, Any] = {
@@ -49,6 +50,8 @@ class ResolvedDesign:
             out["recipe"] = self.recipe
         if self.page:
             out["page"] = dict(self.page)
+        if self.scales:
+            out["scales"] = {k: dict(v) for k, v in self.scales.items()}
         return out
 
 
@@ -88,6 +91,7 @@ def resolve_design(
     density: str | None = None,
     pack_id: str | None = None,
     recipe_id: str | None = None,
+    scale_overrides: dict[str, dict[str, str]] | None = None,
 ) -> ResolvedDesign:
     """Pure resolution: PG + Design System pack → Resolved Design (no CSS)."""
     if pack is None:
@@ -117,6 +121,13 @@ def resolve_design(
     if recipe_id and not recipe_name:
         recipe_name = recipe_id
 
+    scales: dict[str, dict[str, str]] = {}
+    if scale_overrides:
+        for family in ("space", "sizes", "type"):
+            raw = scale_overrides.get(family)
+            if isinstance(raw, dict) and raw:
+                scales[family] = {str(k): str(v) for k, v in raw.items()}
+
     pg = presentation_graph.to_dict() if hasattr(presentation_graph, "to_dict") else dict(presentation_graph)
     nodes_in = pg.get("nodes") or {}
 
@@ -128,6 +139,7 @@ def resolve_design(
         density=density_key,
         recipe=str(recipe_name) if recipe_name else None,
         page=page,
+        scales=scales,
     )
     for nid, node in nodes_in.items():
         tone = node.get("tone")

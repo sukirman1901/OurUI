@@ -52,4 +52,6 @@ Emit consumes **Resolved Design**: `--ourui-*` vars, `--ourui-page-max-width`, d
 
 ## Status
 
-Pack API **Stable** at OurUI **1.8** (catalog v1.2.0). Additional packs/recipes may grow without breaking the Host Contract. See [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).
+Pack API **Stable** at OurUI **1.7+** (catalog v1.2.0; package **1.9.1** current). Additional packs/recipes may grow without breaking the Host Contract. See [ADR-011](../../decisions/ADR-011-pack-versioning-check-profile.md).
+
+Page/box sizing beyond recipe measure: [Style intents](../reference/style-intents.md).

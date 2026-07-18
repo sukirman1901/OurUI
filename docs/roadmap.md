@@ -14,7 +14,9 @@ Product milestones (releases). Architecture RFCs live under `docs/rfcs/`. Capabi
 Gen 1–3 + Phase S + T–W complete at ourui 1.0.x (schema 25 Frozen baseline).
 Enterprise arc E1–E5 complete at ourui 1.5.0 (additive dump schema 27).
 Security hardening complete at ourui 1.6.0 (additive dump schema 28).
-Motion vocabulary M0/M1 at ourui 1.8.0 (additive dump schema 30).
+Named packs/recipes at ourui 1.7.0 (schema 30 line continues).
+Motion vocabulary M1–M3 at ourui 1.8.x (additive dump schema 30).
+Style Intent Catalog + language-vs-kit boundary at ourui 1.9.x (ADR-013 / ADR-014).
 ```
 
 ## Historical (done)
@@ -23,6 +25,8 @@ Motion vocabulary M0/M1 at ourui 1.8.0 (additive dump schema 30).
 |---|---|---|
 | **A–S / T–W / 1.0** | Language infra through Form/List/diagnostics + freeze | Done (`1.0.x`, schema **25**) |
 | **1.0.1** | Default visual quality (zinc/ink pack) | Done |
+| **1.7–1.8** | Packs/recipes, host chrome, motion catalog | Done |
+| **1.9.x** | Style intents (scales + props); kit explicitly out of language | Done (`1.9.1`) |
 
 ## Enterprise arc (post-1.0)
 
@@ -71,8 +75,16 @@ Enterprise = org-scale packs + complete product screens + operable deploy + gove
 - Safe prod errors; security headers; enterprise `SEC001` (Frame/srcdoc)
 - Dump `attestation.sha256`; threat-model guide; CI secret scan; FastAPI gateway example
 
+## Language primitives (post-enterprise)
+
+| Phase | Deliverable | Package | Status |
+|---|---|---|---|
+| **L1** | Style Intent Catalog — scales + intent props + emit utilities (ADR-013) | `1.9.0` | **Done** |
+| **L2** | Language vs kit boundary (ADR-014); promote high-use C→A | `1.9.1` | **Done** |
+| **L3** | Dogfood primitives + host defaults polish (no in-language kit) | next | Planned |
+
 ## Out of language scope (unchanged)
 
-Redis share, auth, billing, ORM — app concerns. No React/Tailwind clone; no Monaco-in-language.
+Redis share, auth, billing, ORM — app concerns. No React/Tailwind clone; no Monaco-in-language. **Component kit / block registry** stays outside Stable `ui.*` ([ADR-014](decisions/ADR-014-language-primitives-vs-kit.md)).
 
 See [VISION.md](../VISION.md) and [SPEC_STATUS.md](../SPEC_STATUS.md).

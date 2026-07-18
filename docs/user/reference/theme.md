@@ -32,6 +32,10 @@ theme = ui.Theme(
     density="comfortable",  # or "compact" (overrides recipe density)
     font_sans='"IBM Plex Sans", system-ui, sans-serif',
     space_lg="1.25rem",
+    # ADR-013 scale table overrides (optional):
+    sizes={"lg": "36rem"},
+    space={"4": "1.25rem"},
+    type={"display": "clamp(2rem, 5vw, 4rem)"},
     dark={"primary": "#fafafa", "primary_fg": "#09090b"},
 )
 ```
@@ -60,9 +64,19 @@ theme = ui.Theme(
 | Family | Kwargs (examples) | CSS |
 |--------|-------------------|-----|
 | Shape | `radius` | `--ourui-radius` |
-| Space | `space_xs` … `space_2xl` | `--ourui-space-*` |
+| Space | `space_xs` … `space_2xl` | `--ourui-space-*` (legacy token keys) |
 | Type | `font_sans`, `font_display`, `text_xs` … `text_2xl`, `leading_*` | `--ourui-font-*`, `--ourui-text-*` |
 | Elevation | `elev_0` … `elev_3` | `--ourui-elev-*` (shadow presets) |
+
+### Scale tables (ADR-013)
+
+| Kwarg | Effect |
+|-------|--------|
+| `space={...}` | Override `--ourui-space-*` scale keys (`4`, `sm`, …) used by `pad=` / `gap=` / … |
+| `sizes={...}` | Override `--ourui-size-*` (`lg`, `full`, …) used by `width=` / `height=` / … |
+| `type={...}` | Override `--ourui-text-*` size scale |
+
+Layout/type props themselves: [Style intents](style-intents.md).
 
 Underscores become hyphens: `primary_fg` → `--ourui-primary-fg`.
 
@@ -94,11 +108,12 @@ Accepted color roles: `primary`, `muted`, `accent`, `danger`, `card`, `bg`, `fg`
 ```bash
 ourui serve examples/tutorial/05_theme.py
 ourui emit examples/tutorial/05_theme.py | grep ourui-primary
-ourui dump examples/tutorial/05_theme.py   # schema version 21; semantic_graph.tokens
+ourui dump examples/tutorial/05_theme.py   # schema version 30; semantic_graph.tokens
 ```
 
 ## See also
 
 - [Tutorial 05 — Theme and tokens](../tutorial/05-theme-tokens.md)
+- [Style intents](style-intents.md)
 - [UI components](ui-components.md)
 - [Debugging with dump](../guides/debugging-with-dump.md)

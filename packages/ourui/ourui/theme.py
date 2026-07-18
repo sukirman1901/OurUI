@@ -167,6 +167,7 @@ def theme_kwargs_to_overrides(attrs: dict[str, Any]) -> tuple[dict[str, str], di
     """Split ui.Theme kwargs into light overrides and optional dark dict."""
     light: dict[str, str] = {}
     dark: dict[str, str] = {}
+    skip = {"name", "density", "pack", "recipe", "space", "sizes", "type"}
     for key, value in attrs.items():
         if key == "dark" and isinstance(value, dict):
             for dk, dv in value.items():
@@ -174,7 +175,7 @@ def theme_kwargs_to_overrides(attrs: dict[str, Any]) -> tuple[dict[str, str], di
                 if mapped in TOKEN_KEYS and dv is not None:
                     dark[mapped] = str(dv)
             continue
-        if key in {"name", "density", "pack", "recipe"}:
+        if key in skip:
             continue
         mapped = _KWARG_TO_KEY.get(key, key)
         if mapped in TOKEN_KEYS and value is not None and not isinstance(value, dict):

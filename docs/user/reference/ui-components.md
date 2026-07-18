@@ -27,7 +27,7 @@ page = ui.Page(
 | `ui.Page` | Intent | Root container for a routable page |
 | `ui.Hero` | Intent | Prominent header (`pad=`, `motion=family.pattern`) |
 | `ui.Section` | Intent | Grouped content (`layout=`, `gap=`, `pad=`, `align=`, `motion=`) |
-| `ui.Shell` | Intent | Layout region (`layout=stack\|row\|split-2\|split-3\|split-sidebar\|grid`) |
+| `ui.Shell` | Intent | Layout region (`layout=…` + style intents: `width=`, `gap=`, `grow=`, …) |
 | `ui.Nav` | Intent | Chrome bar (`placement=`, `tone=`, `menu=drawer`) |
 | `ui.Footer` | Intent | Page footer (`brand=` / `links=` / `meta=`) |
 | `ui.Meta` | Intent | Document head (`title`, `description`, `og=`) |
@@ -277,10 +277,11 @@ Intent layout region for product chrome (e.g. Studio three-column). Children are
 
 ```python
 ui.Shell(
-    ui.Section(title="Filters"),
-    ui.Section(title="Preview"),
-    ui.Section(title="Style"),
+    ui.Section(title="Filters", width="xs"),
+    ui.Section(title="Preview", grow="1"),
+    ui.Section(title="Style", width="sm"),
     layout="split-3",
+    gap="4",
 )
 ```
 
@@ -291,7 +292,7 @@ ui.Shell(
 | `split-3` | `.ourui-shell-split-3` (3 columns → 1 col under 768px) |
 | `grid` | `.ourui-grid` |
 
-`layout=` also works on `ui.Section` / `ui.Page`.
+`layout=` also works on `ui.Section` / `ui.Page`. Box/flex/grid size props (`width=`, `grow=`, `grid_cols=`, …): [Style intents](style-intents.md).
 
 ## `ui.Nav`
 
@@ -319,16 +320,18 @@ ui.Nav(
 | `tone` | `solid` (default) \| `glass` |
 | `menu` | `none` (default) \| `drawer` (mobile collapse) |
 
-## Layout intents (S4)
+## Layout intents (S4 + ADR-013)
 
-On `Shell` / `Section` / `Hero`:
+On `Shell` / `Section` / `Hero` (and most layout nodes):
 
 | Prop | Values |
 |------|--------|
-| `gap` / `pad` | `none` \| `xs` \| `sm` \| `md` \| `lg` \| `xl` \| `2xl` |
+| `gap` / `pad` | Scale keys: `none` \| `xs`…`2xl` \| numeric space scale (`4`, `6`, …) |
+| `pad_x` / `pad_y` / `margin_*` | Same space scale |
 | `align` | `start` \| `center` \| `end` \| `stretch` |
 | `justify` | `start` \| `center` \| `end` \| `between` |
 | `layout` | `stack` \| `row` \| `grid` \| `split-2` \| `split-3` \| `split-sidebar` |
+| `width` / `height` / `grow` / `grid_cols` / … | See [Style intents](style-intents.md) |
 | `motion` | `none` \| `family.pattern` (see [Motion](../concepts/motion.md)); aliases `enter`/`reveal`/`press` |
 
 ## Phase S3–S6 surfaces

@@ -1,10 +1,10 @@
-# ourui 1.8.3
+# ourui 1.9.1
 
 Python package for the **OurUI** compiler and runtime.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-Dump schema **30** (additive). Named packs + recipes (`pack=` / `recipe=`), including **`marketing`**. Motion vocabulary `motion="family.pattern"` (ADR-012, M1 Stable emit).
+Dump schema **30** (additive). Style Intent Catalog (ADR-013) + language-vs-kit boundary (ADR-014). Named packs/recipes; host chrome; motion ADR-012.
 
 ## Install
 

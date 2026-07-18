@@ -1,6 +1,6 @@
 # OurUI user documentation
 
-Learn how to build web apps in Python with OurUI. These pages cover the language surface through Enterprise (`ourui` **1.8.3**, dump schema **30**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
+Learn how to build web apps in Python with OurUI. These pages cover the Stable language surface (`ourui` **1.9.1**, dump schema **30**) — Getting started through Reference. Compiler/IR deep dives live in the repo root docs.
 
 ## Getting started
 
@@ -10,6 +10,8 @@ Learn how to build web apps in Python with OurUI. These pages cover the language
 - [Threat model](guides/threat-model.md) — host threats and mitigations (prod serve)
 - [Design packs](concepts/design-packs.md) — recipes / packs
 - [Motion](concepts/motion.md) — `motion="family.pattern"` vocabulary (ADR-012)
+- [Style intents](reference/style-intents.md) — layout/type/surface props (ADR-013); kit stays out of language (ADR-014)
+
 ## Tutorial
 
 Work through the examples in order. Each step links to a runnable file under `examples/tutorial/`.
@@ -32,6 +34,7 @@ Work through the examples in order. Each step links to a runnable file under `ex
 
 - [CLI](reference/cli.md)
 - [UI components](reference/ui-components.md) — Page through Canvas, Nav, forms, polish
+- [Style intents](reference/style-intents.md) — `width=`, `pad_x=`, `grow=`, `grid_cols=`, …
 - [State](reference/state.md)
 - [Server handlers](reference/server.md)
 - [Theme](reference/theme.md)
@@ -45,4 +48,4 @@ Work through the examples in order. Each step links to a runnable file under `ex
 
 ## Samples
 
-Published samples: [`examples/tutorial/`](../../examples/tutorial/), [`examples/enterprise/`](../../examples/enterprise/).
+Published samples: [`examples/tutorial/`](../../examples/tutorial/), [`examples/enterprise/`](../../examples/enterprise/), [`examples/landing/`](../../examples/landing/).

@@ -17,4 +17,6 @@ ADRs record local or historical choices. RFCs change LOCKED architecture or voca
 | [ADR-009](ADR-009-diagnostics-derived.md) | Diagnostics + Derived Draft (Phase V) |
 | [ADR-010](ADR-010-show-when-dynamic-list.md) | Show / When + dynamic List/Table (Enterprise E1) |
 | [ADR-011](ADR-011-pack-versioning-check-profile.md) | Pack versioning + check profiles (Enterprise E2; schema **28** notes) |
-| [ADR-012](ADR-012-motion-vocabulary.md) | Motion vocabulary `family.pattern` (M0/M1; schema **30**) |
+| [ADR-012](ADR-012-motion-vocabulary.md) | Motion vocabulary `family.pattern` (M0–M3; schema **30**) |
+| [ADR-013](ADR-013-style-intent-catalog.md) | Style Intent Catalog — Tailwind TOC → OurUI props (`1.9.x`) |
+| [ADR-014](ADR-014-language-primitives-vs-kit.md) | Language primitives first — kit stays out of language |
