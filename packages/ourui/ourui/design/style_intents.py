@@ -9,9 +9,16 @@ import re
 from typing import Any
 
 from ourui.design.scales import (
+    ANIMATE,
     ASPECT,
     BLUR,
     BREAKPOINTS,
+    DURATION,
+    EASING,
+    FILTER_BRIGHTNESS,
+    FILTER_CONTRAST,
+    FILTER_HUE,
+    FILTER_SATURATE,
     FRACTIONS,
     LEADING,
     OPACITY,
@@ -285,6 +292,39 @@ STYLE_PASSTHROUGH: tuple[str, ...] = (
     "blur",
     "backdrop_blur",
     "filter",
+    "brightness",
+    "contrast",
+    "drop_shadow",
+    "hue_rotate",
+    "saturate",
+    "backdrop_brightness",
+    "backdrop_contrast",
+    "backdrop_hue_rotate",
+    "backdrop_invert",
+    "backdrop_opacity",
+    "backdrop_saturate",
+    "backdrop_sepia",
+    "text_shadow",
+    "decoration_color",
+    "decoration_style",
+    "decoration_thickness",
+    "underline_offset",
+    "list_style",
+    "list_position",
+    "list_image",
+    "bg_origin",
+    "border_spacing",
+    "overscroll",
+    "box_sizing",
+    "break_before",
+    "break_after",
+    "break_inside",
+    "box_deco_break",
+    "hyphens",
+    "overflow_wrap",
+    "word_break",
+    "snap_stop",
+    "object_fit",
     "mix_blend",
     "backdrop_blend",
     "mask",
@@ -327,6 +367,16 @@ STYLE_PASSTHROUGH: tuple[str, ...] = (
     "text_indent",
     "zoom",
     "backface",
+    "transition_prop",
+    "transition_behavior",
+    "transition_dur",
+    "transition_ease",
+    "transition_delay",
+    "transition",
+    "animate",
+    "will_change",
+    "perspective",
+    "transform_style",
     "font_numeric",
     "font_stretch",
     "font_feature",
@@ -722,6 +772,137 @@ def emit_utility_css() -> str:
             f".ourui-backdrop-blur-{ident} {{ backdrop-filter: blur(var(--ourui-blur-{ident})); }}"
         )
 
+    # Filter intensity functions (TW filter-* section)
+    for key, val in FILTER_BRIGHTNESS.items():
+        lines.append(f".ourui-brightness-{key} {{ filter: brightness({val}); }}")
+    for key, val in FILTER_CONTRAST.items():
+        lines.append(f".ourui-contrast-{key} {{ filter: contrast({val}); }}")
+    for key, val in FILTER_SATURATE.items():
+        lines.append(f".ourui-saturate-{key} {{ filter: saturate({val}); }}")
+    for key, val in FILTER_HUE.items():
+        ident = _css_ident(key)
+        lines.append(f".ourui-hue-rotate-{ident} {{ filter: hue-rotate({val}); }}")
+    lines += [
+        ".ourui-drop-shadow-sm { filter: drop-shadow(0 1px 1px rgba(0,0,0,.15)); }",
+        ".ourui-drop-shadow { filter: drop-shadow(0 1px 2px rgba(0,0,0,.25)); }",
+        ".ourui-drop-shadow-md { filter: drop-shadow(0 4px 6px rgba(0,0,0,.15)); }",
+        ".ourui-drop-shadow-lg { filter: drop-shadow(0 10px 15px rgba(0,0,0,.15)); }",
+        ".ourui-drop-shadow-xl { filter: drop-shadow(0 20px 25px rgba(0,0,0,.15)); }",
+        ".ourui-drop-shadow-2xl { filter: drop-shadow(0 25px 50px rgba(0,0,0,.25)); }",
+        ".ourui-drop-shadow-none { filter: drop-shadow(0 0 0 transparent); }",
+    ]
+
+    # Backdrop filter intensity (TW backdrop-* section)
+    for key, val in FILTER_BRIGHTNESS.items():
+        lines.append(f".ourui-backdrop-brightness-{key} {{ backdrop-filter: brightness({val}); }}")
+    for key, val in FILTER_CONTRAST.items():
+        lines.append(f".ourui-backdrop-contrast-{key} {{ backdrop-filter: contrast({val}); }}")
+    for key, val in FILTER_HUE.items():
+        ident = _css_ident(key)
+        lines.append(f".ourui-backdrop-hue-rotate-{ident} {{ backdrop-filter: hue-rotate({val}); }}")
+    for key in ("0", "50", "100"):
+        val = str(int(key) / 100)
+        lines.append(f".ourui-backdrop-invert-{key} {{ backdrop-filter: invert({val}); }}")
+    for key in ("0", "50", "75", "100"):
+        val = str(int(key) / 100)
+        lines.append(f".ourui-backdrop-opacity-{key} {{ backdrop-filter: opacity({val}); }}")
+    for key, val in FILTER_SATURATE.items():
+        lines.append(f".ourui-backdrop-saturate-{key} {{ backdrop-filter: saturate({val}); }}")
+    for key in ("0", "50", "100"):
+        val = str(int(key) / 100)
+        lines.append(f".ourui-backdrop-sepia-{key} {{ backdrop-filter: sepia({val}); }}")
+
+    # Text shadow (TW text-shadow section)
+    lines += [
+        ".ourui-text-shadow-none { text-shadow: none; }",
+        ".ourui-text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,.2); }",
+        ".ourui-text-shadow { text-shadow: 0 1px 3px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.2); }",
+        ".ourui-text-shadow-md { text-shadow: 0 4px 6px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.06); }",
+        ".ourui-text-shadow-lg { text-shadow: 0 10px 15px rgba(0,0,0,.1), 0 4px 6px rgba(0,0,0,.05); }",
+        ".ourui-text-shadow-xl { text-shadow: 0 20px 25px rgba(0,0,0,.1), 0 8px 10px rgba(0,0,0,.04); }",
+    ]
+
+    # Text decoration color / style / thickness / underline offset
+    for role in ("primary", "accent", "muted", "danger", "border", "fg", "bg"):
+        lines.append(f".ourui-decoration-color-{role} {{ text-decoration-color: var(--ourui-{role}); }}")
+    for style in ("solid", "double", "dotted", "dashed", "wavy"):
+        lines.append(f".ourui-decoration-{style} {{ text-decoration-style: {style}; }}")
+    for w in ("0", "1", "2", "4", "8"):
+        px = {"0": "0", "1": "1px", "2": "2px", "4": "4px", "8": "8px"}[w]
+        lines.append(f".ourui-decoration-{w} {{ text-decoration-thickness: {px}; }}")
+    for v in ("0", "1", "2", "4", "8"):
+        px = {"0": "0", "1": "1px", "2": "2px", "4": "4px", "8": "8px"}[v]
+        lines.append(f".ourui-underline-offset-{v} {{ text-underline-offset: {px}; }}")
+
+    # List style
+    for lt in ("none", "disc", "decimal", "decimal-leading-zero", "lower-roman", "upper-roman", "lower-alpha", "upper-alpha"):
+        lines.append(f".ourui-list-style-{lt} {{ list-style-type: {lt}; }}")
+    for lp in ("inside", "outside"):
+        lines.append(f".ourui-list-position-{lp} {{ list-style-position: {lp}; }}")
+    lines.append(".ourui-list-image-none { list-style-image: none; }")
+
+    # Background clip / origin
+    for clip in ("border-box", "padding-box", "content-box", "text"):
+        lines.append(f".ourui-bg-clip-{clip} {{ background-clip: {clip}; }}")
+    for origin in ("border-box", "padding-box", "content-box"):
+        lines.append(f".ourui-bg-origin-{origin} {{ background-origin: {origin}; }}")
+
+    # Border spacing (table spacing)
+    for key in SPACE:
+        ident = _css_ident(key)
+        lines.append(f".ourui-border-spacing-{ident} {{ border-spacing: var(--ourui-space-{ident}); }}")
+
+    # Overscroll behavior
+    for axis in ("", "x", "y"):
+        pfx = f"overscroll-{axis}-" if axis else "overscroll-"
+        css_pfx = f"overscroll-{axis}" if axis else "overscroll-behavior"
+        for val in ("auto", "contain", "none"):
+            lines.append(f".ourui-{pfx}{val} {{ {css_pfx}: {val}; }}")
+
+    # Box sizing
+    lines += [
+        ".ourui-box-border { box-sizing: border-box; }",
+        ".ourui-box-content { box-sizing: content-box; }",
+    ]
+
+    # Break control (TW break-* section)
+    for val in ("auto", "avoid", "all", "page", "column"):
+        lines.append(f".ourui-break-before-{val} {{ break-before: {val}; }}")
+        lines.append(f".ourui-break-after-{val} {{ break-after: {val}; }}")
+    for val in ("auto", "avoid", "avoid-page", "avoid-column"):
+        ident = _css_ident(val)
+        lines.append(f".ourui-break-inside-{ident} {{ break-inside: {val}; }}")
+
+    # Box decoration break
+    lines += [
+        ".ourui-box-deco-break-clone { box-decoration-break: clone; }",
+        ".ourui-box-deco-break-slice { box-decoration-break: slice; }",
+    ]
+
+    # Hyphens
+    for val in ("manual", "auto", "none"):
+        lines.append(f".ourui-hyphens-{val} {{ hyphens: {val}; }}")
+
+    # Overflow wrap / word break
+    for val in ("normal", "break-word", "anywhere"):
+        lines.append(f".ourui-overflow-wrap-{val} {{ overflow-wrap: {val}; }}")
+    for val in ("normal", "break-all", "keep-all", "break-word"):
+        lines.append(f".ourui-word-break-{val} {{ word-break: {val}; }}")
+
+    # Scroll snap stop
+    lines += [
+        ".ourui-snap-stop-normal { scroll-snap-stop: normal; }",
+        ".ourui-snap-stop-always { scroll-snap-stop: always; }",
+    ]
+
+    # Object fit (TW object-fit section)
+    for val in ("contain", "cover", "fill", "none", "scale-down"):
+        lines.append(f".ourui-object-fit-{val} {{ object-fit: {val}; }}")
+
+    # Stroke width (TW stroke-width)
+    for w in ("0", "1", "2"):
+        lines.append(f".ourui-stroke-{w} {{ stroke-width: {w}; }}")
+
     # Transforms
     for deg in ("0", "1", "2", "3", "6", "12", "45", "90", "180"):
         lines.append(f".ourui-rotate-{deg} {{ transform: rotate({deg}deg); }}")
@@ -885,6 +1066,55 @@ def emit_utility_css() -> str:
             f".ourui-scrollbar-color-{role} {{ scrollbar-color: var(--ourui-{role}) var(--ourui-muted); }}"
         )
     lines.append(".ourui-scrollbar-color-auto { scrollbar-color: auto; }")
+
+    # Transitions (TW transition-* section)
+    _tw_trans_props = {
+        "none": "none",
+        "all": "all",
+        "colors": "color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow",
+        "opacity": "opacity",
+        "shadow": "box-shadow",
+        "transform": "transform",
+    }
+    for key, val in _tw_trans_props.items():
+        lines.append(f".ourui-transition-{key} {{ transition-property: {val}; }}")
+    for key, val in DURATION.items():
+        lines.append(f".ourui-duration-{_css_ident(key)} {{ transition-duration: {val}; }}")
+    for key, val in EASING.items():
+        lines.append(f".ourui-ease-{key} {{ transition-timing-function: {val}; }}")
+    for key, val in DURATION.items():
+        lines.append(f".ourui-delay-{_css_ident(key)} {{ transition-delay: {val}; }}")
+    lines += [
+        ".ourui-transition-behavior-normal { transition-behavior: normal; }",
+        ".ourui-transition-behavior-allow-discrete { transition-behavior: allow-discrete; }",
+    ]
+
+    # Animation (TW animation section — named keyframes)
+    for key, val in ANIMATE.items():
+        lines.append(f".ourui-animate-{_css_ident(key)} {{ animation: {val}; }}")
+    lines += [
+        "@keyframes spin { to { transform: rotate(360deg); } }",
+        "@keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }",
+        "@keyframes pulse { 50% { opacity: .5; } }",
+        "@keyframes bounce { 0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); } 50% { transform: translateY(0); animation-timing-function: cubic-bezier(0,0,0.2,1); } }",
+    ]
+
+    # will-change
+    for target in ("auto", "scroll-position", "contents", "transform"):
+        lines.append(f".ourui-will-change-{target} {{ will-change: {target}; }}")
+
+    # perspective (px values)
+    for val in ("none", "250", "500", "750", "1000"):
+        if val == "none":
+            lines.append(".ourui-perspective-none { perspective: none; }")
+        else:
+            lines.append(f".ourui-perspective-{val} {{ perspective: {val}px; }}")
+
+    # transform-style
+    lines += [
+        ".ourui-transform-style-flat { transform-style: flat; }",
+        ".ourui-transform-style-3d { transform-style: preserve-3d; }",
+    ]
 
     # Responsive depth (md/lg) — mobile-first overrides for high-ROI props
     lines += _emit_responsive_depth_css()
@@ -1517,6 +1747,88 @@ def style_intent_classes(attrs: dict[str, Any]) -> list[str]:
     if filt in {"none", "grayscale", "sepia", "invert", "saturate", "contrast"}:
         classes.append(f"ourui-filter-{filt}")
 
+    # Filter intensity functions
+    add("brightness", attrs.get("brightness"))
+    add("contrast", attrs.get("contrast"))
+    add("saturate", attrs.get("saturate"))
+    add("hue-rotate", attrs.get("hue_rotate"))
+    add("drop-shadow", attrs.get("drop_shadow"))
+    # Backdrop filter intensity
+    add("backdrop-brightness", attrs.get("backdrop_brightness"))
+    add("backdrop-contrast", attrs.get("backdrop_contrast"))
+    add("backdrop-hue-rotate", attrs.get("backdrop_hue_rotate"))
+    add("backdrop-invert", attrs.get("backdrop_invert"))
+    add("backdrop-opacity", attrs.get("backdrop_opacity"))
+    add("backdrop-saturate", attrs.get("backdrop_saturate"))
+    add("backdrop-sepia", attrs.get("backdrop_sepia"))
+
+    # Text shadow
+    ts = attrs.get("text_shadow")
+    if ts in {"none", "sm", "md", "lg", "xl"}:
+        classes.append(f"ourui-text-shadow-{ts}")
+
+    # Text decoration color / style / thickness
+    dc = attrs.get("decoration_color")
+    if isinstance(dc, str) and dc in {"primary", "accent", "muted", "danger", "border", "fg", "bg"}:
+        classes.append(f"ourui-decoration-color-{dc}")
+    ds = attrs.get("decoration_style")
+    if ds in {"solid", "double", "dotted", "dashed", "wavy"}:
+        classes.append(f"ourui-decoration-{ds}")
+    add("decoration", attrs.get("decoration_thickness"))
+    add("underline-offset", attrs.get("underline_offset"))
+
+    # List style
+    add("list-style", attrs.get("list_style"))
+    add("list-position", attrs.get("list_position"))
+    if attrs.get("list_image") == "none":
+        classes.append("ourui-list-image-none")
+
+    # Background clip / origin
+    add("bg-clip", attrs.get("bg_clip"))
+    add("bg-origin", attrs.get("bg_origin"))
+
+    # Border spacing
+    add("border-spacing", attrs.get("border_spacing"))
+
+    # Overscroll
+    for axis in ("", "x", "y"):
+        prop = f"overscroll_{axis}" if axis else "overscroll"
+        val = attrs.get(prop)
+        if val in {"auto", "contain", "none"}:
+            pfx = f"overscroll-{axis}-" if axis else "overscroll-"
+            classes.append(f"ourui-{pfx}{val}")
+
+    # Box sizing
+    bs = attrs.get("box_sizing")
+    if bs in {"border-box", "border_box"}:
+        classes.append("ourui-box-border")
+    elif bs in {"content-box", "content_box"}:
+        classes.append("ourui-box-content")
+
+    # Break
+    add("break-before", attrs.get("break_before"))
+    add("break-after", attrs.get("break_after"))
+    add("break-inside", attrs.get("break_inside"))
+    bb = attrs.get("box_deco_break")
+    if bb in {"clone", "slice"}:
+        classes.append(f"ourui-box-deco-break-{bb}")
+
+    # Hyphens / overflow-wrap / word-break
+    add("hyphens", attrs.get("hyphens"))
+    add("overflow-wrap", attrs.get("overflow_wrap"))
+    add("word-break", attrs.get("word_break"))
+
+    # Scroll snap stop
+    ss = attrs.get("snap_stop")
+    if ss in {"normal", "always"}:
+        classes.append(f"ourui-snap-stop-{ss}")
+
+    # Object fit
+    add("object-fit", attrs.get("object_fit"))
+
+    # Stroke width
+    add("stroke", attrs.get("stroke_width"))
+
     add("rotate", attrs.get("rotate"))
     if attrs.get("scale") is not None:
         add("scale", attrs.get("scale"))
@@ -1543,6 +1855,32 @@ def style_intent_classes(attrs: dict[str, Any]) -> list[str]:
     if ptr in {"none", "auto"}:
         classes.append(f"ourui-pointer-events-{ptr}")
     add("resize", attrs.get("resize"))
+
+    # Transitions
+    add("transition-prop", attrs.get("transition_prop"))
+    if attrs.get("transition") in {"none", "all", "colors", "opacity", "shadow", "transform"}:
+        classes.append(f"ourui-transition-{attrs['transition']}")
+    add("duration", attrs.get("transition_dur"))
+    add("ease", attrs.get("transition_ease"))
+    add("delay", attrs.get("transition_delay"))
+    tb = attrs.get("transition_behavior")
+    if tb in {"normal", "allow-discrete"}:
+        classes.append(f"ourui-transition-behavior-{tb}")
+
+    # Animation
+    add("animate", attrs.get("animate"))
+
+    # will-change
+    wc = attrs.get("will_change")
+    if wc in {"auto", "scroll-position", "contents", "transform"}:
+        classes.append(f"ourui-will-change-{wc}")
+
+    # perspective
+    add("perspective", attrs.get("perspective"))
+    ts = attrs.get("transform_style")
+    if ts in {"flat", "3d"}:
+        classes.append(f"ourui-transform-style-{ts}")
+
     if attrs.get("scroll") == "smooth":
         classes.append("ourui-scroll-smooth")
     snap = attrs.get("snap")

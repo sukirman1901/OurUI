@@ -328,7 +328,7 @@ def catalog_summary() -> dict[str, Any]:
         st = row["status"][0]  # A/B/C primary
         counts[st] = counts.get(st, 0) + 1
     return {
-        "version": "1.11.0",
+        "version": "1.12.0",
         "entries": len(CATALOG),
         "by_status": counts,
         "items": list(CATALOG),

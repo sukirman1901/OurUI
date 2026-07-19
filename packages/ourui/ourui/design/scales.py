@@ -232,6 +232,75 @@ ASPECT: dict[str, str] = {
     "21/9": "21 / 9",
 }
 
+DURATION: dict[str, str] = {
+    "0": "0ms",
+    "75": "75ms",
+    "100": "100ms",
+    "150": "150ms",
+    "200": "200ms",
+    "300": "300ms",
+    "500": "500ms",
+    "700": "700ms",
+    "1000": "1000ms",
+}
+
+EASING: dict[str, str] = {
+    "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "linear": "linear",
+    "in": "cubic-bezier(0.4, 0, 1, 1)",
+    "out": "cubic-bezier(0, 0, 0.2, 1)",
+    "in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "bounce": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+}
+
+ANIMATE: dict[str, str] = {
+    "spin": "spin 1s linear infinite",
+    "ping": "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite",
+    "pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+    "bounce": "bounce 1s infinite",
+}
+
+FILTER_BRIGHTNESS: dict[str, str] = {
+    "0": "0",
+    "50": ".5",
+    "75": ".75",
+    "90": ".9",
+    "95": ".95",
+    "100": "1",
+    "105": "1.05",
+    "110": "1.1",
+    "125": "1.25",
+    "150": "1.5",
+    "200": "2",
+}
+
+FILTER_CONTRAST: dict[str, str] = {
+    "0": "0",
+    "50": ".5",
+    "75": ".75",
+    "100": "1",
+    "125": "1.25",
+    "150": "1.5",
+    "200": "2",
+}
+
+FILTER_SATURATE: dict[str, str] = {
+    "0": "0",
+    "50": ".5",
+    "100": "1",
+    "150": "1.5",
+    "200": "2",
+}
+
+FILTER_HUE: dict[str, str] = {
+    "0": "0deg",
+    "15": "15deg",
+    "30": "30deg",
+    "60": "60deg",
+    "90": "90deg",
+    "180": "180deg",
+}
+
 
 def _css_ident(key: str) -> str:
     return key.replace("/", "-").replace(".", "-")
@@ -268,6 +337,20 @@ def emit_scale_css_vars(*, overrides: dict[str, dict[str, str]] | None = None) -
         lines.append(f"  --ourui-opacity-{_css_ident(k)}: {v};")
     for k, v in ASPECT.items():
         lines.append(f"  --ourui-aspect-{_css_ident(k)}: {v};")
+    for k, v in DURATION.items():
+        lines.append(f"  --ourui-duration-{_css_ident(k)}: {v};")
+    for k, v in EASING.items():
+        lines.append(f"  --ourui-easing-{_css_ident(k)}: {v};")
+    for k, v in ANIMATE.items():
+        lines.append(f"  --ourui-animate-{_css_ident(k)}: {v};")
+    for k, v in FILTER_BRIGHTNESS.items():
+        lines.append(f"  --ourui-filter-brightness-{_css_ident(k)}: {v};")
+    for k, v in FILTER_CONTRAST.items():
+        lines.append(f"  --ourui-filter-contrast-{_css_ident(k)}: {v};")
+    for k, v in FILTER_SATURATE.items():
+        lines.append(f"  --ourui-filter-saturate-{_css_ident(k)}: {v};")
+    for k, v in FILTER_HUE.items():
+        lines.append(f"  --ourui-filter-hue-{_css_ident(k)}: {v};")
     lines.append("}")
     return "\n".join(lines) + "\n"
 
@@ -308,4 +391,11 @@ def scale_catalog() -> dict[str, Any]:
         "opacity": dict(OPACITY),
         "breakpoints": dict(BREAKPOINTS),
         "aspect": dict(ASPECT),
+        "durations": dict(DURATION),
+        "easings": dict(EASING),
+        "animate": dict(ANIMATE),
+        "filter_brightness": dict(FILTER_BRIGHTNESS),
+        "filter_contrast": dict(FILTER_CONTRAST),
+        "filter_saturate": dict(FILTER_SATURATE),
+        "filter_hue": dict(FILTER_HUE),
     }
