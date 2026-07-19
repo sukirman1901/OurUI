@@ -1,12 +1,12 @@
-# ourui 1.11.1
+# ourui 1.12.0
 
-Python package for the **OurUI** compiler and runtime.
+Python-first UI compiler — write intent in Python, emit HTML/CSS/JS.
 
 **Developer writes intent. Compiler writes implementation. Host receives primitives.**
 
-**Package goal:** style **intent props** in Python (`aspect=`, `pad_x=`, `ring=`, …) → HTML/CSS/JS. **`ui.Theme`** = thin brand sheet (+ optional `css=` escape). Style Intent Catalog (ADR-013) **L3 complete**.
+Style intent props (`aspect=`, `pad_x=`, `ring=`, `transition_duration=`, `brightness=`, …) compile to `.ourui-*` CSS utility classes. 45 utilities across transitions, filters, effects, typography, and layout. 7 new design scales. 225 passthrough properties. 7,983 lines of generated CSS.
 
-Dump schema **30** (additive). Theme defaults from `theme.py`. Thin primitives for emit — craft depth is the utility catalog.
+`ui.Theme` = thin brand sheet (+ optional `css=` escape). Craft depth is the utility catalog.
 
 ## Install
 
