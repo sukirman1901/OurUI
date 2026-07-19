@@ -1,4 +1,4 @@
-# ourui 1.12.0
+# ourui 1.12.1
 
 Python-first UI compiler — write intent in Python, emit HTML/CSS/JS.
 
